@@ -4,8 +4,10 @@ buildscript {
   }
 
   repositories {
+    mavenLocal()
     google()
     mavenCentral()
+    flatDir { dirs 'libs' }
   }
 
   dependencies {
@@ -82,15 +84,27 @@ android {
 }
 
 repositories {
-  mavenCentral()
+  mavenLocal()
   google()
+  mavenCentral()
+  flatDir { dirs 'libs' }
 }
 
 def kotlin_version = getExtOrDefault("kotlinVersion")
 
 dependencies {
+  // implementation fileTree(dir: "libs", include: ["*.jar", "*.aar"])
+  // implementation(name: 'mixpanel-android-session-replay', ext: 'aar')
+
   implementation "com.facebook.react:react-android"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+  implementation "com.mixpanel.android:mixpanel-android:8.0.3"
+  // implementation "com.mixpanel.android:mixpanel-android-session-replay:0.0.9-SNAPSHOT"
+
+  implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:+")
+  implementation("com.squareup.curtains:curtains:+")
+  implementation(files("libs/mixpanel-android-session-replay-0.0.9-SNAPSHOT.aar"))
+  // implementation project(":mixpanel-android-session-replay")
 }
 
 react {
