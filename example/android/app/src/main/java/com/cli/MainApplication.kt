@@ -1,4 +1,4 @@
-package mpsessionreplay.example
+package com.cli
 
 import android.app.Application
 import com.facebook.react.PackageList
