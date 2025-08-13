@@ -1,38 +1,43 @@
-// import React from 'react';
-import { Text, View, StyleSheet, Button } from 'react-native';
-import {
-  initialize,
-  startRecording,
-  stopRecording,
-  MPSessionReplayConfig,
-  MPAutoMaskedViews,
-} from 'mp-session-replay';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import 'react-native-gesture-handler';
+
+import HomeScreen from './screens/HomeScreen';
+import TestScreen from './screens/TestScreen';
+import type { RootStackParamList } from './types/navigation';
+
+const Stack = createStackNavigator<RootStackParamList>();
 
 export default function App() {
-  const handleInitialize = () => {
-    const config = new MPSessionReplayConfig({
-      wifiOnly: true,
-      recordSessionsPercent: 100,
-      autoMaskedViews: [MPAutoMaskedViews.Image, MPAutoMaskedViews.Text],
-    });
-    initialize('test', 'test', config);
-  };
-
   return (
-    <View style={styles.container}>
-      <Text>Mixpanel Session Replay</Text>
-      <Button title="Initialize SDK" onPress={handleInitialize} />
-      <Button title="Start Recording" onPress={startRecording} />
-      <Button title="Stop Recording" onPress={stopRecording} />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator
+        initialRouteName="Home"
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: '#007AFF',
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      >
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{
+            title: 'Session Replay Demo',
+          }}
+        />
+        <Stack.Screen
+          name="Test"
+          component={TestScreen}
+          options={{
+            title: 'Masking Test',
+          }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 10,
-  },
-});

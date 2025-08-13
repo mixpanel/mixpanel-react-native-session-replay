@@ -1,6 +1,6 @@
 buildscript {
   ext.getExtOrDefault = {name ->
-    return rootProject.ext.has(name) ? rootProject.ext.get(name) : project.properties['MpSessionReplay_' + name]
+    return rootProject.ext.has(name) ? rootProject.ext.get(name) : project.properties['MixpanelReactNativeSessionReplay_' + name]
   }
 
   repositories {
@@ -22,28 +22,11 @@ apply plugin: "kotlin-android"
 apply plugin: "com.facebook.react"
 
 def getExtOrIntegerDefault(name) {
-  return rootProject.ext.has(name) ? rootProject.ext.get(name) : (project.properties["MpSessionReplay_" + name]).toInteger()
-}
-
-def supportsNamespace() {
-  def parsed = com.android.Version.ANDROID_GRADLE_PLUGIN_VERSION.tokenize('.')
-  def major = parsed[0].toInteger()
-  def minor = parsed[1].toInteger()
-
-  // Namespace support was added in 7.3.0
-  return (major == 7 && minor >= 3) || major >= 8
+  return rootProject.ext.has(name) ? rootProject.ext.get(name) : (project.properties["MixpanelReactNativeSessionReplay_" + name]).toInteger()
 }
 
 android {
-  if (supportsNamespace()) {
-    namespace "com.mpsessionreplay"
-
-    sourceSets {
-      main {
-        manifest.srcFile "src/main/AndroidManifestNew.xml"
-      }
-    }
-  }
+  namespace "com.mixpanelreactnativesessionreplay"
 
   compileSdkVersion getExtOrIntegerDefault("compileSdkVersion")
 
@@ -91,10 +74,16 @@ def kotlin_version = getExtOrDefault("kotlinVersion")
 dependencies {
   implementation "com.facebook.react:react-android"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+  
+  // Mixpanel Android SDK dependency (minimum v8.0.2)
+  implementation "com.mixpanel.android:mixpanel-android:8.0.2"
+  
+  // Mixpanel Android Session Replay SDK dependency
+  implementation "com.mixpanel.android:mixpanel-android-session-replay:1.0.0"
 }
 
 react {
   jsRootDir = file("../src/")
-  libraryName = "MpSessionReplay"
-  codegenJavaPackageName = "com.mpsessionreplay"
+  libraryName = "MixpanelReactNativeSessionReplay"
+  codegenJavaPackageName = "com.mixpanelreactnativesessionreplay"
 }

@@ -16,8 +16,8 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
-target 'MpSessionReplayExample' do
-  pod 'MixpanelSessionReplay', :path => '../../../Mixpanel/mixpanel-ios-session-replay-package'
+target 'MixpanelReactNativeSessionReplayExample' do
+  pod 'MixpanelSessionReplay', :path => '../../../Mixpanel/mixpanel-ios-session-replay'
   config = use_native_modules!
 
   use_react_native!(

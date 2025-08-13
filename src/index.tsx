@@ -1,58 +1,47 @@
-import MpSessionReplay from './NativeMpSessionReplay';
-export { MixpanelMaskView } from './MPMaskView';
+import MixpanelReactNativeSessionReplay, {
+  type SessionReplayConfig,
+} from './NativeMixpanelReactNativeSessionReplay';
 
-export enum MPAutoMaskedViewsConfig {
-  Image = 'Image',
-  Text = 'Text',
-  Web = 'Web',
-}
+export type { SessionReplayConfig };
+export {
+  MixpanelSessionReplayView,
+  type MixpanelSessionReplayViewProps,
+} from './MixpanelSessionReplayView';
 
-export class MPSessionReplayConfig {
-  wifiOnly: boolean;
-  recordSessionsPercent: number;
-  autoMaskedViews: MPAutoMaskedViewsConfig[];
-
-  constructor({
-    wifiOnly = true,
-    recordSessionsPercent = 0,
-    autoMaskedViews = [
-      MPAutoMaskedViewsConfig.Image,
-      MPAutoMaskedViewsConfig.Text,
-      MPAutoMaskedViewsConfig.Web,
-    ],
-  }: Partial<MPSessionReplayConfig> = {}) {
-    this.wifiOnly = wifiOnly;
-    this.recordSessionsPercent = recordSessionsPercent;
-    this.autoMaskedViews = autoMaskedViews;
+export async function initialize(config: SessionReplayConfig): Promise<void> {
+  if (!config.token || typeof config.token !== 'string') {
+    throw new Error('Mixpanel token is required and must be a string');
+  }
+  if (!config.distinctId || typeof config.distinctId !== 'string') {
+    throw new Error('distinctId is required and must be a string');
+  }
+  if (
+    config.recordingSessionsPercent !== undefined &&
+    (config.recordingSessionsPercent < 0 ||
+      config.recordingSessionsPercent > 100)
+  ) {
+    throw new Error('recordingSessionsPercent must be between 0 and 100');
   }
 
-  toJSON(): string {
-    return JSON.stringify({
-      wifiOnly: this.wifiOnly,
-      recordSessionsPercent: this.recordSessionsPercent,
-      autoMaskedViews: this.autoMaskedViews,
-      autoCapture: "enabled"
-    });
+  return MixpanelReactNativeSessionReplay.initialize(config);
+}
+
+export async function startRecording(): Promise<void> {
+  return MixpanelReactNativeSessionReplay.startRecording();
+}
+
+export async function stopRecording(): Promise<void> {
+  return MixpanelReactNativeSessionReplay.stopRecording();
+}
+
+export async function isRecording(): Promise<boolean> {
+  return MixpanelReactNativeSessionReplay.isRecording();
+}
+
+export async function identify(distinctId: string): Promise<void> {
+  if (!distinctId || typeof distinctId !== 'string') {
+    throw new Error('distinctId is required and must be a string');
   }
-}
 
-export function startRecording() {
-  MpSessionReplay.startRecording();
-}
-
-export function stopRecording() {
-  MpSessionReplay.stopRecording();
-}
-
-export function captureScreenshot() {
-  MpSessionReplay.captureScreenshot();
-}
-
-export function initialize(
-  token: string,
-  distinctId: string,
-  config: MPSessionReplayConfig
-): void {
-  var jsonConfig = config.toJSON();
-  MpSessionReplay.initialize(token, distinctId, jsonConfig);
+  return MixpanelReactNativeSessionReplay.identify(distinctId);
 }
