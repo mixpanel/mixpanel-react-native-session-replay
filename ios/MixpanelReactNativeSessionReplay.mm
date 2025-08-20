@@ -1,39 +1,43 @@
 #import "MixpanelReactNativeSessionReplay.h"
-#import <Mixpanel/Mixpanel.h>
-#import <MixpanelSessionReplay/MixpanelSessionReplay.h>
+#if __has_include("MixpanelReactNativeSessionReplay-Swift.h")
+  #import <MixpanelReactNativeSessionReplay-Swift.h>
+#else
+  #import <MixpanelReactNativeSessionReplay/MixpanelReactNativeSessionReplay-Swift.h>
+#endif
 
 @implementation MixpanelReactNativeSessionReplay
 RCT_EXPORT_MODULE()
 
-- (void)initialize:(NSDictionary *)config
-           resolve:(RCTPromiseResolveBlock)resolve
-            reject:(RCTPromiseRejectBlock)reject {
+- (void)initialize:(JS::NativeMixpanelReactNativeSessionReplay::SessionReplayConfig &)config
+ resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
     @try {
-        NSString *token = config[@"token"];
-        NSString *distinctId = config[@"distinctId"];
+        NSString *token = config.token();
+        NSString *distinctId = config.distinctId();
         
         if (!token || !distinctId) {
             reject(@"INVALID_CONFIG", @"Token and distinctId are required", nil);
             return;
         }
+      
+        [MixpanelSwiftSessionReplay initialize:token distinctId:distinctId configJSON:@""];
         
         // Configure Mixpanel Session Replay
-        MPSessionReplayConfig *replayConfig = [[MPSessionReplayConfig alloc] init];
-        
-        if (config[@"wifiOnly"]) {
-            replayConfig.wifiOnly = [config[@"wifiOnly"] boolValue];
-        }
-        
-        if (config[@"recordingSessionsPercent"]) {
-            replayConfig.recordingSessionsPercent = [config[@"recordingSessionsPercent"] doubleValue];
-        }
-        
-        if (config[@"enableLogging"]) {
-            replayConfig.enableLogging = [config[@"enableLogging"] boolValue];
-        }
-        
-        // Initialize Mixpanel Session Replay
-        [MPSessionReplay initializeWithToken:token distinctId:distinctId config:replayConfig];
+//        MPSessionReplayConfig *replayConfig = [[MPSessionReplayConfig alloc] init];
+//        
+//        if (config[@"wifiOnly"]) {
+//            replayConfig.wifiOnly = [config[@"wifiOnly"] boolValue];
+//        }
+//        
+//        if (config[@"recordingSessionsPercent"]) {
+//            replayConfig.recordingSessionsPercent = [config[@"recordingSessionsPercent"] doubleValue];
+//        }
+//        
+//        if (config[@"enableLogging"]) {
+//            replayConfig.enableLogging = [config[@"enableLogging"] boolValue];
+//        }
+//        
+//        // Initialize Mixpanel Session Replay
+//        [MPSessionReplay initializeWithToken:token distinctId:distinctId config:replayConfig];
         
         resolve(nil);
     }
@@ -45,7 +49,7 @@ RCT_EXPORT_MODULE()
 - (void)startRecording:(RCTPromiseResolveBlock)resolve
                 reject:(RCTPromiseRejectBlock)reject {
     @try {
-        [MPSessionReplay startRecording];
+        [MixpanelSwiftSessionReplay startRecording];
         resolve(nil);
     }
     @catch (NSException *exception) {
@@ -56,7 +60,7 @@ RCT_EXPORT_MODULE()
 - (void)stopRecording:(RCTPromiseResolveBlock)resolve
                reject:(RCTPromiseRejectBlock)reject {
     @try {
-        [MPSessionReplay stopRecording];
+        [MixpanelSwiftSessionReplay stopRecording];
         resolve(nil);
     }
     @catch (NSException *exception) {
@@ -67,7 +71,7 @@ RCT_EXPORT_MODULE()
 - (void)isRecording:(RCTPromiseResolveBlock)resolve
              reject:(RCTPromiseRejectBlock)reject {
     @try {
-        BOOL recording = [MPSessionReplay isRecording];
+        BOOL recording = [MixpanelSwiftSessionReplay isRecording];
         resolve(@(recording));
     }
     @catch (NSException *exception) {
@@ -84,7 +88,7 @@ RCT_EXPORT_MODULE()
             return;
         }
         
-        [MPSessionReplay identify:distinctId];
+        [MixpanelSwiftSessionReplay identify:distinctId];
         resolve(nil);
     }
     @catch (NSException *exception) {
@@ -96,16 +100,16 @@ RCT_EXPORT_MODULE()
                        resolve:(RCTPromiseResolveBlock)resolve
                         reject:(RCTPromiseRejectBlock)reject {
     @try {
-        UIView *parentView = [self.bridge.uiManager viewForReactTag:@((NSInteger)viewTag)];
+//        UIView *parentView = [self.bridge.uiManager viewForReactTag:@((NSInteger)viewTag)];
         
-        if ([parentView isKindOfClass:[MixpanelSessionReplayView class]]) {
-            // Only process if it's actually our component type
-            MixpanelSessionReplayView *mixpanelView = (MixpanelSessionReplayView *)parentView;
-            [mixpanelView markOnlyDirectChildrenAsSafe];
+//        if ([parentView isKindOfClass:[MixpanelSessionReplayView class]]) {
+//            // Only process if it's actually our component type
+//            MixpanelSessionReplayView *mixpanelView = (MixpanelSessionReplayView *)parentView;
+//            [mixpanelView markOnlyDirectChildrenAsSafe];
             resolve(nil);
-        } else {
-            reject(@"INVALID_VIEW_TYPE", @"View is not a MixpanelSessionReplayView", nil);
-        }
+//        } else {
+//            reject(@"INVALID_VIEW_TYPE", @"View is not a MixpanelSessionReplayView", nil);
+//        }
     }
     @catch (NSException *exception) {
         reject(@"MARK_CHILDREN_SAFE_ERROR", exception.reason, nil);

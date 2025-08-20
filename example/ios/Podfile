@@ -13,11 +13,11 @@ prepare_react_native_project!
 linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil
   Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
-  use_frameworks! :linkage => linkage.to_sym
+  use_frameworks! :linkage => "static"
 end
 
 target 'MixpanelReactNativeSessionReplayExample' do
-  pod 'MixpanelSessionReplay', :path => '../../../Mixpanel/mixpanel-ios-session-replay'
+  pod 'MixpanelSessionReplay', :path => '../../../../Mixpanel/mixpanel-ios-session-replay-package'
   config = use_native_modules!
 
   use_react_native!(

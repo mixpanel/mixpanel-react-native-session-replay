@@ -8,12 +8,10 @@ PODS:
   - hermes-engine (0.79.2):
     - hermes-engine/Pre-built (= 0.79.2)
   - hermes-engine/Pre-built (0.79.2)
-  - Mixpanel (5.0.8)
-  - mixpanel-react-native-session-replay (0.1.0):
+  - MixpanelReactNativeSessionReplay (0.1.0):
     - DoubleConversion
     - glog
     - hermes-engine
-    - Mixpanel
     - MixpanelSessionReplay
     - RCT-Folly (= 2024.11.18.00)
     - RCTRequired
@@ -35,7 +33,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - MixpanelSessionReplay (1.0.0)
+  - MixpanelSessionReplay (1.1.0)
   - RCT-Folly (2024.11.18.00):
     - boost
     - DoubleConversion
@@ -1843,8 +1841,8 @@ DEPENDENCIES:
   - fmt (from `../node_modules/react-native/third-party-podspecs/fmt.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - hermes-engine (from `../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
-  - mixpanel-react-native-session-replay (from `../..`)
-  - MixpanelSessionReplay (from `https://github.com/mixpanel/mixpanel-ios-session-replay-package.git`, tag `v1.0.0`)
+  - MixpanelReactNativeSessionReplay (from `../..`)
+  - MixpanelSessionReplay (from `../../../../Mixpanel/mixpanel-ios-session-replay-package`)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCT-Folly/Fabric (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTDeprecation (from `../node_modules/react-native/ReactApple/Libraries/RCTFoundation/RCTDeprecation`)
@@ -1916,7 +1914,6 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - Mixpanel
     - SocketRocket
 
 EXTERNAL SOURCES:
@@ -1935,11 +1932,10 @@ EXTERNAL SOURCES:
   hermes-engine:
     :podspec: "../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec"
     :tag: hermes-2025-03-03-RNv0.79.0-bc17d964d03743424823d7dd1a9f37633459c5c5
-  mixpanel-react-native-session-replay:
+  MixpanelReactNativeSessionReplay:
     :path: "../.."
   MixpanelSessionReplay:
-    :git: https://github.com/mixpanel/mixpanel-ios-session-replay-package.git
-    :tag: v1.0.0
+    :path: "../../../../Mixpanel/mixpanel-ios-session-replay-package"
   RCT-Folly:
     :podspec: "../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTDeprecation:
@@ -2073,11 +2069,6 @@ EXTERNAL SOURCES:
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
-CHECKOUT OPTIONS:
-  MixpanelSessionReplay:
-    :git: https://github.com/mixpanel/mixpanel-ios-session-replay-package.git
-    :tag: v1.0.0
-
 SPEC CHECKSUMS:
   boost: 7e761d76ca2ce687f7cc98e698152abd03a18f90
   DoubleConversion: cb417026b2400c8f53ae97020b2be961b59470cb
@@ -2086,9 +2077,8 @@ SPEC CHECKSUMS:
   fmt: a40bb5bd0294ea969aaaba240a927bd33d878cdd
   glog: 5683914934d5b6e4240e497e0f4a3b42d1854183
   hermes-engine: 314be5250afa5692b57b4dd1705959e1973a8ebe
-  Mixpanel: 9337782610693ef36b8f6ab531493201825f1dd6
-  mixpanel-react-native-session-replay: 1d63715c3a7a7a2ec19d9862519f5f8dd59e4878
-  MixpanelSessionReplay: 41e69c69ed6922b804424db01c5c9ac70a153f9c
+  MixpanelReactNativeSessionReplay: 7c4cd0f644a8099d29d503cd0f9bf20501796011
+  MixpanelSessionReplay: e5b1dd0bbf942595d232db95e9332dfc2460f99a
   RCT-Folly: e78785aa9ba2ed998ea4151e314036f6c49e6d82
   RCTDeprecation: 83ffb90c23ee5cea353bd32008a7bca100908f8c
   RCTRequired: eb7c0aba998009f47a540bec9e9d69a54f68136e
@@ -2157,6 +2147,6 @@ SPEC CHECKSUMS:
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: c758bfb934100bb4bf9cbaccb52557cee35e8bdf
 
-PODFILE CHECKSUM: 067883674ffafbdd6147d298f6595fb67b2bb5aa
+PODFILE CHECKSUM: db77c9c82f93ad90abf599b395877671dd758068
 
-COCOAPODS: 1.16.2
+COCOAPODS: 1.15.2
