@@ -8,18 +8,14 @@
 @implementation MixpanelReactNativeSessionReplay
 RCT_EXPORT_MODULE()
 
-- (void)initialize:(JS::NativeMixpanelReactNativeSessionReplay::SessionReplayConfig &)config
- resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+- (void)initialize:(nonnull NSString *)token distinctId:(nonnull NSString *)distinctId configJSON:(nonnull NSString *)configJSON resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
     @try {
-        NSString *token = config.token();
-        NSString *distinctId = config.distinctId();
-        
         if (!token || !distinctId) {
             reject(@"INVALID_CONFIG", @"Token and distinctId are required", nil);
             return;
         }
       
-        [MixpanelSwiftSessionReplay initialize:token distinctId:distinctId configJSON:@""];
+        [MixpanelSwiftSessionReplay initialize:token distinctId:distinctId configJSON:configJSON];
         
         // Configure Mixpanel Session Replay
 //        MPSessionReplayConfig *replayConfig = [[MPSessionReplayConfig alloc] init];
@@ -115,6 +111,8 @@ RCT_EXPORT_MODULE()
         reject(@"MARK_CHILDREN_SAFE_ERROR", exception.reason, nil);
     }
 }
+
+
 
 
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:

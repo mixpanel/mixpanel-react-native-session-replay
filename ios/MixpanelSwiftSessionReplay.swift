@@ -16,10 +16,9 @@ import MixpanelSessionReplay
   }
 
   @objc public static func initialize(_ token: String, distinctId: String, configJSON: String) {
-//    guard let data = configJSON.data(using: .utf8) else { return }
+    guard let data = configJSON.data(using: .utf8) else { return }
     do {
-      var config = try MPSessionReplayConfig()
-      config.enableLogging = true
+      let config = try MPSessionReplayConfig.from(json: data)
       MPSessionReplay.initialize(token: token, distinctId: distinctId, config: config)
     } catch {
       print("⚠️ Failed to parse config JSON: \(error)")

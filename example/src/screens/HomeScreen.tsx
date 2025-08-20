@@ -14,7 +14,8 @@ import {
   startRecording,
   stopRecording,
   isRecording,
-  type SessionReplayConfig,
+  MPSessionReplayMask,
+  MPSessionReplayConfig,
 } from 'mixpanel-react-native-session-replay';
 import type { RootStackParamList } from '../types/navigation';
 
@@ -40,16 +41,11 @@ export default function HomeScreen() {
 
   const handleInitialize = async () => {
     try {
-      const config: SessionReplayConfig = {
-        token,
-        distinctId,
-        wifiOnly: false,
-        autoStartRecording: true,
-        recordingSessionsPercent: 100,
-        enableLogging: true,
-      };
-
-      await initialize(config);
+      const config: MPSessionReplayConfig = new MPSessionReplayConfig({
+        autoMaskedViews: [MPSessionReplayMask.Image],
+      });
+      console.log("config", config);
+      await initialize(token, distinctId, config);
       setIsInitialized(true);
       Alert.alert(
         'Success',
