@@ -6,6 +6,7 @@ import com.facebook.react.module.annotations.ReactModule
 import com.mixpanel.android.sessionreplay.MPSessionReplay
 import com.mixpanel.android.sessionreplay.MPSessionReplayError
 import com.mixpanel.android.sessionreplay.models.MPSessionReplayConfig
+import com.mixpanel.android.sessionreplay.sensitive_views.AutoMaskedView
 import org.json.JSONObject
 import org.json.JSONArray
 
@@ -57,10 +58,21 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
           enableLogging = config.getBoolean("enableLogging")
         }
         if (config.has("autoMaskedViews")) {
-          // Handle autoMaskedViews array - this might need to be mapped to Android-specific masking
-          val maskedViews = config.getJSONArray("autoMaskedViews")
-          println("Mixpanel - AutoMaskedViews: $maskedViews")
-          // TODO: Map these to Android MPSessionReplayConfig masking options if available
+          val maskedViewsArray = config.getJSONArray("autoMaskedViews")
+          val autoMaskedViewsSet = mutableSetOf<AutoMaskedView>()
+          
+          for (i in 0 until maskedViewsArray.length()) {
+            val viewType = maskedViewsArray.getString(i)
+            when (viewType.lowercase()) {
+              "text" -> autoMaskedViewsSet.add(AutoMaskedView.Text)
+              "image" -> autoMaskedViewsSet.add(AutoMaskedView.Image)
+              "web" -> autoMaskedViewsSet.add(AutoMaskedView.Web)
+              else -> println("Mixpanel - Unknown autoMaskedView type: $viewType")
+            }
+          }
+          
+          autoMaskedViews = autoMaskedViewsSet
+          println("Mixpanel - AutoMaskedViews configured: $autoMaskedViewsSet")
         }
       }
 
