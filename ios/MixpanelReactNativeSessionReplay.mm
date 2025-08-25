@@ -14,28 +14,13 @@ RCT_EXPORT_MODULE()
             reject(@"INVALID_CONFIG", @"Token and distinctId are required", nil);
             return;
         }
-      
-        [MixpanelSwiftSessionReplay initialize:token distinctId:distinctId configJSON:configJSON];
-        
-        // Configure Mixpanel Session Replay
-//        MPSessionReplayConfig *replayConfig = [[MPSessionReplayConfig alloc] init];
-//        
-//        if (config[@"wifiOnly"]) {
-//            replayConfig.wifiOnly = [config[@"wifiOnly"] boolValue];
-//        }
-//        
-//        if (config[@"recordingSessionsPercent"]) {
-//            replayConfig.recordingSessionsPercent = [config[@"recordingSessionsPercent"] doubleValue];
-//        }
-//        
-//        if (config[@"enableLogging"]) {
-//            replayConfig.enableLogging = [config[@"enableLogging"] boolValue];
-//        }
-//        
-//        // Initialize Mixpanel Session Replay
-//        [MPSessionReplay initializeWithToken:token distinctId:distinctId config:replayConfig];
-        
-        resolve(nil);
+      [MixpanelSwiftSessionReplay initialize:token distinctId:distinctId configJSON:configJSON completion:^(BOOL success, NSError * _Nullable error) {
+        if (success) {
+          resolve(nil);
+        } else {
+          reject(@"INITIALIZATION_FAILED", error.localizedDescription, error);
+        }
+      }];
     }
     @catch (NSException *exception) {
         reject(@"INITIALIZATION_ERROR", exception.reason, nil);

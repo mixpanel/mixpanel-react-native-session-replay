@@ -15,11 +15,17 @@ import MixpanelSessionReplay
     MPSessionReplay.getInstance()?.captureScreenshot()
   }
 
-  @objc public static func initialize(_ token: String, distinctId: String, configJSON: String) {
+  @objc public static func initialize(_ token: String, distinctId: String, configJSON: String, completion: @escaping (Bool, Error?) -> Void) {
     guard let data = configJSON.data(using: .utf8) else { return }
     do {
       let config = try MPSessionReplayConfig.from(json: data)
-      MPSessionReplay.initialize(token: token, distinctId: distinctId, config: config)
+      MPSessionReplay.initialize(token: token, distinctId: distinctId, config: config) { result in
+        if case .failure(let error) = result {
+          completion(false, error)
+        } else {
+          completion(true, nil)
+        }
+      }
     } catch {
       print("⚠️ Failed to parse config JSON: \(error)")
     }
