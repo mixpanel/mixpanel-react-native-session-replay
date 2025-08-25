@@ -2,11 +2,12 @@ package com.mixpanelreactnativesessionreplay
 
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
-import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.module.annotations.ReactModule
 import com.mixpanel.android.sessionreplay.MPSessionReplay
 import com.mixpanel.android.sessionreplay.MPSessionReplayError
 import com.mixpanel.android.sessionreplay.models.MPSessionReplayConfig
+import org.json.JSONObject
+import org.json.JSONArray
 
 @ReactModule(name = MixpanelReactNativeSessionReplayModule.NAME)
 class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationContext) :
@@ -16,34 +17,50 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
     return NAME
   }
 
-  override fun initialize(config: ReadableMap, promise: Promise) {
+  override fun initialize(token: String, distinctId: String, configJSON: String, promise: Promise) {
     try {
-      val token = config.getString("token")
-      val distinctId = config.getString("distinctId")
-
-      if (token == null || distinctId == null) {
+      if (token.isEmpty() || distinctId.isEmpty()) {
         promise.reject("INVALID_CONFIG", "Token and distinctId are required")
         return
       }
 
+      // Parse JSON configuration
+      val config = if (configJSON.isNotEmpty()) {
+        try {
+          JSONObject(configJSON)
+        } catch (e: Exception) {
+          println("Mixpanel - Failed to parse config JSON: ${e.message}")
+          JSONObject()
+        }
+      } else {
+        JSONObject()
+      }
+
       // Configure Mixpanel Session Replay
       val replayConfig = MPSessionReplayConfig().apply {
-        // print everything inside the config object as Log
-        config.toHashMap().forEach { (key, value) ->
-          println("Mixpanel - Config Key: $key, Value: $value")
-        }
+        // print config for debugging
+        println("Mixpanel - Config JSON: $configJSON")
 
-        if (config.hasKey("wifiOnly")) {
+        if (config.has("wifiOnly")) {
           wifiOnly = config.getBoolean("wifiOnly")
         }
-        if (config.hasKey("autoStartRecording")) {
+        if (config.has("autoStartRecording")) {
           autoStartRecording = config.getBoolean("autoStartRecording")
         }
-        if (config.hasKey("recordingSessionsPercent")) {
+        if (config.has("recordingSessionsPercent")) {
           recordingSessionsPercent = config.getDouble("recordingSessionsPercent")
         }
-        if (config.hasKey("enableLogging")) {
+        if (config.has("flushInterval")) {
+          flushInterval = config.getLong("flushInterval")
+        }
+        if (config.has("enableLogging")) {
           enableLogging = config.getBoolean("enableLogging")
+        }
+        if (config.has("autoMaskedViews")) {
+          // Handle autoMaskedViews array - this might need to be mapped to Android-specific masking
+          val maskedViews = config.getJSONArray("autoMaskedViews")
+          println("Mixpanel - AutoMaskedViews: $maskedViews")
+          // TODO: Map these to Android MPSessionReplayConfig masking options if available
         }
       }
 
@@ -85,8 +102,6 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
           }
         )
       }
-
-      promise.resolve(null)
     } catch (e: Exception) {
       promise.reject("INITIALIZATION_ERROR", e.message, e)
     }
