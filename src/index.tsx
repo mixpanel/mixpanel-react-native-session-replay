@@ -1,11 +1,10 @@
 import { Platform } from 'react-native';
-import MixpanelReactNativeSessionReplay, {
-} from './NativeMixpanelReactNativeSessionReplay';
+import MixpanelReactNativeSessionReplay from './NativeMixpanelReactNativeSessionReplay';
 
 export enum MPSessionReplayMask {
   Text = 'text',
   Web = 'web',
-  Map = "map",
+  Map = 'map',
   Image = 'image',
 }
 
@@ -16,7 +15,7 @@ export class MPSessionReplayConfig {
   autoStartRecording: boolean;
   flushInterval: number;
   enableLogging: boolean;
-  
+
   constructor({
     wifiOnly = true,
     autoStartRecording = true,
@@ -25,7 +24,7 @@ export class MPSessionReplayConfig {
       MPSessionReplayMask.Image,
       MPSessionReplayMask.Text,
       MPSessionReplayMask.Web,
-      MPSessionReplayMask.Map
+      MPSessionReplayMask.Map,
     ],
     flushInterval = 10,
     enableLogging = false,
@@ -41,7 +40,7 @@ export class MPSessionReplayConfig {
   toJSON(): string {
     if (Platform.OS === 'ios') {
       // iOS specific configuration
-      console.log("iOS config", this);
+      console.log('iOS config', this);
       return JSON.stringify({
         wifiOnly: this.wifiOnly,
         recordingSessionsPercent: this.recordingSessionsPercent,
@@ -61,17 +60,18 @@ export class MPSessionReplayConfig {
         enableLogging: this.enableLogging,
       });
     } else {
-      return ""
+      return '';
     }
   }
 }
 
-export {
-  MixpanelSessionReplayView,
-  type MixpanelSessionReplayViewProps,
-} from './MixpanelSessionReplayView';
+export { MixpanelSessionReplayView } from './MixpanelSessionReplayView';
 
-export async function initialize( token: string, distinctId: string, config: MPSessionReplayConfig): Promise<void> {
+export async function initialize(
+  token: string,
+  distinctId: string,
+  config: MPSessionReplayConfig
+): Promise<void> {
   if (!token || typeof token !== 'string') {
     throw new Error('Mixpanel token is required and must be a string');
   }

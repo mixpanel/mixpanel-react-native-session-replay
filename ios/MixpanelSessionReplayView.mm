@@ -1,3 +1,4 @@
+#import <UIKit/UIKit.h>
 #import <React/RCTViewManager.h>
 #import <React/RCTView.h>
 
@@ -19,12 +20,11 @@ RCT_EXPORT_MODULE(MixpanelSessionReplayView)
   return [[RCTView alloc] init];
 }
 
-RCT_CUSTOM_VIEW_PROPERTY(mask, NSString, RCTView)
+RCT_CUSTOM_VIEW_PROPERTY(sensitive, BOOL, RCTView)
 {
-  NSString* mask = [RCTConvert NSString:json];
-  if ([mask isEqualToString:@"sensitive"]) {
+  if ([json boolValue] == YES) {
      [MixpanelSwiftSensitiveViewManager setMPReplaySensitiveWithValue:YES view:view];
-  } else if ([mask isEqualToString:@"safe"]) {
+  } else if ([json boolValue] == NO) {
     [MixpanelSwiftSensitiveViewManager setMPReplaySensitiveWithValue:NO view:view];
   }
 }

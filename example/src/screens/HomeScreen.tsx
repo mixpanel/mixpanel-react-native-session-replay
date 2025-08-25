@@ -43,8 +43,9 @@ export default function HomeScreen() {
     try {
       const config: MPSessionReplayConfig = new MPSessionReplayConfig({
         autoMaskedViews: [MPSessionReplayMask.Image],
+        enableLogging: true,
       });
-      console.log("config", config);
+      console.log('config', config);
       await initialize(token, distinctId, config);
       setIsInitialized(true);
       Alert.alert(
