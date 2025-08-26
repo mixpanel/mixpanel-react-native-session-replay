@@ -39,7 +39,13 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
 
       // Configure Mixpanel Session Replay
 
-      val replayConfig = MPSessionReplayConfig.fromJson(configJSON)
+      val replayConfig = try {
+        MPSessionReplayConfig.fromJson(configJSON)
+      } catch (e: Exception) {
+        println("Mixpanel - Failed to parse config JSON in fromJson: ${e.message}")
+        promise.reject("CONFIG_JSON_PARSE_ERROR", "Failed to parse config JSON: ${e.message}", e)
+        return
+      }
       println("Mixpanel - Config variable fromJson: $replayConfig")
 
       // Initialize Mixpanel Session Replay
