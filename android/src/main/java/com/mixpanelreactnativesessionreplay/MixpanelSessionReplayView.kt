@@ -11,10 +11,10 @@ class MixpanelSessionReplayView(context: Context) : ReactViewGroup(context) {
         if (isSensitive == sensitive) return
         
         isSensitive = sensitive
-        updateSessionReplay()
+        updateViewSensitivity()
     }
     
-    private fun updateSessionReplay() {
+    private fun updateViewSensitivity() {
         MPSessionReplay.getInstance()?.let { sessionReplay ->
             if (isSensitive) {
                 sessionReplay.addSensitiveView(this)
