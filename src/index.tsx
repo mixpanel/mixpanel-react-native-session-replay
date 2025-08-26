@@ -61,11 +61,8 @@ export class MPSessionReplayConfig {
       enableLogging: this.enableLogging,
     };
 
-    if (Platform.OS === 'ios') {
-      console.log('iOS config', config);
-      return JSON.stringify(config);
-    } else if (Platform.OS === 'android') {
-      console.log('Android config', config);
+    if (Platform.OS === 'ios' || Platform.OS === 'android') {
+      // console.log(Platform.OS, JSON.stringify(config));
       return JSON.stringify(config);
     } else {
       return '';
