@@ -37,28 +37,33 @@ export class MPSessionReplayConfig {
     this.enableLogging = enableLogging;
   }
 
+  private transformMaskValueForPlatform(value: string): string {
+    if (Platform.OS === 'android') {
+      // Android expects capitalized values: Text, Image, Web, Map
+      return value.charAt(0).toUpperCase() + value.slice(1);
+    }
+    // iOS expects lowercase values: text, image, web, map
+    return value;
+  }
+
   toJSON(): string {
-    if (Platform.OS === 'ios') {
-      // iOS specific configuration
-      console.log('iOS config', this);
-      return JSON.stringify({
-        wifiOnly: this.wifiOnly,
-        recordingSessionsPercent: this.recordingSessionsPercent,
-        autoMaskedViews: this.autoMaskedViews,
-        autoStartRecording: this.autoStartRecording,
-        flushInterval: this.flushInterval,
-        enableLogging: this.enableLogging,
-      });
-    } else if (Platform.OS === 'android') {
-      //TODO: update for android
-      return JSON.stringify({
-        wifiOnly: this.wifiOnly,
-        recordingSessionsPercent: this.recordingSessionsPercent,
-        autoMaskedViews: this.autoMaskedViews,
-        autoStartRecording: this.autoStartRecording,
-        flushInterval: this.flushInterval,
-        enableLogging: this.enableLogging,
-      });
+    // Transform autoMaskedViews for platform-specific requirements
+    const transformedAutoMaskedViews = this.autoMaskedViews.map((mask) =>
+      this.transformMaskValueForPlatform(mask)
+    );
+
+    const config = {
+      wifiOnly: this.wifiOnly,
+      recordingSessionsPercent: this.recordingSessionsPercent,
+      autoMaskedViews: transformedAutoMaskedViews,
+      autoStartRecording: this.autoStartRecording,
+      flushInterval: this.flushInterval,
+      enableLogging: this.enableLogging,
+    };
+
+    if (Platform.OS === 'ios' || Platform.OS === 'android') {
+      // console.log(Platform.OS, JSON.stringify(config));
+      return JSON.stringify(config);
     } else {
       return '';
     }

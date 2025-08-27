@@ -38,43 +38,15 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
       }
 
       // Configure Mixpanel Session Replay
-      val replayConfig = MPSessionReplayConfig().apply {
-        // print config for debugging
-        println("Mixpanel - Config JSON: $configJSON")
 
-        if (config.has("wifiOnly")) {
-          wifiOnly = config.getBoolean("wifiOnly")
-        }
-        if (config.has("autoStartRecording")) {
-          autoStartRecording = config.getBoolean("autoStartRecording")
-        }
-        if (config.has("recordingSessionsPercent")) {
-          recordingSessionsPercent = config.getDouble("recordingSessionsPercent")
-        }
-        if (config.has("flushInterval")) {
-          flushInterval = config.getLong("flushInterval")
-        }
-        if (config.has("enableLogging")) {
-          enableLogging = config.getBoolean("enableLogging")
-        }
-        if (config.has("autoMaskedViews")) {
-          val maskedViewsArray = config.getJSONArray("autoMaskedViews")
-          val autoMaskedViewsSet = mutableSetOf<AutoMaskedView>()
-          
-          for (i in 0 until maskedViewsArray.length()) {
-            val viewType = maskedViewsArray.getString(i)
-            when (viewType.lowercase()) {
-              "text" -> autoMaskedViewsSet.add(AutoMaskedView.Text)
-              "image" -> autoMaskedViewsSet.add(AutoMaskedView.Image)
-              "web" -> autoMaskedViewsSet.add(AutoMaskedView.Web)
-              else -> println("Mixpanel - Unknown autoMaskedView type: $viewType")
-            }
-          }
-          
-          autoMaskedViews = autoMaskedViewsSet
-          println("Mixpanel - AutoMaskedViews configured: $autoMaskedViewsSet")
-        }
+      val replayConfig = try {
+        MPSessionReplayConfig.fromJson(configJSON)
+      } catch (e: Exception) {
+        println("Mixpanel - Failed to parse config JSON in fromJson: ${e.message}")
+        promise.reject("CONFIG_JSON_PARSE_ERROR", "Failed to parse config JSON: ${e.message}", e)
+        return
       }
+      println("Mixpanel - Config variable fromJson: $replayConfig")
 
       // Initialize Mixpanel Session Replay
       MPSessionReplay.initialize(
@@ -161,27 +133,6 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
     }
   }
 
-  override fun markViewChildrenAsSafe(viewTag: Double, promise: Promise) {
-    try {
-      val uiManager =
-        reactApplicationContext.getNativeModule(com.facebook.react.uimanager.UIManagerModule::class.java)
-      uiManager?.addUIBlock { nativeViewHierarchyManager ->
-        val parentView = nativeViewHierarchyManager.resolveView(viewTag.toInt())
-
-        if (parentView is MixpanelSessionReplayView) {
-          // Only process if it's actually our component type
-          parentView.markOnlyDirectChildrenAsSafe()
-        } else {
-          promise.reject("INVALID_VIEW_TYPE", "View is not a MixpanelSessionReplayView")
-          return@addUIBlock
-        }
-
-        promise.resolve(null)
-      }
-    } catch (e: Exception) {
-      promise.reject("MARK_CHILDREN_SAFE_ERROR", e.message, e)
-    }
-  }
 
   companion object {
     const val NAME = "MixpanelReactNativeSessionReplay"
