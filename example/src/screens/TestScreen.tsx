@@ -7,6 +7,7 @@ import {
   TextInput,
   Switch,
   ScrollView,
+  Image,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
@@ -155,25 +156,26 @@ export default function TestScreen() {
       </View>
 
       {/* Images Section */}
-      <View style={styles.section}>
+     <View style={styles.section}>
         <Text style={styles.sectionTitle}>Images</Text>
 
         <View style={styles.imageContainer}>
-          <View style={styles.placeholderImage}>
-            <Text style={styles.placeholderText}>Sample Image 1</Text>
-            <Text style={styles.placeholderSubtext}>200x150</Text>
-          </View>
+          <Image 
+            source={{ uri: 'https://picsum.photos/150/100?random=1' }}
+            style={styles.sampleImage}
+          />
 
-          <View style={styles.placeholderImage}>
-            <Text style={styles.placeholderText}>Sample Image 2</Text>
-            <Text style={styles.placeholderSubtext}>200x150</Text>
-          </View>
+          <Image 
+            source={{ uri: 'https://picsum.photos/150/100?random=2' }}
+            style={styles.sampleImage}
+          />
         </View>
 
         <View style={styles.profileImageContainer}>
-          <View style={styles.avatarPlaceholder}>
-            <Text style={styles.avatarText}>Avatar</Text>
-          </View>
+          <Image 
+            source={{ uri: 'https://picsum.photos/80/80?random=3' }}
+            style={styles.avatarImage}
+          />
           <Text style={styles.profileName}>John Doe</Text>
           <Text style={styles.profileEmail}>john.doe@company.com</Text>
         </View>
@@ -542,5 +544,18 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#1976d2',
     marginBottom: 8,
+  },
+  sampleImage: {
+    width: 150,
+    height: 100,
+    borderRadius: 8,
+    backgroundColor: '#f0f0f0',
+  },
+  avatarImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: '#f0f0f0',
+    marginBottom: 10,
   },
 });

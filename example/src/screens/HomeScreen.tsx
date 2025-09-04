@@ -42,7 +42,7 @@ export default function HomeScreen() {
   const handleInitialize = async () => {
     try {
       const config: MPSessionReplayConfig = new MPSessionReplayConfig({
-        autoMaskedViews: [MPSessionReplayMask.Image],
+        // autoMaskedViews: [MPSessionReplayMask.Text],
         enableLogging: true,
       });
       console.log('config', config);
