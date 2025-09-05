@@ -4,6 +4,7 @@ import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.module.annotations.ReactModule
 import com.mixpanel.android.sessionreplay.MPSessionReplay
+import com.mixpanel.android.sessionreplay.MPSessionReplayInstance
 import com.mixpanel.android.sessionreplay.MPSessionReplayError
 import com.mixpanel.android.sessionreplay.models.MPSessionReplayConfig
 import com.mixpanel.android.sessionreplay.sensitive_views.AutoMaskedView
@@ -58,10 +59,10 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
         result.fold(
           onSuccess = { sessionReplayInstance ->
             // Successfully initialized
-            MPSessionReplay.getInstance()?.let { mpInstance ->
+            sessionReplayInstance?.let { instance ->
               try {
                 // Configure AutoMaskedView categories with comprehensive React Native support
-                configureSensitiveClasses(mpInstance, replayConfig)
+                configureSensitiveClasses(instance, replayConfig)
                 println("Mixpanel - Session Replay initialized successfully with enhanced view masking")
                 promise.resolve(null)
               } catch (e: Exception) {
@@ -150,7 +151,7 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
    * Supports both old and new React Native architectures with crash prevention
    */
   private fun configureSensitiveClasses(
-    mpInstance: MPSessionReplay,
+    mpInstance: MPSessionReplayInstance,
     config: MPSessionReplayConfig
   ) {
     // Always mask input text classes to protect user input fields
@@ -172,7 +173,7 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
   /**
    * Configure text display view classes for masking
    */
-  private fun configureTextClasses(mpInstance: MPSessionReplay) {
+  private fun configureTextClasses(mpInstance: MPSessionReplayInstance) {
     val textClasses = listOf(
       // React Native specific text display views
       "com.facebook.react.views.text.ReactTextView",
@@ -190,7 +191,7 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
   /**
    * Configure text input view classes for masking
    */
-  private fun configureInputTextClasses(mpInstance: MPSessionReplay) {
+  private fun configureInputTextClasses(mpInstance: MPSessionReplayInstance) {
     val inputTextClasses = listOf(
       "android.widget.AutoCompleteTextView",
       "android.widget.MultiAutoCompleteTextView",
@@ -210,7 +211,7 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
   /**
    * Configure image-related view classes for masking
    */
-  private fun configureImageClasses(mpInstance: MPSessionReplay) {
+  private fun configureImageClasses(mpInstance: MPSessionReplayInstance) {
     val imageClasses = listOf(
       // React Native specific image views
       "com.facebook.react.views.image.ReactImageView",
@@ -232,7 +233,7 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
   /**
    * Configure web-related view classes for masking
    */
-  private fun configureWebClasses(mpInstance: MPSessionReplay) {
+  private fun configureWebClasses(mpInstance: MPSessionReplayInstance) {
     val webClasses = listOf(
       // React Native WebView (community package)
       "com.reactnativecommunity.webview.RNCWebView",
@@ -255,7 +256,7 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
    * Prevents crashes from ClassNotFoundException or other reflection issues
    */
   private fun safeAddSensitiveClass(
-    mpInstance: MPSessionReplay,
+    mpInstance: MPSessionReplayInstance,
     className: String,
     category: String
   ) {

@@ -8,6 +8,7 @@ import {
   Switch,
   ScrollView,
   Image,
+  ImageBackground,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
@@ -103,6 +104,27 @@ export default function TestScreen() {
           multiline
           numberOfLines={3}
         />
+
+        <Text style={styles.inputLabel}>Search Input (should be masked):</Text>
+        <TextInput
+          style={styles.textInput}
+          placeholder="Search for sensitive data..."
+          clearButtonMode="while-editing"
+        />
+
+        <Text style={styles.inputLabel}>Numeric Input:</Text>
+        <TextInput
+          style={styles.textInput}
+          placeholder="Enter amount: $0.00"
+          keyboardType="numeric"
+        />
+
+        <Text style={styles.inputLabel}>Auto-Complete Input:</Text>
+        <TextInput
+          style={styles.textInput}
+          placeholder="Type to autocomplete addresses..."
+          autoComplete="street-address"
+        />
       </View>
 
       {/* Interactive Controls Section */}
@@ -156,29 +178,92 @@ export default function TestScreen() {
       </View>
 
       {/* Images Section */}
-     <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Images</Text>
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Images & Media</Text>
 
+        <Text style={styles.inputLabel}>
+          Regular Images (React Native Image):
+        </Text>
         <View style={styles.imageContainer}>
-          <Image 
-            source={{ uri: 'https://picsum.photos/150/100?random=1' }}
-            style={styles.sampleImage}
+          <Image
+            source={{
+              uri: 'https://picsum.photos/200/150?random=1',
+            }}
+            style={styles.networkImage}
+            resizeMode="cover"
           />
-
-          <Image 
-            source={{ uri: 'https://picsum.photos/150/100?random=2' }}
-            style={styles.sampleImage}
+          <Image
+            source={{
+              uri: 'https://picsum.photos/200/150?random=2',
+            }}
+            style={styles.networkImage}
+            resizeMode="cover"
           />
         </View>
 
-        <View style={styles.profileImageContainer}>
-          <Image 
-            source={{ uri: 'https://picsum.photos/80/80?random=3' }}
-            style={styles.avatarImage}
-          />
-          <Text style={styles.profileName}>John Doe</Text>
-          <Text style={styles.profileEmail}>john.doe@company.com</Text>
+        <Text style={styles.inputLabel}>🔒 Masked Profile Section:</Text>
+        <MixpanelSessionReplayView sensitive={true}>
+          <View style={styles.profileImageContainer}>
+            <Image
+              source={{
+                uri: 'https://picsum.photos/80/80?random=profile',
+              }}
+              style={styles.profileImage}
+            />
+            <Text style={styles.profileName}>John Doe</Text>
+            <Text style={styles.profileEmail}>john.doe@company.com</Text>
+          </View>
+        </MixpanelSessionReplayView>
+
+        <Text style={styles.inputLabel}>Background Image with Text:</Text>
+        <ImageBackground
+          source={{
+            uri: 'https://picsum.photos/350/100?random=banner',
+          }}
+          style={styles.bannerImage}
+        >
+          <View style={styles.bannerOverlay}>
+            <Text style={styles.bannerText}>Image with Text Overlay</Text>
+            <Text style={styles.bannerSubtext}>Testing text over images</Text>
+          </View>
+        </ImageBackground>
+      </View>
+
+      {/* WebView Section */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>WebView Components</Text>
+        <Text style={styles.description}>
+          WebView components are automatically masked when Web category is
+          enabled. These would show embedded web content in a real app.
+        </Text>
+
+        <Text style={styles.inputLabel}>Simulated WebView (placeholder):</Text>
+        <View style={styles.webViewPlaceholder}>
+          <Text style={styles.webViewText}>🌐 WebView Content</Text>
+          <Text style={styles.webViewSubtext}>
+            This represents where a WebView component would render web content.
+            In a real implementation, this would use react-native-webview.
+          </Text>
+          <View style={styles.webViewButtons}>
+            <TouchableOpacity style={styles.webViewButton}>
+              <Text style={styles.webViewButtonText}>← Back</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.webViewButton}>
+              <Text style={styles.webViewButtonText}>Forward →</Text>
+            </TouchableOpacity>
+          </View>
         </View>
+
+        <Text style={styles.inputLabel}>🔒 Masked WebView Content:</Text>
+        <MixpanelSessionReplayView sensitive={true}>
+          <View style={styles.webViewPlaceholder}>
+            <Text style={styles.webViewText}>🔒 Sensitive Web Content</Text>
+            <Text style={styles.webViewSubtext}>
+              This WebView would contain sensitive information like banking
+              login pages, payment forms, or personal data entry.
+            </Text>
+          </View>
+        </MixpanelSessionReplayView>
       </View>
 
       {/* Sensitive Data Section */}
@@ -457,42 +542,89 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 16,
   },
-  placeholderImage: {
+  networkImage: {
     width: 150,
     height: 100,
-    backgroundColor: '#e9ecef',
     borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#dee2e6',
-  },
-  placeholderText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#6c757d',
-  },
-  placeholderSubtext: {
-    fontSize: 12,
-    color: '#6c757d',
-    marginTop: 4,
+    backgroundColor: '#e9ecef',
   },
   profileImageContainer: {
     alignItems: 'center',
     marginTop: 16,
+    padding: 16,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 8,
   },
-  avatarPlaceholder: {
+  profileImage: {
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: '#007AFF',
-    justifyContent: 'center',
-    alignItems: 'center',
     marginBottom: 8,
   },
-  avatarText: {
+  bannerImage: {
+    width: '100%',
+    height: 100,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  bannerOverlay: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    padding: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  bannerText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  bannerSubtext: {
+    color: '#fff',
+    fontSize: 14,
+    textAlign: 'center',
+    marginTop: 4,
+  },
+  webViewPlaceholder: {
+    height: 150,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: '#dee2e6',
+    borderStyle: 'dashed',
+    padding: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  webViewText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#495057',
+    marginBottom: 8,
+  },
+  webViewSubtext: {
+    fontSize: 14,
+    color: '#6c757d',
+    textAlign: 'center',
+    marginBottom: 16,
+    lineHeight: 20,
+  },
+  webViewButtons: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  webViewButton: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 6,
+  },
+  webViewButtonText: {
+    color: '#fff',
+    fontSize: 14,
     fontWeight: '600',
   },
   profileName: {
