@@ -36,17 +36,18 @@ import MixpanelSessionReplay
     let legacyTextViewClass: AnyClass? = NSClassFromString("RCTTextView")
     let fabricTextViewClass: AnyClass? = NSClassFromString("RCTParagraphTextView")
     let imageViewClass: AnyClass? = NSClassFromString("RCTImageView")
+    let sessionReplay = MPSessionReplay.getInstance()
 
     if let imageViewClass, config.autoMaskedViews.contains(.image) {
-      MPSessionReplay.getInstance()?.addSensitiveClass(imageViewClass)
+      sessionReplay?.addSensitiveClass(imageViewClass)
     }
     
     if let fabricTextViewClass, config.autoMaskedViews.contains(.text) {
-      MPSessionReplay.getInstance()?.addSensitiveClass(fabricTextViewClass)
+      sessionReplay?.addSensitiveClass(fabricTextViewClass)
     }
     
     if let legacyTextViewClass, config.autoMaskedViews.contains(.text) {
-      MPSessionReplay.getInstance()?.addSensitiveClass(legacyTextViewClass)
+      sessionReplay?.addSensitiveClass(legacyTextViewClass)
     }
   }
   
