@@ -14,6 +14,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import type { RootStackParamList } from '../types/navigation';
 import { MixpanelSessionReplayView } from 'mixpanel-react-native-session-replay';
+import { WebView } from 'react-native-webview';
 
 type TestScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Test'>;
 
@@ -234,36 +235,43 @@ export default function TestScreen() {
         <Text style={styles.sectionTitle}>WebView Components</Text>
         <Text style={styles.description}>
           WebView components are automatically masked when Web category is
-          enabled. These would show embedded web content in a real app.
+          enabled. These load real web content to test masking functionality.
         </Text>
 
-        <Text style={styles.inputLabel}>Simulated WebView (placeholder):</Text>
-        <View style={styles.webViewPlaceholder}>
-          <Text style={styles.webViewText}>🌐 WebView Content</Text>
-          <Text style={styles.webViewSubtext}>
-            This represents where a WebView component would render web content.
-            In a real implementation, this would use react-native-webview.
-          </Text>
-          <View style={styles.webViewButtons}>
-            <TouchableOpacity style={styles.webViewButton}>
-              <Text style={styles.webViewButtonText}>← Back</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.webViewButton}>
-              <Text style={styles.webViewButtonText}>Forward →</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+        <Text style={styles.inputLabel}>Real WebView (YouTube Mobile):</Text>
+        <WebView
+          source={{ uri: 'https://m.youtube.com' }}
+          style={styles.webView}
+          javaScriptEnabled={true}
+          domStorageEnabled={true}
+          startInLoadingState={true}
+          scalesPageToFit={true}
+          onError={(syntheticEvent) => {
+            const { nativeEvent } = syntheticEvent;
+            console.warn('WebView error: ', nativeEvent);
+          }}
+        />
 
         <Text style={styles.inputLabel}>🔒 Masked WebView Content:</Text>
         <MixpanelSessionReplayView sensitive={true}>
-          <View style={styles.webViewPlaceholder}>
-            <Text style={styles.webViewText}>🔒 Sensitive Web Content</Text>
-            <Text style={styles.webViewSubtext}>
-              This WebView would contain sensitive information like banking
-              login pages, payment forms, or personal data entry.
-            </Text>
-          </View>
+          <WebView
+            source={{ uri: 'https://m.youtube.com' }}
+            style={styles.webView}
+            javaScriptEnabled={true}
+            domStorageEnabled={true}
+            startInLoadingState={true}
+            scalesPageToFit={true}
+            onError={(syntheticEvent) => {
+              const { nativeEvent } = syntheticEvent;
+              console.warn('Masked WebView error: ', nativeEvent);
+            }}
+          />
         </MixpanelSessionReplayView>
+
+        <Text style={styles.description}>
+          The WebView above is wrapped in MixpanelSessionReplayView with
+          sensitive=true and should be masked in session replays.
+        </Text>
       </View>
 
       {/* Sensitive Data Section */}
@@ -587,45 +595,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 4,
   },
-  webViewPlaceholder: {
-    height: 150,
-    backgroundColor: '#f8f9fa',
+  webView: {
+    height: 250,
     borderRadius: 8,
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: '#dee2e6',
-    borderStyle: 'dashed',
-    padding: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
     marginBottom: 12,
-  },
-  webViewText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#495057',
-    marginBottom: 8,
-  },
-  webViewSubtext: {
-    fontSize: 14,
-    color: '#6c757d',
-    textAlign: 'center',
-    marginBottom: 16,
-    lineHeight: 20,
-  },
-  webViewButtons: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  webViewButton: {
-    backgroundColor: '#007AFF',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 6,
-  },
-  webViewButtonText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
+    backgroundColor: '#fff',
   },
   profileName: {
     fontSize: 18,
