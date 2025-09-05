@@ -26,6 +26,16 @@ export default function TestScreen() {
   const [phoneValue, setPhoneValue] = useState('+1234567890');
   const [switchValue, setSwitchValue] = useState(false);
 
+  // Shared WebView configuration to avoid duplication
+  const webViewConfig = {
+    source: { uri: 'https://m.youtube.com' },
+    style: styles.webView,
+    javaScriptEnabled: true,
+    domStorageEnabled: true,
+    startInLoadingState: true,
+    scalesPageToFit: true,
+  };
+
   return (
     <ScrollView
       style={styles.container}
@@ -240,12 +250,7 @@ export default function TestScreen() {
 
         <Text style={styles.inputLabel}>Real WebView (YouTube Mobile):</Text>
         <WebView
-          source={{ uri: 'https://m.youtube.com' }}
-          style={styles.webView}
-          javaScriptEnabled={true}
-          domStorageEnabled={true}
-          startInLoadingState={true}
-          scalesPageToFit={true}
+          {...webViewConfig}
           onError={(syntheticEvent) => {
             const { nativeEvent } = syntheticEvent;
             console.warn('WebView error: ', nativeEvent);
@@ -255,12 +260,7 @@ export default function TestScreen() {
         <Text style={styles.inputLabel}>🔒 Masked WebView Content:</Text>
         <MixpanelSessionReplayView sensitive={true}>
           <WebView
-            source={{ uri: 'https://m.youtube.com' }}
-            style={styles.webView}
-            javaScriptEnabled={true}
-            domStorageEnabled={true}
-            startInLoadingState={true}
-            scalesPageToFit={true}
+            {...webViewConfig}
             onError={(syntheticEvent) => {
               const { nativeEvent } = syntheticEvent;
               console.warn('Masked WebView error: ', nativeEvent);
