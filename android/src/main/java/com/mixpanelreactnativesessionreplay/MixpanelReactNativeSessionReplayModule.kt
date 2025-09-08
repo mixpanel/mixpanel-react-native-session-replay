@@ -193,9 +193,6 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
    */
   private fun configureInputTextClasses(mpInstance: MPSessionReplayInstance) {
     val inputTextClasses = listOf(
-      "android.widget.AutoCompleteTextView",
-      "android.widget.MultiAutoCompleteTextView",
-
       // React Native specific text input views
       "com.facebook.react.views.textinput.ReactEditText",
 
@@ -221,8 +218,7 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
       "com.facebook.react.fabric.views.image.ReactImageView",
 
       // Common third-party image libraries
-      "com.facebook.drawee.view.SimpleDraweeView",
-      "androidx.appcompat.widget.AppCompatImageView"
+      "com.facebook.drawee.view.SimpleDraweeView"
     )
 
     imageClasses.forEach { className ->
