@@ -23,11 +23,31 @@ import MixpanelSessionReplay
         if case .failure(let error) = result {
           completion(false, error)
         } else {
+          setSensitiveClasses(config: config)
           completion(true, nil)
         }
       }
     } catch {
       print("⚠️ Failed to parse config JSON: \(error)")
+    }
+  }
+  
+  private static func setSensitiveClasses(config: MPSessionReplayConfig) {
+    let legacyTextViewClass: AnyClass? = NSClassFromString("RCTTextView")
+    let fabricTextViewClass: AnyClass? = NSClassFromString("RCTParagraphTextView")
+    let imageViewClass: AnyClass? = NSClassFromString("RCTImageView")
+    let sessionReplay = MPSessionReplay.getInstance()
+
+    if let imageViewClass, config.autoMaskedViews.contains(.image) {
+      sessionReplay?.addSensitiveClass(imageViewClass)
+    }
+    
+    if let fabricTextViewClass, config.autoMaskedViews.contains(.text) {
+      sessionReplay?.addSensitiveClass(fabricTextViewClass)
+    }
+    
+    if let legacyTextViewClass, config.autoMaskedViews.contains(.text) {
+      sessionReplay?.addSensitiveClass(legacyTextViewClass)
     }
   }
   

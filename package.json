@@ -20,6 +20,7 @@
     "ios",
     "cpp",
     "react-native.config.js",
+    "MixpanelReactNativeSessionReplay.podspec",
     "!ios/build",
     "!android/build",
     "!android/gradle",
