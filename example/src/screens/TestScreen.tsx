@@ -8,11 +8,13 @@ import {
   Switch,
   ScrollView,
   Image,
+  ImageBackground,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import type { RootStackParamList } from '../types/navigation';
 import { MixpanelSessionReplayView } from 'mixpanel-react-native-session-replay';
+import { WebView } from 'react-native-webview';
 
 type TestScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Test'>;
 
@@ -23,6 +25,16 @@ export default function TestScreen() {
   const [passwordValue, setPasswordValue] = useState('password123');
   const [phoneValue, setPhoneValue] = useState('+1234567890');
   const [switchValue, setSwitchValue] = useState(false);
+
+  // Shared WebView configuration to avoid duplication
+  const webViewConfig = {
+    source: { uri: 'https://m.youtube.com' },
+    style: styles.webView,
+    javaScriptEnabled: true,
+    domStorageEnabled: true,
+    startInLoadingState: true,
+    scalesPageToFit: true,
+  };
 
   return (
     <ScrollView
@@ -103,6 +115,27 @@ export default function TestScreen() {
           multiline
           numberOfLines={3}
         />
+
+        <Text style={styles.inputLabel}>Search Input (should be masked):</Text>
+        <TextInput
+          style={styles.textInput}
+          placeholder="Search for sensitive data..."
+          clearButtonMode="while-editing"
+        />
+
+        <Text style={styles.inputLabel}>Numeric Input:</Text>
+        <TextInput
+          style={styles.textInput}
+          placeholder="Enter amount: $0.00"
+          keyboardType="numeric"
+        />
+
+        <Text style={styles.inputLabel}>Auto-Complete Input:</Text>
+        <TextInput
+          style={styles.textInput}
+          placeholder="Type to autocomplete addresses..."
+          autoComplete="street-address"
+        />
       </View>
 
       {/* Interactive Controls Section */}
@@ -156,29 +189,89 @@ export default function TestScreen() {
       </View>
 
       {/* Images Section */}
-     <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Images</Text>
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Images & Media</Text>
 
+        <Text style={styles.inputLabel}>
+          Regular Images (React Native Image):
+        </Text>
         <View style={styles.imageContainer}>
-          <Image 
-            source={{ uri: 'https://picsum.photos/150/100?random=1' }}
-            style={styles.sampleImage}
+          <Image
+            source={{
+              uri: 'https://picsum.photos/200/150?random=1',
+            }}
+            style={styles.networkImage}
+            resizeMode="cover"
           />
-
-          <Image 
-            source={{ uri: 'https://picsum.photos/150/100?random=2' }}
-            style={styles.sampleImage}
+          <Image
+            source={{
+              uri: 'https://picsum.photos/200/150?random=2',
+            }}
+            style={styles.networkImage}
+            resizeMode="cover"
           />
         </View>
 
-        <View style={styles.profileImageContainer}>
-          <Image 
-            source={{ uri: 'https://picsum.photos/80/80?random=3' }}
-            style={styles.avatarImage}
+        <Text style={styles.inputLabel}>🔒 Masked Profile Section:</Text>
+        <MixpanelSessionReplayView sensitive={true}>
+          <View style={styles.profileImageContainer}>
+            <Image
+              source={{
+                uri: 'https://picsum.photos/80/80?random=profile',
+              }}
+              style={styles.profileImage}
+            />
+            <Text style={styles.profileName}>John Doe</Text>
+            <Text style={styles.profileEmail}>john.doe@company.com</Text>
+          </View>
+        </MixpanelSessionReplayView>
+
+        <Text style={styles.inputLabel}>Background Image with Text:</Text>
+        <ImageBackground
+          source={{
+            uri: 'https://picsum.photos/350/100?random=banner',
+          }}
+          style={styles.bannerImage}
+        >
+          <View style={styles.bannerOverlay}>
+            <Text style={styles.bannerText}>Image with Text Overlay</Text>
+            <Text style={styles.bannerSubtext}>Testing text over images</Text>
+          </View>
+        </ImageBackground>
+      </View>
+
+      {/* WebView Section */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>WebView Components</Text>
+        <Text style={styles.description}>
+          WebView components are automatically masked when Web category is
+          enabled. These load real web content to test masking functionality.
+        </Text>
+
+        <Text style={styles.inputLabel}>Real WebView (YouTube Mobile):</Text>
+        <WebView
+          {...webViewConfig}
+          onError={(syntheticEvent) => {
+            const { nativeEvent } = syntheticEvent;
+            console.warn('WebView error: ', nativeEvent);
+          }}
+        />
+
+        <Text style={styles.inputLabel}>🔒 Masked WebView Content:</Text>
+        <MixpanelSessionReplayView sensitive={true}>
+          <WebView
+            {...webViewConfig}
+            onError={(syntheticEvent) => {
+              const { nativeEvent } = syntheticEvent;
+              console.warn('Masked WebView error: ', nativeEvent);
+            }}
           />
-          <Text style={styles.profileName}>John Doe</Text>
-          <Text style={styles.profileEmail}>john.doe@company.com</Text>
-        </View>
+        </MixpanelSessionReplayView>
+
+        <Text style={styles.description}>
+          The WebView above is wrapped in MixpanelSessionReplayView with
+          sensitive=true and should be masked in session replays.
+        </Text>
       </View>
 
       {/* Sensitive Data Section */}
@@ -457,43 +550,58 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 16,
   },
-  placeholderImage: {
+  networkImage: {
     width: 150,
     height: 100,
-    backgroundColor: '#e9ecef',
     borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#dee2e6',
-  },
-  placeholderText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#6c757d',
-  },
-  placeholderSubtext: {
-    fontSize: 12,
-    color: '#6c757d',
-    marginTop: 4,
+    backgroundColor: '#e9ecef',
   },
   profileImageContainer: {
     alignItems: 'center',
     marginTop: 16,
+    padding: 16,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 8,
   },
-  avatarPlaceholder: {
+  profileImage: {
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: '#007AFF',
-    justifyContent: 'center',
-    alignItems: 'center',
     marginBottom: 8,
   },
-  avatarText: {
+  bannerImage: {
+    width: '100%',
+    height: 100,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  bannerOverlay: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    padding: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  bannerText: {
     color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  bannerSubtext: {
+    color: '#fff',
+    fontSize: 14,
+    textAlign: 'center',
+    marginTop: 4,
+  },
+  webView: {
+    height: 250,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#dee2e6',
+    marginBottom: 12,
+    backgroundColor: '#fff',
   },
   profileName: {
     fontSize: 18,

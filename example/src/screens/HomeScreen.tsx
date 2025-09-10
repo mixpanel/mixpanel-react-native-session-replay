@@ -14,7 +14,6 @@ import {
   startRecording,
   stopRecording,
   isRecording,
-  MPSessionReplayMask,
   MPSessionReplayConfig,
 } from 'mixpanel-react-native-session-replay';
 import type { RootStackParamList } from '../types/navigation';
