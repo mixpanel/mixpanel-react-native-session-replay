@@ -48,9 +48,12 @@ export class MPSessionReplayConfig {
 
   toJSON(): string {
     // Transform autoMaskedViews for platform-specific requirements
-    const transformedAutoMaskedViews = this.autoMaskedViews.map((mask) =>
-      this.transformMaskValueForPlatform(mask)
-    );
+    const transformedAutoMaskedViews = this.autoMaskedViews
+      .filter(
+        (mask) =>
+          !(Platform.OS === 'android' && mask === MPSessionReplayMask.Map)
+      )
+      .map((mask) => this.transformMaskValueForPlatform(mask));
 
     const config = {
       wifiOnly: this.wifiOnly,
