@@ -7,7 +7,7 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "build:android": "react-native build-android --extra-params \"--no-daemon --console=plain -PreactNativeArchitectures=arm64-v8a\"",
-    "build:ios": "react-native build-ios --mode Debug --extra-params \"-destination 'platform=iOS Simulator,name=iPhone 16 Pro'\""
+    "build:ios": "xcodebuild -workspace ios/MixpanelReactNativeSessionReplayExample.xcworkspace -configuration Debug -scheme MixpanelReactNativeSessionReplayExample -destination 'platform=iOS Simulator,name=iPhone 16 Pro' build"
   },
   "dependencies": {
     "@react-navigation/native": "^7.1.17",
