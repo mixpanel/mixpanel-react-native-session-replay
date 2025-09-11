@@ -168,5 +168,8 @@ jobs:
           bundle exec pod install --project-directory=ios
 
       - name: Build example for iOS
+        env:
+          RCT_IOS_SIMULATOR_NAME: "iPhone 15 Pro"
+          RCT_IOS_SIMULATOR_OS_VERSION: "18.4"
         run: |
           yarn turbo run build:ios --cache-dir="${{ env.TURBO_CACHE_DIR }}"
