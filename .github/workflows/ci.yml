@@ -156,9 +156,6 @@ jobs:
           echo "=== Available SDKs ==="
           xcodebuild -showsdks | grep -E "(iOS|iPhone)"
           echo ""
-          echo "=== Available iOS Simulators ==="
-          xcrun simctl list runtimes --json | jq -r '.runtimes[] | select(.name | contains("iOS")) | "\(.name) - \(.buildversion) - Available: \(.isAvailable)"'
-          echo ""
           echo "=== Default iOS Runtime ==="
           xcrun simctl list devices available --json | jq -r '.devices | keys[] | select(. | contains("iOS"))'
           echo ""
