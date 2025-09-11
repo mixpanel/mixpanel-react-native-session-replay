@@ -17,7 +17,7 @@ if linkage != nil
 end
 
 target 'MixpanelReactNativeSessionReplayExample' do
-  pod 'MixpanelSessionReplay', :path => '../../../../Mixpanel/mixpanel-ios-session-replay-package'
+  pod 'MixpanelSessionReplay', :git => 'https://github.com/mixpanel/mixpanel-ios-session-replay-package.git', :branch => 'react-native-changes'
   config = use_native_modules!
 
   use_react_native!(
