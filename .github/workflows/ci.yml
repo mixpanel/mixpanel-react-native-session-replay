@@ -146,6 +146,9 @@ jobs:
           echo "=== System Info ==="
           sw_vers
           echo ""
+          echo "=== macOS Version ==="
+          system_profiler SPSoftwareDataType | grep "System Version"
+          echo ""
           echo "=== Xcode Info ==="
           xcodebuild -version
           xcode-select -p
