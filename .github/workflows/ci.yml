@@ -161,6 +161,9 @@ jobs:
           echo ""
           echo "=== Default iOS Runtime ==="
           xcrun simctl list devices available --json | jq -r '.devices | keys[] | select(. | contains("iOS"))'
+          echo ""
+          echo "=== Available iOS Devices ==="
+          xcrun simctl list devices available --json | jq -r '.devices | to_entries[] | select(.key | contains("iOS")) | .value[] | select(.isAvailable == true) | "\(.name) (\(.udid))"'
 
       - name: Install cocoapods
         if: env.turbo_cache_hit != 1 && steps.cocoapods-cache.outputs.cache-hit != 'true'
