@@ -2,7 +2,7 @@
   "compilerOptions": {
     "rootDir": ".",
     "paths": {
-      "mp-session-replay": ["./src/index"]
+      "mixpanel-react-native-session-replay": ["./src/index"]
     },
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
