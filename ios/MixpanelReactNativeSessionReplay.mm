@@ -18,7 +18,7 @@ RCT_EXPORT_MODULE()
         if (success) {
           resolve(nil);
         } else {
-          reject(@"INITIALIZATION_FAILED", error.localizedDescription, error);
+          reject(@"INITIALIZATION_FAILED", error.debugDescription, error);
         }
       }];
     }
@@ -64,7 +64,7 @@ RCT_EXPORT_MODULE()
          resolve:(RCTPromiseResolveBlock)resolve
           reject:(RCTPromiseRejectBlock)reject {
     @try {
-        if (!distinctId) {
+        if (!distinctId || [distinctId isEqualToString: @""]) {
             reject(@"INVALID_DISTINCT_ID", @"distinctId is required", nil);
             return;
         }
@@ -76,29 +76,6 @@ RCT_EXPORT_MODULE()
         reject(@"IDENTIFY_ERROR", exception.reason, nil);
     }
 }
-
-- (void)markViewChildrenAsSafe:(double)viewTag
-                       resolve:(RCTPromiseResolveBlock)resolve
-                        reject:(RCTPromiseRejectBlock)reject {
-    @try {
-//        UIView *parentView = [self.bridge.uiManager viewForReactTag:@((NSInteger)viewTag)];
-        
-//        if ([parentView isKindOfClass:[MixpanelSessionReplayView class]]) {
-//            // Only process if it's actually our component type
-//            MixpanelSessionReplayView *mixpanelView = (MixpanelSessionReplayView *)parentView;
-//            [mixpanelView markOnlyDirectChildrenAsSafe];
-            resolve(nil);
-//        } else {
-//            reject(@"INVALID_VIEW_TYPE", @"View is not a MixpanelSessionReplayView", nil);
-//        }
-    }
-    @catch (NSException *exception) {
-        reject(@"MARK_CHILDREN_SAFE_ERROR", exception.reason, nil);
-    }
-}
-
-
-
 
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
     (const facebook::react::ObjCTurboModule::InitParams &)params
