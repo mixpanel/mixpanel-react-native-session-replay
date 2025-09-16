@@ -8,10 +8,10 @@
   #import <MixpanelReactNativeSessionReplay/MixpanelReactNativeSessionReplay-Swift.h>
 #endif
 
-@interface RCTMPSensitiveViewManager : RCTViewManager
+@interface MixpanelSessionReplayViewManager : RCTViewManager
 @end
 
-@implementation RCTMPSensitiveViewManager
+@implementation MixpanelSessionReplayViewManager
 
 RCT_EXPORT_MODULE(MixpanelSessionReplayView)
 
@@ -28,9 +28,9 @@ RCT_CUSTOM_VIEW_PROPERTY(sensitive, BOOL, RCTView)
   }
   
   if ([json boolValue] == YES) {
-     [MixpanelSwiftSensitiveViewManager setMPReplaySensitiveWithValue:YES view:view];
+     [MixpanelSwiftSessionReplay setMPReplaySensitiveWithValue:YES view:view];
   } else if ([json boolValue] == NO) {
-    [MixpanelSwiftSensitiveViewManager setMPReplaySensitiveWithValue:NO view:view];
+    [MixpanelSwiftSessionReplay setMPReplaySensitiveWithValue:NO view:view];
   }
 }
 

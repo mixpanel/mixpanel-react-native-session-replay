@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 import MixpanelSessionReplay
 
 @objc public class MixpanelSwiftSessionReplay: NSObject {
@@ -17,26 +18,54 @@ import MixpanelSessionReplay
 
   @objc public static func initialize(_ token: String, distinctId: String, configJSON: String, completion: @escaping (Bool, NSError?) -> Void) {
     guard let data = configJSON.data(using: .utf8) else {
-      completion(false, NSError(domain: "MixpanelSwiftSessionReplay",
-                                 code: -1,
-                                 userInfo: [NSLocalizedDescriptionKey: "Invalid config JSON string"]))
+      let error =  createError("Invalid config JSON string", code: 3840)
+      completion(false, error)
       return
     }
     
     do {
       let config = try MPSessionReplayConfig.from(json: data)
       MPSessionReplay.initialize(token: token, distinctId: distinctId, config: config) { result in
-        if case .failure(let error) = result {
-          completion(false, error as NSError)
-        } else {
+        switch result {
+        case .success(_?):
           setSensitiveClasses(config: config)
           completion(true, nil)
+          
+        case .success(nil):
+          completion(false, createError("Instance found nil after successful initialisation."))
+          
+        case .failure(let error as MPSessionReplayError):
+          let message = switch error {
+          case .disabledByRemoteSetting(let message): message
+          case .failedToInitialize: "Failed to initialize the SDK: \(error)"
+          }
+          completion(false, createError(message))
+          
+        case .failure(let error):
+          completion(false, createError("Session replay initialization failed: \(error)"))
         }
       }
     } catch {
-      print("⚠️ Failed to parse config JSON: \(error)")
       completion(false, error as NSError)
     }
+  }
+  
+  @objc public static func isRecording() -> Bool {
+    return MPSessionReplay.getInstance()?.isRecording ?? false
+  }
+  
+  @objc public static func identify(_ distinctId: String) {
+    MPSessionReplay.getInstance()?.identify(distinctId: distinctId)
+  }
+  
+  @objc public static func setMPReplaySensitive(value: Bool, view: UIView) {
+    view.mpReplaySensitive = value
+  }
+  
+  private static func createError(_ message: String, code: Int = -1) -> NSError {
+    return NSError(domain: "MixpanelSessionReplay",
+                   code: code,
+                   userInfo: [NSLocalizedDescriptionKey: message])
   }
   
   private static func setSensitiveClasses(config: MPSessionReplayConfig) {
@@ -56,13 +85,5 @@ import MixpanelSessionReplay
     if let legacyTextViewClass, config.autoMaskedViews.contains(.text) {
       sessionReplay?.addSensitiveClass(legacyTextViewClass)
     }
-  }
-  
-  @objc public static func isRecording() -> Bool {
-    return MPSessionReplay.getInstance()?.isRecording ?? false
-  }
-  
-  @objc public static func identify(_ distinctId: String) {
-    MPSessionReplay.getInstance()?.identify(distinctId: distinctId) 
   }
 }

@@ -64,7 +64,7 @@ RCT_EXPORT_MODULE()
          resolve:(RCTPromiseResolveBlock)resolve
           reject:(RCTPromiseRejectBlock)reject {
     @try {
-        if (!distinctId) {
+        if (!distinctId || [distinctId isEqualToString: @""]) {
             reject(@"INVALID_DISTINCT_ID", @"distinctId is required", nil);
             return;
         }

@@ -9,6 +9,7 @@ export interface Spec extends TurboModule {
   ): Promise<void>;
   startRecording(): Promise<void>;
   stopRecording(): Promise<void>;
+  // Functionality not available in Android SDK ATM. It returns true always.
   isRecording(): Promise<boolean>;
   identify(distinctId: string): Promise<void>;
 }
