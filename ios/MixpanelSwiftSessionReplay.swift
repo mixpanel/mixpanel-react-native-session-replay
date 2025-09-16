@@ -15,13 +15,19 @@ import MixpanelSessionReplay
     MPSessionReplay.getInstance()?.captureScreenshot()
   }
 
-  @objc public static func initialize(_ token: String, distinctId: String, configJSON: String, completion: @escaping (Bool, Error?) -> Void) {
-    guard let data = configJSON.data(using: .utf8) else { return }
+  @objc public static func initialize(_ token: String, distinctId: String, configJSON: String, completion: @escaping (Bool, NSError?) -> Void) {
+    guard let data = configJSON.data(using: .utf8) else {
+      completion(false, NSError(domain: "MixpanelSwiftSessionReplay",
+                                 code: -1,
+                                 userInfo: [NSLocalizedDescriptionKey: "Invalid config JSON string"]))
+      return
+    }
+    
     do {
       let config = try MPSessionReplayConfig.from(json: data)
       MPSessionReplay.initialize(token: token, distinctId: distinctId, config: config) { result in
         if case .failure(let error) = result {
-          completion(false, error)
+          completion(false, error as NSError)
         } else {
           setSensitiveClasses(config: config)
           completion(true, nil)
@@ -29,6 +35,7 @@ import MixpanelSessionReplay
       }
     } catch {
       print("⚠️ Failed to parse config JSON: \(error)")
+      completion(false, error as NSError)
     }
   }
   

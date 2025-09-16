@@ -22,6 +22,11 @@ RCT_EXPORT_MODULE(MixpanelSessionReplayView)
 
 RCT_CUSTOM_VIEW_PROPERTY(sensitive, BOOL, RCTView)
 {
+  if (json == nil) {
+    // default behavior or ignore
+    return;
+  }
+  
   if ([json boolValue] == YES) {
      [MixpanelSwiftSensitiveViewManager setMPReplaySensitiveWithValue:YES view:view];
   } else if ([json boolValue] == NO) {

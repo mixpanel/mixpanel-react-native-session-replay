@@ -18,7 +18,7 @@ RCT_EXPORT_MODULE()
         if (success) {
           resolve(nil);
         } else {
-          reject(@"INITIALIZATION_FAILED", error.localizedDescription, error);
+          reject(@"INITIALIZATION_FAILED", error.debugDescription, error);
         }
       }];
     }

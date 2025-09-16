@@ -1,3 +1,5 @@
+import Foundation
+import UIKit
 import MixpanelSessionReplay
 
 @objc public class MixpanelSwiftSensitiveViewManager: NSObject {
