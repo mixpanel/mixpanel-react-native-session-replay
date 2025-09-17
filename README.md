@@ -16,6 +16,10 @@ Official React Native turbo module for Mixpanel Session Replay. This package bri
 ```sh
 npm install "https://github.com/mixpanel/mixpanel-react-native-session-replay.git"
 ```
+### Using yarn
+```sh
+yarn add github:mixpanel/mixpanel-react-native-session-replay
+```
 
 ### iOS Setup
 The required SDK dependencies will be automatically added by plugin to the pod. Make sure your project targets iOS 13 or later.
