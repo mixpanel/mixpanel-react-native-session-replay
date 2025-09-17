@@ -20,7 +20,7 @@ npm install "https://github.com/mixpanel/mixpanel-react-native-session-replay.gi
 ### iOS Setup
 The required SDK dependencies will be automatically added by plugin to the pod. Make sure your project targets iOS 13 or later.
 
-run:
+Run:
 
 ```sh
 cd ios && pod install
