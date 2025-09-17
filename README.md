@@ -12,21 +12,15 @@ Official React Native turbo module for Mixpanel Session Replay. This package bri
 - 🚀 **New Architecture**: Built as a Turbo Module for React Native's new architecture
 
 ## Installation
-
+### Using npm
 ```sh
-npm install mixpanel-react-native-session-replay
+npm install "https://github.com/mixpanel/mixpanel-react-native-session-replay.git"
 ```
 
 ### iOS Setup
+The required SDK dependencies will be automatically added by plugin to the pod. Make sure your project targets iOS 13 or later.
 
-Add the following to your `ios/Podfile`:
-
-```ruby
-pod 'Mixpanel-swift', '~> 4.3'
-pod 'MixpanelSessionReplay', '~> 1.0'
-```
-
-Then run:
+run:
 
 ```sh
 cd ios && pod install
@@ -41,25 +35,27 @@ The required dependencies will be automatically added through Gradle. Ensure you
 ## Quick Start
 
 ```typescript
-import { 
-  initialize, 
-  startRecording, 
-  stopRecording, 
+import {
+  initialize,
+  startRecording,
+  stopRecording,
   isRecording,
-  type SessionReplayConfig 
+  MPSessionReplayConfig,
 } from 'mixpanel-react-native-session-replay';
 
 // Initialize session replay
-const config: SessionReplayConfig = {
-  token: 'YOUR_MIXPANEL_PROJECT_TOKEN',
-  distinctId: 'user-123',
+const config: MPSessionReplayConfig = new MPSessionReplayConfig({
   wifiOnly: false,
-  autoStartRecording: true,
   recordingSessionsPercent: 100,
+  autoStartRecording: true,
+  autoMaskedViews: [MPSessionReplayMask.Image, MPSessionReplayMask.Text],
+  flushInterval: 5,
   enableLogging: true,
-};
+})
 
-await initialize(config);
+await initialize(token, distinctId, config).catch((error) => {
+  console.error('Initialization error:', error);
+});
 
 // Control recording
 await startRecording();
@@ -74,13 +70,13 @@ const recording = await isRecording();
 ### Configuration
 
 ```typescript
-interface SessionReplayConfig {
-  token: string;                      // Mixpanel project token (required)
-  distinctId: string;                 // User identifier (required)
-  wifiOnly?: boolean;                 // Only transmit on WiFi (default: true)
-  autoStartRecording?: boolean;       // Auto-start recording (default: true)
-  recordingSessionsPercent?: number;  // Sampling rate 0-100 (default: 100)
-  enableLogging?: boolean;           // Enable debug logging (default: false)
+class MPSessionReplayConfig {
+  wifiOnly: boolean;                         // Only transmit on WiFi (default: true)
+  recordingSessionsPercent: number;          // Sampling rate 0-100 (default: 100)
+  autoMaskedViews: MPSessionReplayMask[];    // Views to auto-mask (default: all)
+  autoStartRecording: boolean;               // Start recording automatically (default: true)    
+  flushInterval: number;                     // Interval to flush data in seconds (default: 10)
+  enableLogging: boolean;                    // Enable verbose logging (default: false)      
 }
 ```
 
@@ -107,6 +103,7 @@ This SDK automatically masks sensitive information:
 - Text input fields
 - Images and media
 - WebView content
+- Apple map views (iOS only)
 
 Additional privacy controls are available through the native SDK configuration.
 
@@ -131,7 +128,7 @@ yarn example android
 ## Requirements
 
 - React Native >= 0.70
-- iOS >= 12.0
+- iOS >= 13.0
 - Android API Level >= 21
 - New Architecture support
 
