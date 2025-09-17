@@ -41,6 +41,7 @@ import {
   stopRecording,
   isRecording,
   MPSessionReplayConfig,
+  MPSessionReplayMask,
 } from 'mixpanel-react-native-session-replay';
 
 // Initialize session replay
