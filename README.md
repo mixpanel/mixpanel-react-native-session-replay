@@ -74,7 +74,7 @@ class MPSessionReplayConfig {
   wifiOnly: boolean;                         // Only transmit on WiFi (default: true)
   recordingSessionsPercent: number;          // Sampling rate 0-100 (default: 100)
   autoMaskedViews: MPSessionReplayMask[];    // Views to auto-mask (default: all)
-  autoStartRecording: boolean;               // Start recording automatically (default: true)    
+  autoStartRecording: boolean;               // Start recording automatically (default: true)
   flushInterval: number;                     // Interval to flush data in seconds (default: 10)
   enableLogging: boolean;                    // Enable verbose logging (default: false)      
 }
