@@ -3,7 +3,9 @@ import UIKit
 import MixpanelSessionReplay
 
 @objc public class MixpanelSwiftSessionReplay: NSObject {
-
+  static let libVersion = "0.1.1"
+  static let mpLib = "react-native-sr"
+  
   @objc public static func startRecording() {
     MPSessionReplay.getInstance()?.startRecording()
   }
@@ -24,6 +26,8 @@ import MixpanelSessionReplay
     }
     
     do {
+      APIConstants.setLibVersion(libVersion)
+      APIConstants.setMpLib(mpLib)
       let config = try MPSessionReplayConfig.from(json: data)
       MPSessionReplay.initialize(token: token, distinctId: distinctId, config: config) { result in
         switch result {
