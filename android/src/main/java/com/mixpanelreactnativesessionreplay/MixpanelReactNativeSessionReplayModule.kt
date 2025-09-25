@@ -8,6 +8,7 @@ import com.mixpanel.android.sessionreplay.MPSessionReplayInstance
 import com.mixpanel.android.sessionreplay.MPSessionReplayError
 import com.mixpanel.android.sessionreplay.models.MPSessionReplayConfig
 import com.mixpanel.android.sessionreplay.sensitive_views.AutoMaskedView
+import com.mixpanel.android.sessionreplay.utils.APIConstants
 import org.json.JSONObject
 import org.json.JSONArray
 
@@ -48,6 +49,10 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
         return
       }
       println("Mixpanel - Config variable fromJson: $replayConfig")
+
+      // Set library version and name
+      APIConstants.setLibVersion(LIB_VERSION)
+      APIConstants.setMpLib(MP_LIB)
 
       // Initialize Mixpanel Session Replay
       MPSessionReplay.initialize(
@@ -277,5 +282,7 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
 
   companion object {
     const val NAME = "MixpanelReactNativeSessionReplay"
+    const val LIB_VERSION = "0.1.1"
+    const val MP_LIB = "react-native-sr"
   }
 }
