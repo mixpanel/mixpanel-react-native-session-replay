@@ -79,7 +79,7 @@ dependencies {
   implementation "com.mixpanel.android:mixpanel-android:8.0.2"
   
   // Mixpanel Android Session Replay SDK dependency
-  implementation "com.mixpanel.android:mixpanel-android-session-replay:1.0.0"
+  implementation "com.mixpanel.android:mixpanel-android-session-replay:1.0.2"
 }
 
 react {
