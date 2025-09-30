@@ -143,7 +143,13 @@ This default behavior can be overridden through the configuration.
  - Default: `false`
 
 #### `initialize(config: SessionReplayConfig): Promise<void>`
-Initialize the session replay SDK with configuration.
+Initializes the Mixpanel Session Replay system with the provided configuration.
+It checks remote configuration to determine if session recording is enabled, and only then
+creates a new `MPSessionReplayInstance`. If a previous instance exists, it will be deinitialized first.
+
+ @returns {Promise<void>} A promise that resolves when initialization is completed successfully.
+
+ @throws {Error} If anything goes wrong during the SDK initialization.
 
 #### `startRecording(): Promise<void>`
 Manually starts session replay recording. If recording is already active, calling this method has no effect. 
