@@ -5,9 +5,9 @@ import MixpanelSessionReplay
 @objc public class MixpanelSwiftSessionReplay: NSObject {
   static let libVersion = "0.1.1"
   static let mpLib = "react-native-sr"
-  
-  @objc public static func startRecording() {
-    MPSessionReplay.getInstance()?.startRecording()
+
+  @objc public static func startRecording(recordingSessionsPercent: Double = 100.0) {
+    MPSessionReplay.getInstance()?.startRecording(sessionsPercent: recordingSessionsPercent)
   }
 
   @objc public static func stopRecording() {
