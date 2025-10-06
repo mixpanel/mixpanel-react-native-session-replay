@@ -22,18 +22,20 @@ export class MPSessionReplayConfig {
   /**
    * Controls the sampling rate for automatically started recording session replays.
    *
-   * This value (between 0.0 and 100.0) defines the percentage of sessions that will automatically start recording when a new session begins.
+   * This value (between 0.0 and 100.0) defines the percentage of sessions that will automatically start recording
+   * when a new session begins.
    *
-   * - At 0.0, no sessions will be auto-recorded.
-   * - At 100.0, all sessions will be auto-recorded.
-   * - Default: 100
+   * - At `0.0`, no sessions will be auto-recorded.
+   * - At `100.0`, all sessions will be auto-recorded.
    * - This setting is not used when invoking `startRecording()` manually.
+   * - **Default:** `100`
    */
   recordingSessionsPercent: number;
 
   /**
    * Returns the set of views that are automatically masked by the SDK.
-   * By default, image, text, web, and map(MKMapView only for iOS) views are masked.
+   *
+   * By default, image, text, web, and map (MKMapView only for iOS) views are masked.
    * This default behavior can be overridden using this configuration.
    */
   autoMaskedViews: MPSessionReplayMask[];
@@ -41,21 +43,22 @@ export class MPSessionReplayConfig {
   /**
    * Determines whether or not the SDK will automatically start recording session replays upon initialization.
    *
-   * - When set to `true`, the SDK will automatically start recording session replays when the instance is initialized. The recording will
-   * be stopped and started automatically whenever the app goes to background and comes to foreground.
-   * For each new automatically started session, the SDK uses `recordingSessionsPercent`
-   * to determine whether recording should begin for that session.
-   *
+   * - When set to `true`, the SDK will automatically start recording session replays when the instance is initialized.
+   *   The recording will be stopped and started automatically whenever the app goes to background and comes to foreground.
+   *   For each new automatically started session, the SDK uses `recordingSessionsPercent` to determine whether recording
+   *   should begin for that session.
    * - When set to `false`, the SDK will not start recording until explicitly invoked by calling `startRecording()`.
    */
   autoStartRecording: boolean;
 
   /**
-   * Specifies the flush interval in seconds. The default is 10 seconds.
-   * Screenshots are collected and sent to Mixpanel in batches of 10.
+   * Specifies the flush interval in seconds.
    *
+   * Screenshots are collected and sent to Mixpanel in batches of 10.
    * One batch is sent after each flush interval.
    * You can adjust the flush interval to delay or expedite the sending of screenshots.
+   *
+   * - **Default:** `10` seconds
    */
   flushInterval: number;
 
@@ -64,9 +67,8 @@ export class MPSessionReplayConfig {
    *
    * - When set to `true`, the SDK will print verbose debug logs to the console to assist with development and troubleshooting.
    *   These logs may include internal events, configuration status, and lifecycle hooks relevant to session replay.
-   *
    * - When set to `false`, logging is suppressed except for critical errors or warnings.
-   * - Default: `false`
+   * - **Default:** `false`
    */
   enableLogging: boolean;
 
@@ -132,13 +134,14 @@ export { MixpanelSessionReplayView } from './MixpanelSessionReplayView';
 /**
  * Initializes the Mixpanel Session Replay system with the provided configuration.
  *
- * It checks remote configuration to determine if session recording is enabled, and only then
- * initializes SDK. If the SDK is initialized previously, then it will be deinitialized first.
+ * It checks remote configuration to determine if session recording is enabled, and only then initializes the SDK.
+ * If the SDK is initialized previously, then it will be deinitialized first.
  *
  * @param token - The Mixpanel project token used to identify the project.
  * @param distinctId - A unique identifier for the current user.
  * @param config - The configuration object used to customize session replay behavior.
- * @throws An error if the token or distinctId is missing or invalid, or if the configuration is invalid, or if the initialization fails.
+ * @throws An error if the token or distinctId is missing or invalid, or if the configuration is invalid,
+ *   or if the initialization fails.
  */
 export async function initialize(
   token: string,
@@ -165,12 +168,12 @@ export async function initialize(
 /**
  * Manually starts session replay recording.
  *
- * @param sessionsPercent - A value from 0 to 100 representing the likelihood that the current session will be recorded.
- *   This controls sampling of sessions. Defaults to 100 (record all sessions) if not specified.
- *   The `recordingSessionsPercent` value from the config is ignored when calling this method.
+ * If recording is already active, calling this method has no effect.
+ * The recording will continue until you manually stop it or until the app goes to the background, whichever happens first.
  *
- *   If recording is already active, calling this method has no effect.
- *   The recording will continue until you manually stop it or until the app goes to the background, whichever happens first.
+ * @param recordingSessionsPercent - A value from 0 to 100 representing the likelihood that the current session will be recorded.
+ *   This controls sampling of sessions. The `recordingSessionsPercent` value from the config is ignored when calling this method.
+ * @default 100 (record all sessions)
  */
 export async function startRecording(
   recordingSessionsPercent: number = 100
@@ -190,17 +193,23 @@ export async function stopRecording(): Promise<void> {
 }
 
 /**
- * Tells you if the recording is in-progress
+ * Tells you if the recording is in-progress.
+ *
+ * @returns A promise that resolves to `true` if recording is active, `false` otherwise.
  */
 export async function isRecording(): Promise<boolean> {
   return MixpanelReactNativeSessionReplay.isRecording();
 }
 
 /**
- * Sets the distinct ID to session replays. You can use this method to update the distinctId post the Session Replay SDK initialization.
- * It is recommended to call Identify from Mixpanel main SDK first and then calling identify from the Session Replay SDK.
- * This makes sure to properly merge the users.
- * @param distinctId - distinctId of the user.
+ * Sets the distinct ID for session replays.
+ *
+ * You can use this method to update the distinctId after the Session Replay SDK initialization.
+ * It is recommended to call Identify from the Mixpanel main SDK first and then call identify from the Session Replay SDK.
+ * This ensures that users are properly merged.
+ *
+ * @param distinctId - The distinct ID of the user.
+ * @throws An error if the distinctId is missing or invalid.
  */
 export async function identify(distinctId: string): Promise<void> {
   if (!distinctId || typeof distinctId !== 'string') {
