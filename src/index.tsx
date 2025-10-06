@@ -162,7 +162,7 @@ export async function initialize(
   return MixpanelReactNativeSessionReplay.initialize(token, distinctId, json);
 }
 
-/** 
+/**
  * Manually starts session replay recording.
  *
  * @param sessionsPercent - A value from 0 to 100 representing the likelihood that the current session will be recorded.
@@ -172,8 +172,12 @@ export async function initialize(
  *   If recording is already active, calling this method has no effect.
  *   The recording will continue until you manually stop it or until the app goes to the background, whichever happens first.
  */
-export async function startRecording(recordingSessionsPercent: number = 100): Promise<void> {
-  return MixpanelReactNativeSessionReplay.startRecording(recordingSessionsPercent);
+export async function startRecording(
+  recordingSessionsPercent: number = 100
+): Promise<void> {
+  return MixpanelReactNativeSessionReplay.startRecording(
+    recordingSessionsPercent
+  );
 }
 
 /**
