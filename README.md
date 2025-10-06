@@ -99,7 +99,7 @@ class MPSessionReplayConfig {
 #### wifiOnly
 Controls whether replay events are sent only over WiFi.
 
-- **true** - Events are flushed only when connected to WiFi. Without WiFi, events remain queued until connection is restored or the queue reaches capacity.
+- **true** - Events are flushed only when connected to WiFi. Without WiFi, events are queued in memory and will be lost if the app is killed before WiFi becomes available.
 - **false** - Events are flushed over any network connection, including cellular.
 - **Default:** `true`
 
