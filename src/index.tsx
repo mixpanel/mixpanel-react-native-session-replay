@@ -194,7 +194,7 @@ export async function isRecording(): Promise<boolean> {
 
 /**
  * Sets the distinct ID to session replays. You can use this method to update the distinctId post the Session Replay SDK initialisation.
- * It is recommanded to call Identify from Mixpanel main SDK first and then calling identify from the Session Replay SDK.
+ * It is recommended to call Identify from Mixpanel main SDK first and then calling identify from the Session Replay SDK.
  * This makes sure to properly merge the users.
  * @param distinctId - distinctId of the user.
  */
