@@ -13,22 +13,14 @@ Official React Native turbo module for Mixpanel Session Replay. Capture and anal
 
 ## Installation
 
-### npm
 ```sh
-# Install latest version
-npm install "https://github.com/mixpanel/mixpanel-react-native-session-replay.git"
-
-# Install specific version
-npm install "https://github.com/mixpanel/mixpanel-react-native-session-replay.git#version"
+npm install @mixpanel/react-native-session-replay
 ```
 
-### yarn
-```sh
-# Install latest version
-yarn add github:mixpanel/mixpanel-react-native-session-replay
+or
 
-# Install specific version
-yarn add github:mixpanel/mixpanel-react-native-session-replay#version
+```sh
+yarn add @mixpanel/react-native-session-replay
 ```
 
 ### Platform Setup
@@ -55,7 +47,7 @@ import {
   isRecording,
   MPSessionReplayConfig,
   MPSessionReplayMask,
-} from 'mixpanel-react-native-session-replay';
+} from '@mixpanel/react-native-session-replay';
 
 // Initialize session replay
 const config = new MPSessionReplayConfig({
