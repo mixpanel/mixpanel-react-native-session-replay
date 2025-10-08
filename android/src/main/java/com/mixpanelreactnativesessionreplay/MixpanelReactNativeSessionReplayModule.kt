@@ -128,8 +128,7 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
 
   override fun isRecording(promise: Promise) {
     try {
-//      val recording = MPSessionReplay.isRecording()
-      val recording = true
+      val recording = MPSessionReplay.getInstance()?.isRecording() ?: false
       promise.resolve(recording)
     } catch (e: Exception) {
       promise.reject("IS_RECORDING_ERROR", e.message, e)
