@@ -108,9 +108,9 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
     }
   }
 
-  override fun startRecording(promise: Promise) {
+  override fun startRecording(recordingSessionsPercent: Double, promise: Promise) {
     try {
-      MPSessionReplay.getInstance()?.startRecording()
+      MPSessionReplay.getInstance()?.startRecording(sessionsPercent = recordingSessionsPercent)
       promise.resolve(null)
     } catch (e: Exception) {
       promise.reject("START_RECORDING_ERROR", e.message, e)

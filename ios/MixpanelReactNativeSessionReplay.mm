@@ -27,10 +27,11 @@ RCT_EXPORT_MODULE()
     }
 }
 
-- (void)startRecording:(RCTPromiseResolveBlock)resolve
+- (void)startRecording:(double)recordingSessionsPercent
+               resolve:(RCTPromiseResolveBlock)resolve
                 reject:(RCTPromiseRejectBlock)reject {
     @try {
-        [MixpanelSwiftSessionReplay startRecording];
+      [MixpanelSwiftSessionReplay startRecordingWithRecordingSessionsPercent:recordingSessionsPercent];
         resolve(nil);
     }
     @catch (NSException *exception) {
