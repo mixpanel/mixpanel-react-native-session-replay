@@ -281,7 +281,7 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
 
   companion object {
     const val NAME = "MixpanelReactNativeSessionReplay"
-    const val LIB_VERSION = "0.1.1"
+    const val LIB_VERSION = "0.1.2"
     const val MP_LIB = "react-native-sr"
   }
 }
