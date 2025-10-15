@@ -24,7 +24,7 @@ export default function HomeScreen() {
   const navigation = useNavigation<HomeScreenNavigationProp>();
   const [isInitialized, setIsInitialized] = useState(false);
   const [recording, setRecording] = useState(false);
-  const [token, setToken] = useState('5d9d3df08d1c34a272abf23d892820bf');
+  const [token, setToken] = useState('MIXPANEL_API_KEY_HERE');
   const [distinctId, setDistinctId] = useState(
     () => `user-${Math.floor(Math.random() * 1e9)}`
   );
