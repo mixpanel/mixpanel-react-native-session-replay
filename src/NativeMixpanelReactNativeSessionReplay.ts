@@ -50,11 +50,10 @@ if (!MixpanelReactNativeSessionReplay) {
   const errorMessage =
     `The package '@mixpanel/react-native-session-replay' doesn't seem to be linked. Make sure: \n\n` +
     Platform.select({
-      ios: "- You have run 'pod install' in the 'ios' directory\n",
+      ios: "- You have run 'pod install' in the 'ios' directory\n- You have rebuilt the app after installing the package\n",
       android: '- You have rebuilt the app after installing the package\n',
-      default: '',
+      default: '- You have rebuilt the app after installing the package\n',
     }) +
-    '- You rebuilt the app after installing the package\n' +
     '- If you are using Expo, this package is not compatible with Expo Go. You need to use a custom development build.\n';
 
   throw new Error(errorMessage);
