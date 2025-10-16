@@ -56,7 +56,7 @@ const config = new MPSessionReplayConfig({
   enableLogging: true,
 });
 
-await initialize(token, distinctId, config).catch((error) => {
+await MPSessionReplay.initialize(token, distinctId, config).catch((error) => {
   console.error('Initialization error:', error);
 });
 
