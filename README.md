@@ -41,10 +41,7 @@ Dependencies are automatically added through Gradle. Requirements:
 
 ```typescript
 import {
-  initialize,
-  startRecording,
-  stopRecording,
-  isRecording,
+  MPSessionReplay,
   MPSessionReplayConfig,
   MPSessionReplayMask,
 } from '@mixpanel/react-native-session-replay';
@@ -64,11 +61,11 @@ await initialize(token, distinctId, config).catch((error) => {
 });
 
 // Control recording
-await startRecording();
-await stopRecording();
+await MPSessionReplay.startRecording();
+await MPSessionReplay.stopRecording();
 
 // Check recording status
-const recording = await isRecording();
+const recording = await MPSessionReplay.isRecording();
 ```
 
 ## Configuration
@@ -133,38 +130,74 @@ Enables debug logging for development and troubleshooting.
 
 ## API Methods
 
-### initialize(token: string, distinctId: string, config: MPSessionReplayConfig): Promise<void>
+### MPSessionReplay.initialize(token: string, distinctId: string, config: MPSessionReplayConfig): Promise<void>
 Initializes the session replay system with your configuration. Checks remote settings to confirm recording is enabled, then creates a new session replay instance. Any existing instance is deinitialized first.
 
 **Returns:** Promise that resolves when initialization completes successfully.
 
 **Throws:** Error if initialization fails.
 
-### startRecording(): Promise<void>
+### MPSessionReplay.startRecording(): Promise<void>
 Manually starts session recording. Has no effect if recording is already active.
 
 Recording continues until you stop it manually or the app moves to the background.
 
-### stopRecording(): Promise<void>
+### MPSessionReplay.stopRecording(): Promise<void>
 Stops the current recording session and performs cleanup.
 
-### isRecording(): Promise<boolean>
+### MPSessionReplay.isRecording(): Promise<boolean>
 Returns whether recording is currently active.
 
-### identify(distinctId: string): Promise<void>
+### MPSessionReplay.identify(distinctId: string): Promise<void>
 Updates the distinct ID for session replays after initialization.
 
 **Best practice:** Call `identify()` on the main Mixpanel SDK first, then call it on the Session Replay SDK. This ensures users are properly merged.
 
-## Privacy & Security
-
+## Privacy & Data Masking
 The SDK automatically masks sensitive information to protect user privacy. Text input fields are always masked and cannot be disabled.
 
-Additional configurable masking options:
+Session Replay provides two approaches to protect sensitive data: automatic masking and manual masking.
+
+### Automatic Masking
+Configure which view types are automatically masked during initialization:
 - Images
 - Text elements
 - WebView content
 - Apple Maps (iOS only)
+
+```tsx
+import { MPSessionReplayConfig } from '@mixpanel/react-native-session-replay';
+
+const config = new MPSessionReplayConfig({
+  autoMaskedViews: [
+    MPSessionReplayMask.Text,   // Masks all text inputs
+    MPSessionReplayMask.Image,  // Masks all images
+    MPSessionReplayMask.Web,    // Masks all WebViews
+    MPSessionReplayMask.Map,    // Masks map views (iOS only)
+  ],
+});
+```
+
+**Default Behavior:** All view types are masked by default for maximum privacy.
+
+### Manual Masking with MPSessionReplayView
+
+Use the `MPSessionReplayView` wrapper component for granular control over what gets masked:
+
+```tsx
+import { MPSessionReplayView } from '@mixpanel/react-native-session-replay';
+
+// Mask sensitive content
+<MPSessionReplayView sensitive={true}>
+  <Text>Credit card Number: {ccn}</Text>
+  <Text>Social Security Number: {ssn}</Text>
+</MPSessionReplayView>
+
+// Explicitly mark content as safe (unmasked)
+<MPSessionReplayView sensitive={false}>
+  <Text>Public information that should always be visible</Text>
+</MPSessionReplayView>
+```
 
 ## Example App
 
