@@ -10,10 +10,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import {
-  initialize,
-  startRecording,
-  stopRecording,
-  isRecording,
+  MPSessionReplay,
   MPSessionReplayConfig,
 } from 'mixpanel-react-native-session-replay';
 import type { RootStackParamList } from '../types/navigation';
@@ -31,7 +28,7 @@ export default function HomeScreen() {
 
   const checkRecordingStatus = async () => {
     try {
-      const status = await isRecording();
+      const status = await MPSessionReplay.isRecording();
       setRecording(status);
     } catch (error) {
       console.error('Error checking recording status:', error);
@@ -45,7 +42,7 @@ export default function HomeScreen() {
         enableLogging: true,
       });
       console.log('config', config);
-      await initialize(token, distinctId, config);
+      await MPSessionReplay.initialize(token, distinctId, config);
       setIsInitialized(true);
       Alert.alert(
         'Success',
@@ -60,7 +57,7 @@ export default function HomeScreen() {
 
   const handleStartRecording = async () => {
     try {
-      await startRecording();
+      await MPSessionReplay.startRecording();
       Alert.alert('Success', 'Recording started!');
       await checkRecordingStatus();
     } catch (error) {
@@ -71,7 +68,7 @@ export default function HomeScreen() {
 
   const handleStopRecording = async () => {
     try {
-      await stopRecording();
+      await MPSessionReplay.stopRecording();
       Alert.alert('Success', 'Recording stopped!');
       await checkRecordingStatus();
     } catch (error) {

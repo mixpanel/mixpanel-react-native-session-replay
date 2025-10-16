@@ -4,7 +4,7 @@ interface MixpanelSessionReplayViewProps extends ViewProps {
   sensitive?: boolean;
 }
 
-export const MixpanelSessionReplayView =
+export const MPSessionReplayView =
   requireNativeComponent<MixpanelSessionReplayViewProps>(
     'MixpanelSessionReplayView'
   );

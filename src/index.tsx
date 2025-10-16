@@ -129,8 +129,6 @@ export class MPSessionReplayConfig {
   }
 }
 
-export { MixpanelSessionReplayView } from './MixpanelSessionReplayView';
-
 /**
  * Initializes the Mixpanel Session Replay system with the provided configuration.
  *
@@ -143,7 +141,7 @@ export { MixpanelSessionReplayView } from './MixpanelSessionReplayView';
  * @throws An error if the token or distinctId is missing or invalid, or if the configuration is invalid,
  *   or if the initialization fails.
  */
-export async function initialize(
+async function initialize(
   token: string,
   distinctId: string,
   config: MPSessionReplayConfig
@@ -175,7 +173,7 @@ export async function initialize(
  *   This controls sampling of sessions. The `recordingSessionsPercent` value from the config is ignored when calling this method.
  * @default 100 (record all sessions)
  */
-export async function startRecording(
+async function startRecording(
   recordingSessionsPercent: number = 100
 ): Promise<void> {
   return MixpanelReactNativeSessionReplay.startRecording(
@@ -188,7 +186,7 @@ export async function startRecording(
  *
  * This method stops recording, clears relevant session state, and uploads pending events.
  */
-export async function stopRecording(): Promise<void> {
+async function stopRecording(): Promise<void> {
   return MixpanelReactNativeSessionReplay.stopRecording();
 }
 
@@ -197,7 +195,7 @@ export async function stopRecording(): Promise<void> {
  *
  * @returns A promise that resolves to `true` if recording is active, `false` otherwise.
  */
-export async function isRecording(): Promise<boolean> {
+async function isRecording(): Promise<boolean> {
   return MixpanelReactNativeSessionReplay.isRecording();
 }
 
@@ -211,10 +209,20 @@ export async function isRecording(): Promise<boolean> {
  * @param distinctId - The distinct ID of the user.
  * @throws An error if the distinctId is missing or invalid.
  */
-export async function identify(distinctId: string): Promise<void> {
+async function identify(distinctId: string): Promise<void> {
   if (!distinctId || typeof distinctId !== 'string') {
     throw new Error('distinctId is required and must be a string');
   }
 
   return MixpanelReactNativeSessionReplay.identify(distinctId);
 }
+
+export { MPSessionReplayView } from './MixpanelSessionReplayView';
+
+export const MPSessionReplay = {
+  initialize,
+  startRecording,
+  stopRecording,
+  isRecording,
+  identify,
+};
