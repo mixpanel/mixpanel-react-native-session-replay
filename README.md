@@ -9,7 +9,7 @@ Official React Native turbo module for Mixpanel Session Replay. Capture and anal
 - ⚡ **High Performance** - Native implementation with minimal JavaScript overhead
 - 🎯 **Selective Recording** - Configurable sampling rates and recording controls
 - 📱 **Cross Platform** - Unified API for both iOS and Android
-- 🚀 **New Architecture Ready** - Built as a Turbo Module for React Native's new architecture
+- 🏗️ **Dual Architecture Support** - Works with both old (Bridge) and new (Turbo Module) React Native architectures
 
 ## Installation
 
@@ -189,7 +189,14 @@ yarn example android
 - React Native 0.70 or higher
 - iOS 13.0 or higher
 - Android API Level 21 or higher
-- New Architecture support
+
+## Architecture Support
+
+This module supports both the old and new React Native architectures:
+- ✅ **Old Architecture (Bridge)** - Full support for traditional React Native apps
+- ✅ **New Architecture (Turbo Module)** - Optimized for React Native's new architecture
+
+The module automatically detects and uses the appropriate architecture at runtime, providing seamless compatibility regardless of your app's configuration.
 
 ## Contributing
 

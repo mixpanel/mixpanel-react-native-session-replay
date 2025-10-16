@@ -8,7 +8,8 @@
 @implementation MixpanelReactNativeSessionReplay
 RCT_EXPORT_MODULE()
 
-- (void)initialize:(nonnull NSString *)token distinctId:(nonnull NSString *)distinctId configJSON:(nonnull NSString *)configJSON resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
+RCT_EXPORT_METHOD(initialize:(nonnull NSString *)token distinctId:(nonnull NSString *)distinctId configJSON:(nonnull NSString *)configJSON resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject)
+{
     @try {
         if (!token || !distinctId) {
             reject(@"INVALID_CONFIG", @"Token and distinctId are required", nil);
@@ -27,9 +28,10 @@ RCT_EXPORT_MODULE()
     }
 }
 
-- (void)startRecording:(double)recordingSessionsPercent
+RCT_EXPORT_METHOD(startRecording:(double)recordingSessionsPercent
                resolve:(RCTPromiseResolveBlock)resolve
-                reject:(RCTPromiseRejectBlock)reject {
+                reject:(RCTPromiseRejectBlock)reject)
+{
     @try {
       [MixpanelSwiftSessionReplay startRecordingWithRecordingSessionsPercent:recordingSessionsPercent];
         resolve(nil);
@@ -39,8 +41,9 @@ RCT_EXPORT_MODULE()
     }
 }
 
-- (void)stopRecording:(RCTPromiseResolveBlock)resolve
-               reject:(RCTPromiseRejectBlock)reject {
+RCT_EXPORT_METHOD(stopRecording:(RCTPromiseResolveBlock)resolve
+               reject:(RCTPromiseRejectBlock)reject)
+{
     @try {
         [MixpanelSwiftSessionReplay stopRecording];
         resolve(nil);
@@ -50,8 +53,9 @@ RCT_EXPORT_MODULE()
     }
 }
 
-- (void)isRecording:(RCTPromiseResolveBlock)resolve
-             reject:(RCTPromiseRejectBlock)reject {
+RCT_EXPORT_METHOD(isRecording:(RCTPromiseResolveBlock)resolve
+             reject:(RCTPromiseRejectBlock)reject)
+{
     @try {
         BOOL recording = [MixpanelSwiftSessionReplay isRecording];
         resolve(@(recording));
@@ -61,9 +65,10 @@ RCT_EXPORT_MODULE()
     }
 }
 
-- (void)identify:(NSString *)distinctId
+RCT_EXPORT_METHOD(identify:(NSString *)distinctId
          resolve:(RCTPromiseResolveBlock)resolve
-          reject:(RCTPromiseRejectBlock)reject {
+          reject:(RCTPromiseRejectBlock)reject)
+{
     @try {
         if (!distinctId || [distinctId isEqualToString: @""]) {
             reject(@"INVALID_DISTINCT_ID", @"distinctId is required", nil);
@@ -78,10 +83,12 @@ RCT_EXPORT_MODULE()
     }
 }
 
+#ifdef RCT_NEW_ARCH_ENABLED
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
     (const facebook::react::ObjCTurboModule::InitParams &)params
 {
     return std::make_shared<facebook::react::NativeMixpanelReactNativeSessionReplaySpecJSI>(params);
 }
+#endif
 
 @end

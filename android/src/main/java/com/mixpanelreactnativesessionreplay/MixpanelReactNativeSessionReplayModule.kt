@@ -2,6 +2,7 @@ package com.mixpanelreactnativesessionreplay
 
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
+import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.module.annotations.ReactModule
 import com.mixpanel.android.sessionreplay.MPSessionReplay
 import com.mixpanel.android.sessionreplay.MPSessionReplayInstance
@@ -20,6 +21,7 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
     return NAME
   }
 
+  @ReactMethod
   override fun initialize(token: String, distinctId: String, configJSON: String, promise: Promise) {
     try {
       if (token.isEmpty() || distinctId.isEmpty()) {
@@ -108,6 +110,7 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
     }
   }
 
+  @ReactMethod
   override fun startRecording(recordingSessionsPercent: Double, promise: Promise) {
     try {
       MPSessionReplay.getInstance()?.startRecording(sessionsPercent = recordingSessionsPercent)
@@ -117,6 +120,7 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
     }
   }
 
+  @ReactMethod
   override fun stopRecording(promise: Promise) {
     try {
       MPSessionReplay.getInstance()?.stopRecording()
@@ -126,6 +130,7 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
     }
   }
 
+  @ReactMethod
   override fun isRecording(promise: Promise) {
     try {
       val recording = MPSessionReplay.getInstance()?.isRecording() ?: false
@@ -135,6 +140,7 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
     }
   }
 
+  @ReactMethod
   override fun identify(distinctId: String, promise: Promise) {
     try {
       if (distinctId.isEmpty()) {
