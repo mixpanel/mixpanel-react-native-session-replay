@@ -170,7 +170,7 @@ import { MPSessionReplayConfig } from '@mixpanel/react-native-session-replay';
 
 const config = new MPSessionReplayConfig({
   autoMaskedViews: [
-    MPSessionReplayMask.Text,   // Masks all text inputs
+    MPSessionReplayMask.Text,   // Masks all text
     MPSessionReplayMask.Image,  // Masks all images
     MPSessionReplayMask.Web,    // Masks all WebViews
     MPSessionReplayMask.Map,    // Masks map views (iOS only)
