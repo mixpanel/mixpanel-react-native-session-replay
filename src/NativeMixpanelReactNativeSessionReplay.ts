@@ -1,5 +1,5 @@
 import type { TurboModule } from 'react-native';
-import { NativeModules, Platform, TurboModuleRegistry } from 'react-native';
+import { NativeModules, TurboModuleRegistry } from 'react-native';
 
 export interface Spec extends TurboModule {
   initialize(
@@ -48,13 +48,12 @@ if (!MixpanelReactNativeSessionReplay) {
 // If still not available, provide helpful error message
 if (!MixpanelReactNativeSessionReplay) {
   const errorMessage =
-    `The package '@mixpanel/react-native-session-replay' doesn't seem to be linked. Make sure: \n\n` +
-    Platform.select({
-      ios: "- You have run 'pod install' in the 'ios' directory\n- You have rebuilt the app after installing the package\n",
-      android: '- You have rebuilt the app after installing the package\n',
-      default: '- You have rebuilt the app after installing the package\n',
-    }) +
-    '- If you are using Expo, this package is not compatible with Expo Go. You need to use a custom development build.\n';
+    `The package '@mixpanel/react-native-session-replay' doesn't seem to be linked. Make sure:\n\n` +
+    "- You have installed the package using 'yarn add @mixpanel/react-native-session-replay' or 'npm install @mixpanel/react-native-session-replay'.\n" +
+    '- You have rebuilt the app after installing the package.\n' +
+    "- For iOS: You have run 'pod install' in the 'ios' directory and opened the .xcworkspace file in Xcode.\n" +
+    '- For Android: You have synced your project with Gradle files and rebuilt the app.\n' +
+    '- If you are using Expo, this package is not compatible with Expo Go.\n';
 
   throw new Error(errorMessage);
 }
