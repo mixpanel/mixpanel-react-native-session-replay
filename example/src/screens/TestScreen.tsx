@@ -13,7 +13,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import type { RootStackParamList } from '../types/navigation';
-import { MixpanelSessionReplayView } from 'mixpanel-react-native-session-replay';
+import { MPSessionReplayView } from 'mixpanel-react-native-session-replay';
 import { WebView } from 'react-native-webview';
 
 type TestScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Test'>;
@@ -89,7 +89,7 @@ export default function TestScreen() {
         />
 
         <Text style={styles.inputLabel}>🔒 Masked Password Input:</Text>
-        <MixpanelSessionReplayView sensitive={true}>
+        <MPSessionReplayView sensitive={true}>
           <TextInput
             style={styles.textInput}
             value={passwordValue}
@@ -97,7 +97,7 @@ export default function TestScreen() {
             placeholder="Enter password"
             secureTextEntry
           />
-        </MixpanelSessionReplayView>
+        </MPSessionReplayView>
 
         <Text style={styles.inputLabel}>Phone Number:</Text>
         <TextInput
@@ -213,7 +213,7 @@ export default function TestScreen() {
         </View>
 
         <Text style={styles.inputLabel}>🔒 Masked Profile Section:</Text>
-        <MixpanelSessionReplayView sensitive={true}>
+        <MPSessionReplayView sensitive={true}>
           <View style={styles.profileImageContainer}>
             <Image
               source={{
@@ -224,7 +224,7 @@ export default function TestScreen() {
             <Text style={styles.profileName}>John Doe</Text>
             <Text style={styles.profileEmail}>john.doe@company.com</Text>
           </View>
-        </MixpanelSessionReplayView>
+        </MPSessionReplayView>
 
         <Text style={styles.inputLabel}>Background Image with Text:</Text>
         <ImageBackground
@@ -258,7 +258,7 @@ export default function TestScreen() {
         />
 
         <Text style={styles.inputLabel}>🔒 Masked WebView Content:</Text>
-        <MixpanelSessionReplayView sensitive={true}>
+        <MPSessionReplayView sensitive={true}>
           <WebView
             {...webViewConfig}
             onError={(syntheticEvent) => {
@@ -266,7 +266,7 @@ export default function TestScreen() {
               console.warn('Masked WebView error: ', nativeEvent);
             }}
           />
-        </MixpanelSessionReplayView>
+        </MPSessionReplayView>
 
         <Text style={styles.description}>
           The WebView above is wrapped in MixpanelSessionReplayView with
@@ -283,7 +283,7 @@ export default function TestScreen() {
           masked in session replays.
         </Text>
 
-        <MixpanelSessionReplayView sensitive={true}>
+        <MPSessionReplayView sensitive={true}>
           <View style={styles.dataCard}>
             <Text style={styles.cardTitle}>🔒 Masked User Profile</Text>
             <Text style={styles.dataLabel}>Full Name: John Smith</Text>
@@ -295,9 +295,9 @@ export default function TestScreen() {
               Address: 123 Main St, Anytown, USA 12345
             </Text>
           </View>
-        </MixpanelSessionReplayView>
+        </MPSessionReplayView>
 
-        <MixpanelSessionReplayView sensitive={false}>
+        <MPSessionReplayView sensitive={false}>
           <View style={styles.dataCard}>
             <Text style={styles.cardTitle}>
               👁️ Visible Financial Information
@@ -306,7 +306,7 @@ export default function TestScreen() {
             <Text style={styles.dataLabel}>Account Number: 98765432101</Text>
             <Text style={styles.dataLabel}>Routing Number: 021000021</Text>
           </View>
-        </MixpanelSessionReplayView>
+        </MPSessionReplayView>
       </View>
 
       {/* Hierarchical Override Section */}
@@ -318,7 +318,7 @@ export default function TestScreen() {
           children to be safe, even if they would normally be sensitive.
         </Text>
 
-        <MixpanelSessionReplayView sensitive={false}>
+        <MPSessionReplayView sensitive={false}>
           <View style={styles.dataCard}>
             <Text style={styles.cardTitle}>🛡️ Safe Zone - Parent Override</Text>
             <Text style={styles.dataLabel}>
@@ -326,7 +326,7 @@ export default function TestScreen() {
               sensitive=false
             </Text>
 
-            <MixpanelSessionReplayView sensitive={true}>
+            <MPSessionReplayView sensitive={true}>
               <View style={styles.nestedCard}>
                 <Text style={styles.nestedCardTitle}>
                   🔓 Nested Sensitive Component (Overridden)
@@ -338,7 +338,7 @@ export default function TestScreen() {
                 </Text>
                 <Text style={styles.dataLabel}>Secret Data: ABC123XYZ</Text>
               </View>
-            </MixpanelSessionReplayView>
+            </MPSessionReplayView>
 
             <TextInput
               style={styles.textInput}
@@ -350,7 +350,7 @@ export default function TestScreen() {
               Credit Card: 9876 5432 1098 7654 (normally would be masked)
             </Text>
           </View>
-        </MixpanelSessionReplayView>
+        </MPSessionReplayView>
       </View>
     </ScrollView>
   );
