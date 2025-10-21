@@ -39,10 +39,15 @@ import MixpanelSessionReplay
           completion(false, createError("Instance found nil after successful initialisation."))
           
         case .failure(let error as MPSessionReplayError):
-          let message = switch error {
-          case .disabledByRemoteSetting(let message): message
-          case .failedToInitialize: "Failed to initialize the SDK: \(error)"
-          }
+          let message: String
+            switch error {
+            case .disabledByRemoteSetting(let msg):
+                message = msg
+            case .failedToInitialize:
+                message = "Failed to initialize the SDK: \(error)"
+            default:
+                message = "Session replay initialization failed: \(error)"
+            }
           completion(false, createError(message))
           
         case .failure(let error):
