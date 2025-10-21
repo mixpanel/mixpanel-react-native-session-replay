@@ -1,9 +1,9 @@
 import Foundation
-import UIKit
 import MixpanelSessionReplay
+import UIKit
 
 @objc public class MixpanelSwiftSessionReplay: NSObject {
-  static let libVersion = "0.1.3"
+  static let libVersion = "0.2.0"
   static let mpLib = "react-native-sr"
 
   @objc public static func startRecording(recordingSessionsPercent: Double = 100.0) {
@@ -18,13 +18,16 @@ import MixpanelSessionReplay
     MPSessionReplay.getInstance()?.captureScreenshot()
   }
 
-  @objc public static func initialize(_ token: String, distinctId: String, configJSON: String, completion: @escaping (Bool, NSError?) -> Void) {
+  @objc public static func initialize(
+    _ token: String, distinctId: String, configJSON: String,
+    completion: @escaping (Bool, NSError?) -> Void
+  ) {
     guard let data = configJSON.data(using: .utf8) else {
-      let error =  createError("Invalid config JSON string", code: 3840)
+      let error = createError("Invalid config JSON string", code: 3840)
       completion(false, error)
       return
     }
-    
+
     do {
       APIConstants.setLibVersion(libVersion)
       APIConstants.setMpLib(mpLib)
@@ -34,22 +37,22 @@ import MixpanelSessionReplay
         case .success(_?):
           setSensitiveClasses(config: config)
           completion(true, nil)
-          
+
         case .success(nil):
           completion(false, createError("Instance found nil after successful initialisation."))
-          
+
         case .failure(let error as MPSessionReplayError):
           let message: String
-            switch error {
-            case .disabledByRemoteSetting(let msg):
-                message = msg
-            case .failedToInitialize:
-                message = "Failed to initialize the SDK: \(error)"
-            default:
-                message = "Session replay initialization failed: \(error)"
-            }
+          switch error {
+          case .disabledByRemoteSetting(let msg):
+            message = msg
+          case .failedToInitialize:
+            message = "Failed to initialize the SDK: \(error)"
+          default:
+            message = "Session replay initialization failed: \(error)"
+          }
           completion(false, createError(message))
-          
+
         case .failure(let error):
           completion(false, createError("Session replay initialization failed: \(error)"))
         }
@@ -58,25 +61,26 @@ import MixpanelSessionReplay
       completion(false, error as NSError)
     }
   }
-  
+
   @objc public static func isRecording() -> Bool {
     return MPSessionReplay.getInstance()?.isRecording ?? false
   }
-  
+
   @objc public static func identify(_ distinctId: String) {
     MPSessionReplay.getInstance()?.identify(distinctId: distinctId)
   }
-  
+
   @objc public static func setMPReplaySensitive(value: Bool, view: UIView) {
     view.mpReplaySensitive = value
   }
-  
+
   private static func createError(_ message: String, code: Int = -1) -> NSError {
-    return NSError(domain: "MixpanelSessionReplay",
-                   code: code,
-                   userInfo: [NSLocalizedDescriptionKey: message])
+    return NSError(
+      domain: "MixpanelSessionReplay",
+      code: code,
+      userInfo: [NSLocalizedDescriptionKey: message])
   }
-  
+
   private static func setSensitiveClasses(config: MPSessionReplayConfig) {
     let legacyTextViewClass: AnyClass? = NSClassFromString("RCTTextView")
     let fabricTextViewClass: AnyClass? = NSClassFromString("RCTParagraphTextView")
@@ -86,11 +90,11 @@ import MixpanelSessionReplay
     if let imageViewClass, config.autoMaskedViews.contains(.image) {
       sessionReplay?.addSensitiveClass(imageViewClass)
     }
-    
+
     if let fabricTextViewClass, config.autoMaskedViews.contains(.text) {
       sessionReplay?.addSensitiveClass(fabricTextViewClass)
     }
-    
+
     if let legacyTextViewClass, config.autoMaskedViews.contains(.text) {
       sessionReplay?.addSensitiveClass(legacyTextViewClass)
     }
