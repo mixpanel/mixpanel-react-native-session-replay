@@ -83,6 +83,18 @@ RCT_EXPORT_METHOD(identify:(NSString *)distinctId
     }
 }
 
+RCT_EXPORT_METHOD(getReplayId:(RCTPromiseResolveBlock)resolve
+               reject:(RCTPromiseRejectBlock)reject)
+{
+    @try {
+        NSString *replayId = [MixpanelSwiftSessionReplay getReplayId];
+        resolve(replayId);
+    }
+    @catch (NSException *exception) {
+        reject(@"GET_REPLAY_ID_ERROR", exception.reason, nil);
+    }
+}
+
 #ifdef RCT_NEW_ARCH_ENABLED
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
     (const facebook::react::ObjCTurboModule::InitParams &)params

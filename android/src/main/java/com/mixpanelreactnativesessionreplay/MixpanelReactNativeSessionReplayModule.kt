@@ -155,6 +155,16 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
     }
   }
 
+  @ReactMethod
+  override fun getReplayId(promise: Promise) {
+    try {
+      val replayId = MPSessionReplay.getInstance()?.getReplayId()
+      promise.resolve(replayId)
+    } catch (e: Exception) {
+      promise.reject("GET_REPLAY_ID_ERROR", e.message, e)
+    }
+  }
+
 
   /**
    * Safely configure sensitive classes for comprehensive React Native view masking

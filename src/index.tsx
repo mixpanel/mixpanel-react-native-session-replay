@@ -217,6 +217,18 @@ async function identify(distinctId: string): Promise<void> {
   return MixpanelReactNativeSessionReplay.identify(distinctId);
 }
 
+/**
+ * Gets the current replay ID.
+ *
+ * This method returns the unique identifier for the current session replay.
+ * If no recording is active or if the replay ID is not available, it returns `null`.
+ *
+ * @returns A promise that resolves to the replay ID string, or `null` if not available.
+ */
+async function getReplayId(): Promise<string | null> {
+  return MixpanelReactNativeSessionReplay.getReplayId();
+}
+
 export { MPSessionReplayView } from './MixpanelSessionReplayView';
 
 export const MPSessionReplay = {
@@ -225,4 +237,5 @@ export const MPSessionReplay = {
   stopRecording,
   isRecording,
   identify,
+  getReplayId,
 };
