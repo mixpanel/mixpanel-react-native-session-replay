@@ -21,6 +21,7 @@ export default function HomeScreen() {
   const navigation = useNavigation<HomeScreenNavigationProp>();
   const [isInitialized, setIsInitialized] = useState(false);
   const [recording, setRecording] = useState(false);
+  const [replayId, setReplayId] = useState<string | null>(null);
   const [token, setToken] = useState('MIXPANEL_API_KEY_HERE');
   const [distinctId, setDistinctId] = useState(
     () => `user-${Math.floor(Math.random() * 1e9)}`
@@ -32,6 +33,15 @@ export default function HomeScreen() {
       setRecording(status);
     } catch (error) {
       console.error('Error checking recording status:', error);
+    }
+  };
+
+  const updateReplayId = async () => {
+    try {
+      const id = await MPSessionReplay.getReplayId();
+      setReplayId(id);
+    } catch (error) {
+      console.error('Error getting replay ID:', error);
     }
   };
 
@@ -60,6 +70,7 @@ export default function HomeScreen() {
       await MPSessionReplay.startRecording();
       Alert.alert('Success', 'Recording started!');
       await checkRecordingStatus();
+      await updateReplayId();
     } catch (error) {
       Alert.alert('Error', `Failed to start recording: ${error}`);
       console.error('Start recording error:', error);
@@ -71,15 +82,28 @@ export default function HomeScreen() {
       await MPSessionReplay.stopRecording();
       Alert.alert('Success', 'Recording stopped!');
       await checkRecordingStatus();
+      await updateReplayId();
     } catch (error) {
       Alert.alert('Error', `Failed to stop recording: ${error}`);
       console.error('Stop recording error:', error);
     }
   };
 
+  const handleGetReplayId = async () => {
+    await updateReplayId();
+    if (replayId) {
+      Alert.alert('Replay ID', replayId);
+    } else {
+      Alert.alert('Replay ID', 'No replay ID available');
+    }
+  };
+
   useEffect(() => {
     if (isInitialized) {
-      const interval = setInterval(checkRecordingStatus, 2000);
+      const interval = setInterval(() => {
+        checkRecordingStatus();
+        updateReplayId();
+      }, 2000);
       return () => clearInterval(interval);
     }
     return undefined;
@@ -118,6 +142,9 @@ export default function HomeScreen() {
               Status: {recording ? '🔴 Recording' : '⭕ Not Recording'}
             </Text>
             <Text style={styles.userText}>User: {distinctId}</Text>
+            {replayId && (
+              <Text style={styles.replayIdText}>Replay ID: {replayId}</Text>
+            )}
           </View>
 
           <TouchableOpacity
@@ -134,6 +161,10 @@ export default function HomeScreen() {
             disabled={!recording}
           >
             <Text style={styles.buttonText}>Stop Recording</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.button} onPress={handleGetReplayId}>
+            <Text style={styles.buttonText}>Get Replay ID</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -205,6 +236,12 @@ const styles = StyleSheet.create({
   userText: {
     fontSize: 14,
     color: '#666',
+  },
+  replayIdText: {
+    fontSize: 12,
+    color: '#007AFF',
+    marginTop: 8,
+    fontFamily: 'Courier',
   },
   button: {
     backgroundColor: '#007AFF',
