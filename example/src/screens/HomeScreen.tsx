@@ -27,21 +27,16 @@ export default function HomeScreen() {
     () => `user-${Math.floor(Math.random() * 1e9)}`
   );
 
-  const checkRecordingStatus = async () => {
+  const updateStatus = async () => {
     try {
-      const status = await MPSessionReplay.isRecording();
+      const [status, id] = await Promise.all([
+        MPSessionReplay.isRecording(),
+        MPSessionReplay.getReplayId(),
+      ]);
       setRecording(status);
-    } catch (error) {
-      console.error('Error checking recording status:', error);
-    }
-  };
-
-  const updateReplayId = async () => {
-    try {
-      const id = await MPSessionReplay.getReplayId();
       setReplayId(id);
     } catch (error) {
-      console.error('Error getting replay ID:', error);
+      console.error('Error updating status:', error);
     }
   };
 
@@ -58,7 +53,7 @@ export default function HomeScreen() {
         'Success',
         'Mixpanel Session Replay initialized successfully!'
       );
-      await checkRecordingStatus();
+      await updateStatus();
     } catch (error) {
       Alert.alert('Error', `Failed to initialize: ${error}`);
       console.error('Initialization error:', error);
@@ -69,8 +64,7 @@ export default function HomeScreen() {
     try {
       await MPSessionReplay.startRecording();
       Alert.alert('Success', 'Recording started!');
-      await checkRecordingStatus();
-      await updateReplayId();
+      await updateStatus();
     } catch (error) {
       Alert.alert('Error', `Failed to start recording: ${error}`);
       console.error('Start recording error:', error);
@@ -81,8 +75,7 @@ export default function HomeScreen() {
     try {
       await MPSessionReplay.stopRecording();
       Alert.alert('Success', 'Recording stopped!');
-      await checkRecordingStatus();
-      await updateReplayId();
+      await updateStatus();
     } catch (error) {
       Alert.alert('Error', `Failed to stop recording: ${error}`);
       console.error('Stop recording error:', error);
@@ -90,7 +83,7 @@ export default function HomeScreen() {
   };
 
   const handleGetReplayId = async () => {
-    await updateReplayId();
+    await updateStatus();
     if (replayId) {
       Alert.alert('Replay ID', replayId);
     } else {
@@ -101,8 +94,7 @@ export default function HomeScreen() {
   useEffect(() => {
     if (isInitialized) {
       const interval = setInterval(() => {
-        checkRecordingStatus();
-        updateReplayId();
+        updateStatus();
       }, 2000);
       return () => clearInterval(interval);
     }
