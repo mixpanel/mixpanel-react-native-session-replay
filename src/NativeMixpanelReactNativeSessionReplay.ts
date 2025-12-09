@@ -12,6 +12,7 @@ export interface Spec extends TurboModule {
   // Functionality not available in Android SDK ATM. It returns true always.
   isRecording(): Promise<boolean>;
   identify(distinctId: string): Promise<void>;
+  getReplayId(): Promise<string | null>;
 }
 
 // Type declaration for global to include __turboModuleProxy

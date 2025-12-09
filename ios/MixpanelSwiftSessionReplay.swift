@@ -70,6 +70,10 @@ import UIKit
     MPSessionReplay.getInstance()?.identify(distinctId: distinctId)
   }
 
+  @objc public static func getReplayId() -> String? {
+    return MPSessionReplay.getReplayId()
+  }
+
   @objc public static func setMPReplaySensitive(value: Bool, view: UIView) {
     view.mpReplaySensitive = value
   }
