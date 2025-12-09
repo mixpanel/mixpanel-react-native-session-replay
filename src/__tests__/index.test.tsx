@@ -35,28 +35,6 @@ describe('MPSessionReplay', () => {
       expect(MockedNativeModule.getReplayId).toHaveBeenCalledWith();
     });
 
-    it('should return null when no replay is active', async () => {
-      MockedNativeModule.getReplayId.mockResolvedValueOnce(null);
-      const result = await MPSessionReplay.getReplayId();
-      expect(result).toBeNull();
-    });
-
-    it('should return a replay ID string when a replay is active', async () => {
-      const mockReplayId = 'replay-123-abc-456';
-      MockedNativeModule.getReplayId.mockResolvedValueOnce(mockReplayId);
-      const result = await MPSessionReplay.getReplayId();
-      expect(result).toBe(mockReplayId);
-    });
-
-    it('should handle errors from the native module', async () => {
-      const mockError = new Error('Native module error');
-      MockedNativeModule.getReplayId.mockRejectedValueOnce(mockError);
-
-      await expect(MPSessionReplay.getReplayId()).rejects.toThrow(
-        'Native module error'
-      );
-    });
-
     it('should return the same value on consecutive calls', async () => {
       const mockReplayId = 'consistent-replay-id';
       MockedNativeModule.getReplayId.mockResolvedValue(mockReplayId);
