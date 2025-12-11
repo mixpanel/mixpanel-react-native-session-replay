@@ -3,7 +3,7 @@ import MixpanelSessionReplay
 import UIKit
 
 @objc public class MixpanelSwiftSessionReplay: NSObject {
-  static let libVersion = "0.2.0"
+  static let libVersion = "0.2.1"
   static let mpLib = "react-native-sr"
 
   @objc public static func startRecording(recordingSessionsPercent: Double = 100.0) {
@@ -68,6 +68,10 @@ import UIKit
 
   @objc public static func identify(_ distinctId: String) {
     MPSessionReplay.getInstance()?.identify(distinctId: distinctId)
+  }
+
+  @objc public static func getReplayId() -> String? {
+    return MPSessionReplay.getReplayId()
   }
 
   @objc public static func setMPReplaySensitive(value: Bool, view: UIView) {

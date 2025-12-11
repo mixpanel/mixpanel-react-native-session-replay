@@ -238,3 +238,5 @@ See our [contributing guide](CONTRIBUTING.md) to learn how to contribute and und
 ## License
 
 MIT
+
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/mixpanel/mixpanel-react-native-session-replay)

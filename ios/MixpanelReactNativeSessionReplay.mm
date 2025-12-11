@@ -74,12 +74,24 @@ RCT_EXPORT_METHOD(identify:(NSString *)distinctId
             reject(@"INVALID_DISTINCT_ID", @"distinctId is required", nil);
             return;
         }
-        
+
         [MixpanelSwiftSessionReplay identify:distinctId];
         resolve(nil);
     }
     @catch (NSException *exception) {
         reject(@"IDENTIFY_ERROR", exception.reason, nil);
+    }
+}
+
+RCT_EXPORT_METHOD(getReplayId:(RCTPromiseResolveBlock)resolve
+                reject:(RCTPromiseRejectBlock)reject)
+{
+    @try {
+        NSString *replayId = [MixpanelSwiftSessionReplay getReplayId];
+        resolve(replayId);
+    }
+    @catch (NSException *exception) {
+        reject(@"GET_REPLAY_ID_ERROR", exception.reason, nil);
     }
 }
 
