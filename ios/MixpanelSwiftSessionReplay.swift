@@ -74,6 +74,14 @@ import UIKit
     return MPSessionReplay.getReplayId()
   }
 
+  @objc public static func flush(completionHandler: @escaping () -> Void) {
+    guard let instance = MPSessionReplay.getInstance() else {
+      completionHandler()
+      return
+    }
+    instance.flush(completionHandler: completionHandler)
+  }
+
   @objc public static func setMPReplaySensitive(value: Bool, view: UIView) {
     view.mpReplaySensitive = value
   }

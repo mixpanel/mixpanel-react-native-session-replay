@@ -229,6 +229,18 @@ async function getReplayId(): Promise<string | null> {
   return MixpanelReactNativeSessionReplay.getReplayId();
 }
 
+/**
+ * Manually triggers a flush of pending session replay events.
+ *
+ * This method forces the SDK to immediately upload all pending Session Replay events to Mixpanel,
+ * bypassing the normal flush interval. The returned promise resolves when the flush operation completes.
+ *
+ * @returns A promise that resolves when the flush operation has completed.
+ */
+async function flush(): Promise<void> {
+  return MixpanelReactNativeSessionReplay.flush();
+}
+
 export { MPSessionReplayView } from './MixpanelSessionReplayView';
 
 export const MPSessionReplay = {
@@ -238,4 +250,5 @@ export const MPSessionReplay = {
   isRecording,
   identify,
   getReplayId,
+  flush,
 };
