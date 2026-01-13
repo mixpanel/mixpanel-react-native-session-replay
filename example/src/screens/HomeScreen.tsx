@@ -77,6 +77,21 @@ export default function HomeScreen() {
     }
   };
 
+  const handleFlush = async () => {
+    try {
+      console.log('Starting flush...');
+      const startTime = Date.now();
+      await MPSessionReplay.flush();
+      const endTime = Date.now();
+      const duration = endTime - startTime;
+      console.log(`✅ Flush successful! Took ${duration}ms`);
+      Alert.alert('Success', `Flush completed successfully in ${duration}ms`);
+    } catch (error) {
+      console.error('❌ Flush error:', error);
+      Alert.alert('Error', `Failed to flush: ${error}`);
+    }
+  };
+
   useEffect(() => {
     if (isInitialized) {
       const interval = setInterval(checkRecordingStatus, 2000);
@@ -134,6 +149,10 @@ export default function HomeScreen() {
             disabled={!recording}
           >
             <Text style={styles.buttonText}>Stop Recording</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.flushButton} onPress={handleFlush}>
+            <Text style={styles.buttonText}>Flush Events</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -227,6 +246,20 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+  },
+  flushButton: {
+    backgroundColor: '#FF9500',
+    paddingVertical: 14,
+    paddingHorizontal: 28,
+    borderRadius: 8,
+    marginVertical: 8,
+    width: '100%',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
   },
   testButton: {
     backgroundColor: '#34C759',

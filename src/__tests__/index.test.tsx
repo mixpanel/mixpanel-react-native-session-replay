@@ -14,6 +14,7 @@ jest.mock('../NativeMixpanelReactNativeSessionReplay', () => ({
     isRecording: jest.fn().mockResolvedValue(false),
     identify: jest.fn().mockResolvedValue(undefined),
     getReplayId: jest.fn().mockResolvedValue(null),
+    flush: jest.fn().mockResolvedValue(undefined),
   },
 }));
 
@@ -150,6 +151,22 @@ describe('MPSessionReplay', () => {
 
       expect(result).toBe(true);
       expect(MockedNativeModule.isRecording).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('flush()', () => {
+    it('should call native flush method', async () => {
+      await MPSessionReplay.flush();
+
+      expect(MockedNativeModule.flush).toHaveBeenCalledTimes(1);
+      expect(MockedNativeModule.flush).toHaveBeenCalledWith();
+    });
+
+    it('should resolve successfully when flush completes', async () => {
+      MockedNativeModule.flush.mockResolvedValueOnce(undefined);
+
+      await expect(MPSessionReplay.flush()).resolves.toBeUndefined();
+      expect(MockedNativeModule.flush).toHaveBeenCalledTimes(1);
     });
   });
 });

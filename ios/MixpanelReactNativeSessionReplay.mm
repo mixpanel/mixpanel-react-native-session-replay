@@ -95,6 +95,19 @@ RCT_EXPORT_METHOD(getReplayId:(RCTPromiseResolveBlock)resolve
     }
 }
 
+RCT_EXPORT_METHOD(flush:(RCTPromiseResolveBlock)resolve
+               reject:(RCTPromiseRejectBlock)reject)
+{
+    @try {
+        [MixpanelSwiftSessionReplay flushWithCompletionHandler:^{
+            resolve(nil);
+        }];
+    }
+    @catch (NSException *exception) {
+        reject(@"FLUSH_ERROR", exception.reason, nil);
+    }
+}
+
 #ifdef RCT_NEW_ARCH_ENABLED
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
     (const facebook::react::ObjCTurboModule::InitParams &)params

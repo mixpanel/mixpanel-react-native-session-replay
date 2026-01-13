@@ -165,6 +165,17 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
     }
   }
 
+  @ReactMethod
+  override fun flush(promise: Promise) {
+    try {
+      MPSessionReplay.getInstance()?.flush(onComplete = {
+        promise.resolve(null)
+      }) ?: promise.resolve(null)
+    } catch (e: Exception) {
+      promise.resolve(null)
+    }
+  }
+
   /**
    * Safely configure sensitive classes for comprehensive React Native view masking
    * Supports both old and new React Native architectures with crash prevention

@@ -13,6 +13,7 @@ export interface Spec extends TurboModule {
   isRecording(): Promise<boolean>;
   identify(distinctId: string): Promise<void>;
   getReplayId(): Promise<string | null>;
+  flush(): Promise<void>;
 }
 
 // Type declaration for global to include __turboModuleProxy
