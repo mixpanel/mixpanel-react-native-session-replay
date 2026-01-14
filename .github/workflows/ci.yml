@@ -162,12 +162,11 @@ jobs:
           xcrun simctl list devices available --json | jq -r '.devices | to_entries[] | select(.key | contains("iOS")) | .value[] | select(.isAvailable == true) | "\(.name) (\(.udid))"'
 
       - name: Install cocoapods
-        if: env.turbo_cache_hit != 1 && steps.cocoapods-cache.outputs.cache-hit != 'true'
+        if: env.turbo_cache_hit != 1
         run: |
           cd example
           bundle install
-          bundle exec pod repo update --verbose
-          bundle exec pod install --project-directory=ios
+          bundle exec pod install --repo-update --project-directory=ios
 
       - name: Build example for iOS
         run: |
