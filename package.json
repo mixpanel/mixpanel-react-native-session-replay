@@ -1,6 +1,6 @@
 {
   "name": "@mixpanel/react-native-session-replay",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Official React Native turbo module for Mixpanel Session Replay",
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",
