@@ -118,6 +118,11 @@ export class MPSessionReplayConfig {
       autoStartRecording: this.autoStartRecording,
       flushInterval: this.flushInterval,
       enableLogging: this.enableLogging,
+      // iOS-specific config to enable session replay on iOS 26 and later
+      ...Platform.select({
+        ios: { enableSessionReplayOniOS26AndLater: true },
+        default: {},
+      }),
     };
 
     if (Platform.OS === 'ios' || Platform.OS === 'android') {
