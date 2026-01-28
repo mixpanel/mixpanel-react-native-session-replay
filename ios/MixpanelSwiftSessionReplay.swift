@@ -3,7 +3,7 @@ import MixpanelSessionReplay
 import UIKit
 
 @objc public class MixpanelSwiftSessionReplay: NSObject {
-  static let libVersion = "0.2.1"
+  static let libVersion = "1.0.1"
   static let mpLib = "react-native-sr"
 
   @objc public static func startRecording(recordingSessionsPercent: Double = 100.0) {
