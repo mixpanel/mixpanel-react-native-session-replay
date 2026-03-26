@@ -2,6 +2,7 @@ import {
   MPSessionReplay,
   MPSessionReplayConfig,
   MPSessionReplayMask,
+  MPSessionReplayRemoteSettingsMode,
 } from '../index';
 
 // Mock the native module
@@ -186,6 +187,9 @@ describe('MPSessionReplayConfig', () => {
     ]);
     expect(config.flushInterval).toBe(10);
     expect(config.enableLogging).toBe(false);
+    expect(config.remoteSettingsMode).toBe(
+      MPSessionReplayRemoteSettingsMode.Disabled
+    );
   });
 
   it('should accept custom values', () => {
@@ -196,6 +200,7 @@ describe('MPSessionReplayConfig', () => {
       autoMaskedViews: [MPSessionReplayMask.Text],
       flushInterval: 20,
       enableLogging: true,
+      remoteSettingsMode: MPSessionReplayRemoteSettingsMode.Strict,
     });
 
     expect(config.wifiOnly).toBe(false);
@@ -204,6 +209,9 @@ describe('MPSessionReplayConfig', () => {
     expect(config.autoMaskedViews).toEqual([MPSessionReplayMask.Text]);
     expect(config.flushInterval).toBe(20);
     expect(config.enableLogging).toBe(true);
+    expect(config.remoteSettingsMode).toBe(
+      MPSessionReplayRemoteSettingsMode.Strict
+    );
   });
 
   it('should serialize to JSON string', () => {
@@ -218,6 +226,7 @@ describe('MPSessionReplayConfig', () => {
     expect(parsed).toHaveProperty('autoMaskedViews');
     expect(parsed).toHaveProperty('flushInterval');
     expect(parsed).toHaveProperty('enableLogging');
+    expect(parsed).toHaveProperty('remoteSettingsMode');
   });
 
   describe('platform-specific config', () => {
