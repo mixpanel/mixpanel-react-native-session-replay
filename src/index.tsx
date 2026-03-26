@@ -126,17 +126,6 @@ export class MPSessionReplayConfig {
     return value;
   }
 
-  private transformRemoteSettingsModeForPlatform(
-    mode: MPSessionReplayRemoteSettingsMode
-  ): string {
-    if (Platform.OS === 'android') {
-      // Android expects uppercase: DISABLED, STRICT, FALLBACK
-      return mode.toUpperCase();
-    }
-    // iOS expects lowercase: disabled, strict, fallback
-    return mode;
-  }
-
   toJSON(): string {
     // Transform autoMaskedViews for platform-specific requirements
     const transformedAutoMaskedViews = this.autoMaskedViews
@@ -145,6 +134,10 @@ export class MPSessionReplayConfig {
           !(Platform.OS === 'android' && mask === MPSessionReplayMask.Map)
       )
       .map((mask) => this.transformMaskValueForPlatform(mask));
+    const transformRemoteSettingsModeForPlatform =
+      Platform.OS === 'android'
+        ? this.remoteSettingsMode.toUpperCase()
+        : this.remoteSettingsMode;
 
     const config = {
       wifiOnly: this.wifiOnly,
@@ -153,9 +146,7 @@ export class MPSessionReplayConfig {
       autoStartRecording: this.autoStartRecording,
       flushInterval: this.flushInterval,
       enableLogging: this.enableLogging,
-      remoteSettingsMode: this.transformRemoteSettingsModeForPlatform(
-        this.remoteSettingsMode
-      ),
+      remoteSettingsMode: transformRemoteSettingsModeForPlatform,
       // iOS-specific config to enable session replay on iOS 26 and later
       ...Platform.select({
         ios: { enableSessionReplayOniOS26AndLater: true },
