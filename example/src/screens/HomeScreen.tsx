@@ -12,6 +12,7 @@ import type { StackNavigationProp } from '@react-navigation/stack';
 import {
   MPSessionReplay,
   MPSessionReplayConfig,
+  MPSessionReplayRemoteSettingsMode,
 } from 'mixpanel-react-native-session-replay';
 import type { RootStackParamList } from '../types/navigation';
 
@@ -40,6 +41,7 @@ export default function HomeScreen() {
       const config: MPSessionReplayConfig = new MPSessionReplayConfig({
         // autoMaskedViews: [MPSessionReplayMask.Text],
         enableLogging: true,
+        remoteSettingsMode: MPSessionReplayRemoteSettingsMode.Fallback,
       });
       console.log('config', config);
       await MPSessionReplay.initialize(token, distinctId, config);
