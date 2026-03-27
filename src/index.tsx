@@ -134,7 +134,7 @@ export class MPSessionReplayConfig {
           !(Platform.OS === 'android' && mask === MPSessionReplayMask.Map)
       )
       .map((mask) => this.transformMaskValueForPlatform(mask));
-    const transformRemoteSettingsModeForPlatform =
+    const transformedRemoteSettingsMode =
       Platform.OS === 'android'
         ? this.remoteSettingsMode.toUpperCase()
         : this.remoteSettingsMode;
@@ -146,7 +146,7 @@ export class MPSessionReplayConfig {
       autoStartRecording: this.autoStartRecording,
       flushInterval: this.flushInterval,
       enableLogging: this.enableLogging,
-      remoteSettingsMode: transformRemoteSettingsModeForPlatform,
+      remoteSettingsMode: transformedRemoteSettingsMode,
       // iOS-specific config to enable session replay on iOS 26 and later
       ...Platform.select({
         ios: { enableSessionReplayOniOS26AndLater: true },

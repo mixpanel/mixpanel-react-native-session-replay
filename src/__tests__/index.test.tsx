@@ -234,6 +234,70 @@ describe('MPSessionReplayConfig', () => {
       jest.resetModules();
     });
 
+    it('should serialize remoteSettingsMode as uppercase for Android', () => {
+      jest.doMock('react-native', () => ({
+        Platform: {
+          OS: 'android',
+          select: (obj: any) => obj.android ?? obj.default,
+        },
+        requireNativeComponent: jest.fn(() => 'MockedNativeComponent'),
+      }));
+
+      const {
+        MPSessionReplayConfig: AndroidConfig,
+        MPSessionReplayRemoteSettingsMode: AndroidRemoteSettings,
+      } = require('../index');
+
+      let config = new AndroidConfig();
+      let json = config.toJSON();
+      let parsed = JSON.parse(json);
+      expect(parsed.remoteSettingsMode).toBe('DISABLED');
+
+      config = new AndroidConfig();
+      config.remoteSettingsMode = AndroidRemoteSettings.Strict;
+      json = config.toJSON();
+      parsed = JSON.parse(json);
+      expect(parsed.remoteSettingsMode).toBe('STRICT');
+
+      config = new AndroidConfig();
+      config.remoteSettingsMode = AndroidRemoteSettings.Fallback;
+      json = config.toJSON();
+      parsed = JSON.parse(json);
+      expect(parsed.remoteSettingsMode).toBe('FALLBACK');
+    });
+
+    it('should serialize remoteSettingsMode as lowercase for iOS', () => {
+      jest.doMock('react-native', () => ({
+        Platform: {
+          OS: 'ios',
+          select: (obj: any) => obj.ios ?? obj.default,
+        },
+        requireNativeComponent: jest.fn(() => 'MockedNativeComponent'),
+      }));
+
+      const {
+        MPSessionReplayConfig: IOSConfig,
+        MPSessionReplayRemoteSettingsMode: IOSRemoteSettings,
+      } = require('../index');
+
+      let config = new IOSConfig();
+      let json = config.toJSON();
+      let parsed = JSON.parse(json);
+      expect(parsed.remoteSettingsMode).toBe('disabled');
+
+      config = new IOSConfig();
+      config.remoteSettingsMode = IOSRemoteSettings.Strict;
+      json = config.toJSON();
+      parsed = JSON.parse(json);
+      expect(parsed.remoteSettingsMode).toBe('strict');
+
+      config = new IOSConfig();
+      config.remoteSettingsMode = IOSRemoteSettings.Fallback;
+      json = config.toJSON();
+      parsed = JSON.parse(json);
+      expect(parsed.remoteSettingsMode).toBe('fallback');
+    });
+
     it('should include enableSessionReplayOniOS26AndLater for iOS', () => {
       jest.doMock('react-native', () => ({
         Platform: {
