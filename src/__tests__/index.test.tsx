@@ -2,6 +2,7 @@ import {
   MPSessionReplay,
   MPSessionReplayConfig,
   MPSessionReplayMask,
+  MPSessionReplayRemoteSettingsMode,
 } from '../index';
 
 // Mock the native module
@@ -186,6 +187,9 @@ describe('MPSessionReplayConfig', () => {
     ]);
     expect(config.flushInterval).toBe(10);
     expect(config.enableLogging).toBe(false);
+    expect(config.remoteSettingsMode).toBe(
+      MPSessionReplayRemoteSettingsMode.Disabled
+    );
   });
 
   it('should accept custom values', () => {
@@ -196,6 +200,7 @@ describe('MPSessionReplayConfig', () => {
       autoMaskedViews: [MPSessionReplayMask.Text],
       flushInterval: 20,
       enableLogging: true,
+      remoteSettingsMode: MPSessionReplayRemoteSettingsMode.Strict,
     });
 
     expect(config.wifiOnly).toBe(false);
@@ -204,6 +209,9 @@ describe('MPSessionReplayConfig', () => {
     expect(config.autoMaskedViews).toEqual([MPSessionReplayMask.Text]);
     expect(config.flushInterval).toBe(20);
     expect(config.enableLogging).toBe(true);
+    expect(config.remoteSettingsMode).toBe(
+      MPSessionReplayRemoteSettingsMode.Strict
+    );
   });
 
   it('should serialize to JSON string', () => {
@@ -218,11 +226,76 @@ describe('MPSessionReplayConfig', () => {
     expect(parsed).toHaveProperty('autoMaskedViews');
     expect(parsed).toHaveProperty('flushInterval');
     expect(parsed).toHaveProperty('enableLogging');
+    expect(parsed).toHaveProperty('remoteSettingsMode');
   });
 
   describe('platform-specific config', () => {
     beforeEach(() => {
       jest.resetModules();
+    });
+
+    it('should serialize remoteSettingsMode as uppercase for Android', () => {
+      jest.doMock('react-native', () => ({
+        Platform: {
+          OS: 'android',
+          select: (obj: any) => obj.android ?? obj.default,
+        },
+        requireNativeComponent: jest.fn(() => 'MockedNativeComponent'),
+      }));
+
+      const {
+        MPSessionReplayConfig: AndroidConfig,
+        MPSessionReplayRemoteSettingsMode: AndroidRemoteSettings,
+      } = require('../index');
+
+      let config = new AndroidConfig();
+      let json = config.toJSON();
+      let parsed = JSON.parse(json);
+      expect(parsed.remoteSettingsMode).toBe('DISABLED');
+
+      config = new AndroidConfig();
+      config.remoteSettingsMode = AndroidRemoteSettings.Strict;
+      json = config.toJSON();
+      parsed = JSON.parse(json);
+      expect(parsed.remoteSettingsMode).toBe('STRICT');
+
+      config = new AndroidConfig();
+      config.remoteSettingsMode = AndroidRemoteSettings.Fallback;
+      json = config.toJSON();
+      parsed = JSON.parse(json);
+      expect(parsed.remoteSettingsMode).toBe('FALLBACK');
+    });
+
+    it('should serialize remoteSettingsMode as lowercase for iOS', () => {
+      jest.doMock('react-native', () => ({
+        Platform: {
+          OS: 'ios',
+          select: (obj: any) => obj.ios ?? obj.default,
+        },
+        requireNativeComponent: jest.fn(() => 'MockedNativeComponent'),
+      }));
+
+      const {
+        MPSessionReplayConfig: IOSConfig,
+        MPSessionReplayRemoteSettingsMode: IOSRemoteSettings,
+      } = require('../index');
+
+      let config = new IOSConfig();
+      let json = config.toJSON();
+      let parsed = JSON.parse(json);
+      expect(parsed.remoteSettingsMode).toBe('disabled');
+
+      config = new IOSConfig();
+      config.remoteSettingsMode = IOSRemoteSettings.Strict;
+      json = config.toJSON();
+      parsed = JSON.parse(json);
+      expect(parsed.remoteSettingsMode).toBe('strict');
+
+      config = new IOSConfig();
+      config.remoteSettingsMode = IOSRemoteSettings.Fallback;
+      json = config.toJSON();
+      parsed = JSON.parse(json);
+      expect(parsed.remoteSettingsMode).toBe('fallback');
     });
 
     it('should include enableSessionReplayOniOS26AndLater for iOS', () => {

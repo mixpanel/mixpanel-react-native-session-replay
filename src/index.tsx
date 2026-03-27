@@ -8,6 +8,12 @@ export enum MPSessionReplayMask {
   Image = 'image',
 }
 
+export enum MPSessionReplayRemoteSettingsMode {
+  Disabled = 'disabled',
+  Strict = 'strict',
+  Fallback = 'fallback',
+}
+
 export class MPSessionReplayConfig {
   /**
    * Determines whether replay events will only be flushed to the server when the device has a WiFi connection.
@@ -72,6 +78,22 @@ export class MPSessionReplayConfig {
    */
   enableLogging: boolean;
 
+  /**
+   * Controls how remote configuration settings are fetched and applied.
+   *
+   * Remote settings enable server-side control over session replay parameters such as sampling rate.
+   * This setting determines the SDK's behavior when fetching these settings and how failures are handled.
+   *
+   * - **`disabled`** (default): Remote config is fetched to check if session replay is enabled, but SDK config
+   *   settings from the server are not used. The SDK uses only the app-provided configuration.
+   * - **`strict`**: Remote config is required. If the fetch fails or times out, the SDK will not initialize.
+   * - **`fallback`**: Remote config is fetched and merged with local config. On fetch failure, the SDK falls back
+   *   to cached config (if available) or uses the local config.
+   *
+   * - **Default:** `disabled`
+   */
+  remoteSettingsMode: MPSessionReplayRemoteSettingsMode;
+
   constructor({
     wifiOnly = true,
     autoStartRecording = true,
@@ -84,6 +106,7 @@ export class MPSessionReplayConfig {
     ],
     flushInterval = 10,
     enableLogging = false,
+    remoteSettingsMode = MPSessionReplayRemoteSettingsMode.Disabled,
   }: Partial<MPSessionReplayConfig> = {}) {
     this.wifiOnly = wifiOnly;
     this.autoStartRecording = autoStartRecording;
@@ -91,6 +114,7 @@ export class MPSessionReplayConfig {
     this.autoMaskedViews = autoMaskedViews;
     this.flushInterval = flushInterval;
     this.enableLogging = enableLogging;
+    this.remoteSettingsMode = remoteSettingsMode;
   }
 
   private transformMaskValueForPlatform(value: string): string {
@@ -110,6 +134,10 @@ export class MPSessionReplayConfig {
           !(Platform.OS === 'android' && mask === MPSessionReplayMask.Map)
       )
       .map((mask) => this.transformMaskValueForPlatform(mask));
+    const transformedRemoteSettingsMode =
+      Platform.OS === 'android'
+        ? this.remoteSettingsMode.toUpperCase()
+        : this.remoteSettingsMode;
 
     const config = {
       wifiOnly: this.wifiOnly,
@@ -118,6 +146,7 @@ export class MPSessionReplayConfig {
       autoStartRecording: this.autoStartRecording,
       flushInterval: this.flushInterval,
       enableLogging: this.enableLogging,
+      remoteSettingsMode: transformedRemoteSettingsMode,
       // iOS-specific config to enable session replay on iOS 26 and later
       ...Platform.select({
         ios: { enableSessionReplayOniOS26AndLater: true },
