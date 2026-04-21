@@ -6723,9 +6723,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:^10.2.2":
-  version: 10.4.5
-  resolution: "glob@npm:10.4.5"
+"glob@npm:^10.2.2, glob@npm:^10.5.0":
+  version: 10.5.0
+  resolution: "glob@npm:10.5.0"
   dependencies:
     foreground-child: ^3.1.0
     jackspeak: ^3.1.2
@@ -6735,7 +6735,7 @@ __metadata:
     path-scurry: ^1.11.1
   bin:
     glob: dist/esm/bin.mjs
-  checksum: 0bc725de5e4862f9f387fd0f2b274baf16850dcd2714502ccf471ee401803997983e2c05590cb65f9675a3c6f2a58e7a53f9e365704108c6ad3cbf1d60934c4a
+  checksum: cda96c074878abca9657bd984d2396945cf0d64283f6feeb40d738fe2da642be0010ad5210a1646244a5fc3511b0cab5a374569b3de5a12b8a63d392f18c6043
   languageName: node
   linkType: hard
 
@@ -6750,19 +6750,6 @@ __metadata:
     once: ^1.3.0
     path-is-absolute: ^1.0.0
   checksum: 29452e97b38fa704dabb1d1045350fb2467cf0277e155aa9ff7077e90ad81d1ea9d53d3ee63bd37c05b09a065e90f16aec4a65f5b8de401d1dac40bc5605d133
-  languageName: node
-  linkType: hard
-
-"glob@npm:^8.0.3":
-  version: 8.1.0
-  resolution: "glob@npm:8.1.0"
-  dependencies:
-    fs.realpath: ^1.0.0
-    inflight: ^1.0.4
-    inherits: 2
-    minimatch: ^5.0.1
-    once: ^1.3.0
-  checksum: 92fbea3221a7d12075f26f0227abac435de868dd0736a17170663783296d0dd8d3d532a5672b4488a439bf5d7fb85cdd07c11185d6cd39184f0385cbdfb86a47
   languageName: node
   linkType: hard
 
@@ -9298,15 +9285,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:^5.0.1":
-  version: 5.1.6
-  resolution: "minimatch@npm:5.1.6"
-  dependencies:
-    brace-expansion: ^2.0.1
-  checksum: 7564208ef81d7065a370f788d337cd80a689e981042cb9a1d0e6580b6c6a8c9279eba80010516e258835a988363f99f54a6f711a315089b8b42694f5da9d0d77
-  languageName: node
-  linkType: hard
-
 "minimatch@npm:^9.0.4":
   version: 9.0.5
   resolution: "minimatch@npm:9.0.5"
@@ -10496,8 +10474,8 @@ __metadata:
   linkType: hard
 
 "react-native-builder-bob@npm:^0.40.13":
-  version: 0.40.13
-  resolution: "react-native-builder-bob@npm:0.40.13"
+  version: 0.40.18
+  resolution: "react-native-builder-bob@npm:0.40.18"
   dependencies:
     "@babel/core": ^7.25.2
     "@babel/plugin-transform-flow-strip-types": ^7.26.5
@@ -10513,17 +10491,17 @@ __metadata:
     del: ^6.1.1
     escape-string-regexp: ^4.0.0
     fs-extra: ^10.1.0
-    glob: ^8.0.3
+    glob: ^10.5.0
     is-git-dirty: ^2.0.1
     json5: ^2.2.1
     kleur: ^4.1.4
     prompts: ^2.4.2
-    react-native-monorepo-config: ^0.1.8
+    react-native-monorepo-config: ^0.3.3
     which: ^2.0.2
     yargs: ^17.5.1
   bin:
     bob: bin/bob
-  checksum: 3140749ce4c2b4362502b2074ef2a6de92e03ab1a49bdbfc8058fbea0335a000d0554d012d9ce857b18bc395a2d6796c011d922725089e4688d6760f0b56b519
+  checksum: 429cfa0fa4aa1bcc8410718563449dd31f450010d7d3c8be8a4a2ac0ac82b20be3bb2c2f0811df64e1cf2e4714f73c8cb9dd031e4a0a0e07ee0b1b96d8a4d70a
   languageName: node
   linkType: hard
 
@@ -10541,13 +10519,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-monorepo-config@npm:^0.1.8, react-native-monorepo-config@npm:^0.1.9":
+"react-native-monorepo-config@npm:^0.1.9":
   version: 0.1.9
   resolution: "react-native-monorepo-config@npm:0.1.9"
   dependencies:
     escape-string-regexp: ^5.0.0
     fast-glob: ^3.3.3
   checksum: 6356c362c517c49e17d54ee764c3566ba71491fa0d755618ecf2ca548348668e84fe448c24066645983acbc2bd4c0ed47594f9b3ec9dcc0558c0fd9594d2391e
+  languageName: node
+  linkType: hard
+
+"react-native-monorepo-config@npm:^0.3.3":
+  version: 0.3.3
+  resolution: "react-native-monorepo-config@npm:0.3.3"
+  dependencies:
+    escape-string-regexp: ^5.0.0
+    fast-glob: ^3.3.3
+  checksum: 6e9491d416c5b035fbe8da77fc36d18cd2b726bc4024605e3aae46c7da7f8d3d8c8618cfb474bca84008b269cb0516e130e4e513a6f4b92fb6033496800c646b
   languageName: node
   linkType: hard
 
