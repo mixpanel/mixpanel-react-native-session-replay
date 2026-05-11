@@ -1,4 +1,4 @@
-import { Platform } from 'react-native';
+import { Platform, processColor, type ColorValue } from 'react-native';
 import MixpanelReactNativeSessionReplay from './NativeMixpanelReactNativeSessionReplay';
 
 export enum MPSessionReplayMask {
@@ -12,6 +12,133 @@ export enum MPSessionReplayRemoteSettingsMode {
   Disabled = 'disabled',
   Strict = 'strict',
   Fallback = 'fallback',
+}
+
+/**
+ * Color configuration for the on-device debug mask overlay.
+ *
+ * Each color accepts any React Native [`ColorValue`](https://reactnative.dev/docs/colors)
+ * — for example `'red'`, `'#FF0000'`, `'rgba(255, 0, 0, 0.5)'`, or `0xFFFF0000`.
+ * Setting any of `maskColor`, `autoMaskColor`, or `unmaskColor` to `null` hides that
+ * category from the overlay.
+ *
+ * The overlay only renders when `__DEV__` is `true` — `debugOptions` is ignored in
+ * production bundles regardless of what is passed.
+ */
+export class MPDebugOverlayColors {
+  /**
+   * Color used to draw regions that are explicitly masked (sensitive views / text input).
+   * Set to `null` to hide masked regions from the overlay.
+   *
+   * - **Default:** `'red'`
+   */
+  maskColor: ColorValue | null;
+
+  /**
+   * Color used to draw regions that are auto-masked (text, images, web views, maps).
+   * Set to `null` to hide auto-masked regions from the overlay.
+   *
+   * - **Default:** `'orange'`
+   */
+  autoMaskColor: ColorValue | null;
+
+  /**
+   * Color used to draw regions explicitly excluded from masking (safe views).
+   * Set to `null` to hide unmask regions from the overlay.
+   *
+   * - **Default:** `'green'`
+   */
+  unmaskColor: ColorValue | null;
+
+  /**
+   * Opacity of the overlay, from `0.0` (fully transparent) to `1.0` (fully opaque).
+   *
+   * - **Default:** `0.5`
+   */
+  alpha: number;
+
+  constructor({
+    maskColor = 'red',
+    autoMaskColor = 'orange',
+    unmaskColor = 'green',
+    alpha = 0.5,
+  }: Partial<MPDebugOverlayColors> = {}) {
+    this.maskColor = maskColor;
+    this.autoMaskColor = autoMaskColor;
+    this.unmaskColor = unmaskColor;
+    this.alpha = alpha;
+  }
+}
+
+/**
+ * Configuration for Session Replay debug features.
+ *
+ * When `overlayColors` is non-null, the SDK renders a visual overlay on top of the app
+ * showing which regions are masked, auto-masked, or explicitly unmasked. Set
+ * `overlayColors` to `null` to disable the overlay while keeping `MPDebugOptions`
+ * available for future debug features.
+ *
+ * Debug features only render when `__DEV__` is `true`. In production bundles
+ * (`__DEV__ === false`), `debugOptions` is dropped before reaching the native SDK so
+ * the overlay never ships to end users.
+ */
+export class MPDebugOptions {
+  /**
+   * Color configuration for the debug mask overlay. When `null`, the overlay is disabled.
+   *
+   * - **Default:** `new MPDebugOverlayColors()` (overlay enabled with default colors)
+   */
+  overlayColors: MPDebugOverlayColors | null;
+
+  constructor({
+    overlayColors = new MPDebugOverlayColors(),
+  }: Partial<MPDebugOptions> = {}) {
+    this.overlayColors = overlayColors;
+  }
+}
+
+function processOverlayColor(color: ColorValue | null): number | null {
+  if (color === null || color === undefined) {
+    return null;
+  }
+  // `processColor` returns the ARGB integer in the form expected by each native platform:
+  // a signed 32-bit Int on Android (kotlinx.serialization Int) and an unsigned 32-bit
+  // value on iOS (Swift Int is 64-bit, so it decodes without overflow). Invalid color
+  // strings yield `undefined` — treat those the same as `null` (hide the category).
+  const processed = processColor(color);
+  return typeof processed === 'number' ? processed : null;
+}
+
+function serializeDebugOptions(
+  debugOptions: MPDebugOptions | null
+): object | null {
+  if (debugOptions === null) {
+    return null;
+  }
+  // Hard-gate debug features on `__DEV__` so they are never sent to native in
+  // production bundles. The Android SDK already restricts the overlay to debuggable
+  // builds, but the iOS SDK ships as a release XCFramework and would otherwise
+  // render the overlay in production if a customer forgot to gate the call site.
+  if (!__DEV__) {
+    if (debugOptions.overlayColors !== null) {
+      console.warn(
+        'MixpanelSessionReplay: `debugOptions` is ignored in production builds (__DEV__ is false).'
+      );
+    }
+    return null;
+  }
+  const overlayColors = debugOptions.overlayColors;
+  return {
+    overlayColors:
+      overlayColors === null
+        ? null
+        : {
+            maskColor: processOverlayColor(overlayColors.maskColor),
+            autoMaskColor: processOverlayColor(overlayColors.autoMaskColor),
+            unmaskColor: processOverlayColor(overlayColors.unmaskColor),
+            alpha: overlayColors.alpha,
+          },
+  };
 }
 
 export class MPSessionReplayConfig {
@@ -94,6 +221,22 @@ export class MPSessionReplayConfig {
    */
   remoteSettingsMode: MPSessionReplayRemoteSettingsMode;
 
+  /**
+   * Enables on-device debug features such as the visual mask overlay.
+   *
+   * When non-null, the SDK renders a colored overlay on top of the app showing which
+   * regions are masked, auto-masked, or explicitly unmasked — useful for verifying
+   * masking coverage during development. Pass `new MPDebugOptions()` to enable the
+   * overlay with default colors, or customize via `MPDebugOverlayColors`.
+   *
+   * `debugOptions` is only honored when `__DEV__` is `true`. In production bundles
+   * it is dropped before reaching the native SDK, so it is safe to leave the option
+   * set unconditionally — the overlay will not render for end users.
+   *
+   * - **Default:** `null` (disabled)
+   */
+  debugOptions: MPDebugOptions | null;
+
   constructor({
     wifiOnly = true,
     autoStartRecording = true,
@@ -107,6 +250,7 @@ export class MPSessionReplayConfig {
     flushInterval = 10,
     enableLogging = false,
     remoteSettingsMode = MPSessionReplayRemoteSettingsMode.Disabled,
+    debugOptions = null,
   }: Partial<MPSessionReplayConfig> = {}) {
     this.wifiOnly = wifiOnly;
     this.autoStartRecording = autoStartRecording;
@@ -115,6 +259,7 @@ export class MPSessionReplayConfig {
     this.flushInterval = flushInterval;
     this.enableLogging = enableLogging;
     this.remoteSettingsMode = remoteSettingsMode;
+    this.debugOptions = debugOptions;
   }
 
   private transformMaskValueForPlatform(value: string): string {
@@ -147,6 +292,7 @@ export class MPSessionReplayConfig {
       flushInterval: this.flushInterval,
       enableLogging: this.enableLogging,
       remoteSettingsMode: transformedRemoteSettingsMode,
+      debugOptions: serializeDebugOptions(this.debugOptions),
       // iOS-specific config to enable session replay on iOS 26 and later
       ...Platform.select({
         ios: { enableSessionReplayOniOS26AndLater: true },

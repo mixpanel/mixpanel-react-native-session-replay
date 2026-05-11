@@ -6,14 +6,16 @@ import {
   TouchableOpacity,
   Alert,
   TextInput,
+  Switch,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import {
+  MPDebugOptions,
   MPSessionReplay,
   MPSessionReplayConfig,
   MPSessionReplayRemoteSettingsMode,
-} from 'mixpanel-react-native-session-replay';
+} from '@mixpanel/react-native-session-replay';
 import type { RootStackParamList } from '../types/navigation';
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
@@ -26,6 +28,7 @@ export default function HomeScreen() {
   const [distinctId, setDistinctId] = useState(
     () => `user-${Math.floor(Math.random() * 1e9)}`
   );
+  const [debugOverlayEnabled, setDebugOverlayEnabled] = useState(false);
 
   const checkRecordingStatus = async () => {
     try {
@@ -42,6 +45,7 @@ export default function HomeScreen() {
         // autoMaskedViews: [MPSessionReplayMask.Text],
         enableLogging: true,
         remoteSettingsMode: MPSessionReplayRemoteSettingsMode.Fallback,
+        debugOptions: debugOverlayEnabled ? new MPDebugOptions() : null,
       });
       console.log('config', config);
       await MPSessionReplay.initialize(token, distinctId, config);
@@ -123,6 +127,20 @@ export default function HomeScreen() {
             onChangeText={setDistinctId}
             placeholder="Enter user distinct ID"
           />
+
+          <View style={styles.toggleRow}>
+            <View style={styles.toggleLabelContainer}>
+              <Text style={styles.label}>Debug Mask Overlay</Text>
+              <Text style={styles.toggleHint}>
+                Renders red/orange/green tint over masked regions (dev builds
+                only).
+              </Text>
+            </View>
+            <Switch
+              value={debugOverlayEnabled}
+              onValueChange={setDebugOverlayEnabled}
+            />
+          </View>
 
           <TouchableOpacity style={styles.button} onPress={handleInitialize}>
             <Text style={styles.buttonText}>Initialize Session Replay</Text>
@@ -281,5 +299,21 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+  },
+  toggleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+    paddingVertical: 4,
+  },
+  toggleLabelContainer: {
+    flex: 1,
+    marginRight: 12,
+  },
+  toggleHint: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: 2,
   },
 });
