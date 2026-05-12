@@ -1,4 +1,6 @@
 import {
+  MPDebugOptions,
+  MPDebugOverlayColors,
   MPSessionReplay,
   MPSessionReplayConfig,
   MPSessionReplayMask,
@@ -346,6 +348,124 @@ describe('MPSessionReplayConfig', () => {
       const json = config.toJSON();
 
       expect(json).toBe('');
+    });
+  });
+
+  describe('debugOptions serialization', () => {
+    let warnSpy: jest.SpyInstance;
+    const originalDev = (global as any).__DEV__;
+
+    beforeEach(() => {
+      (global as any).__DEV__ = true;
+      warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+      (global as any).__DEV__ = originalDev;
+      warnSpy.mockRestore();
+    });
+
+    it('defaults debugOptions to null in serialized config', () => {
+      const config = new MPSessionReplayConfig();
+      const parsed = JSON.parse(config.toJSON());
+
+      expect(config.debugOptions).toBeNull();
+      expect(parsed.debugOptions).toBeNull();
+    });
+
+    it('serializes default MPDebugOptions to ARGB integers and default alpha', () => {
+      const config = new MPSessionReplayConfig({
+        debugOptions: new MPDebugOptions(),
+      });
+      const parsed = JSON.parse(config.toJSON());
+
+      expect(parsed.debugOptions).not.toBeNull();
+      expect(parsed.debugOptions.overlayColors.alpha).toBe(0.5);
+      expect(typeof parsed.debugOptions.overlayColors.maskColor).toBe('number');
+      expect(typeof parsed.debugOptions.overlayColors.autoMaskColor).toBe(
+        'number'
+      );
+      expect(typeof parsed.debugOptions.overlayColors.unmaskColor).toBe(
+        'number'
+      );
+    });
+
+    it('preserves custom alpha and per-category nulls', () => {
+      const config = new MPSessionReplayConfig({
+        debugOptions: new MPDebugOptions({
+          overlayColors: new MPDebugOverlayColors({
+            maskColor: '#FF0000',
+            autoMaskColor: null,
+            unmaskColor: null,
+            alpha: 0.25,
+          }),
+        }),
+      });
+      const parsed = JSON.parse(config.toJSON());
+
+      expect(parsed.debugOptions.overlayColors.alpha).toBe(0.25);
+      expect(typeof parsed.debugOptions.overlayColors.maskColor).toBe('number');
+      expect(parsed.debugOptions.overlayColors.autoMaskColor).toBeNull();
+      expect(parsed.debugOptions.overlayColors.unmaskColor).toBeNull();
+    });
+
+    it('serializes overlayColors as null when explicitly disabled', () => {
+      const config = new MPSessionReplayConfig({
+        debugOptions: new MPDebugOptions({ overlayColors: null }),
+      });
+      const parsed = JSON.parse(config.toJSON());
+
+      expect(parsed.debugOptions).toEqual({ overlayColors: null });
+    });
+
+    it('warns and serializes invalid colors as null', () => {
+      const config = new MPSessionReplayConfig({
+        debugOptions: new MPDebugOptions({
+          overlayColors: new MPDebugOverlayColors({
+            maskColor: 'not-a-real-color',
+          }),
+        }),
+      });
+      const parsed = JSON.parse(config.toJSON());
+
+      expect(parsed.debugOptions.overlayColors.maskColor).toBeNull();
+      expect(warnSpy).toHaveBeenCalledTimes(1);
+      expect(warnSpy.mock.calls[0][0]).toContain('not-a-real-color');
+    });
+
+    it('drops debugOptions and warns when __DEV__ is false', () => {
+      (global as any).__DEV__ = false;
+
+      const config = new MPSessionReplayConfig({
+        debugOptions: new MPDebugOptions(),
+      });
+      const parsed = JSON.parse(config.toJSON());
+
+      expect(parsed.debugOptions).toBeNull();
+      expect(warnSpy).toHaveBeenCalledTimes(1);
+      expect(warnSpy.mock.calls[0][0]).toContain('production');
+    });
+
+    it('does not warn in production when debugOptions is null', () => {
+      (global as any).__DEV__ = false;
+
+      const config = new MPSessionReplayConfig();
+      const parsed = JSON.parse(config.toJSON());
+
+      expect(parsed.debugOptions).toBeNull();
+      expect(warnSpy).not.toHaveBeenCalled();
+    });
+
+    it('does not warn in production when overlayColors is null', () => {
+      (global as any).__DEV__ = false;
+
+      const config = new MPSessionReplayConfig({
+        debugOptions: new MPDebugOptions({ overlayColors: null }),
+      });
+      const parsed = JSON.parse(config.toJSON());
+
+      expect(parsed.debugOptions).toBeNull();
+      expect(warnSpy).not.toHaveBeenCalled();
     });
   });
 });

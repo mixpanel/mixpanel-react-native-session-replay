@@ -13,7 +13,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import type { RootStackParamList } from '../types/navigation';
-import { MPSessionReplayView } from 'mixpanel-react-native-session-replay';
+import { MPSessionReplayView } from '@mixpanel/react-native-session-replay';
 import { WebView } from 'react-native-webview';
 
 type TestScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Test'>;
