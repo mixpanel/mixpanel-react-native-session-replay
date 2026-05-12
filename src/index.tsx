@@ -106,7 +106,13 @@ function processOverlayColor(color: ColorValue | null): number | null {
   // value on iOS (Swift Int is 64-bit, so it decodes without overflow). Invalid color
   // strings yield `undefined` — treat those the same as `null` (hide the category).
   const processed = processColor(color);
-  return typeof processed === 'number' ? processed : null;
+  if (typeof processed !== 'number') {
+    console.warn(
+      `MixpanelSessionReplay: invalid debug overlay color ${JSON.stringify(color)} — that category will be hidden from the overlay.`
+    );
+    return null;
+  }
+  return processed;
 }
 
 function serializeDebugOptions(
