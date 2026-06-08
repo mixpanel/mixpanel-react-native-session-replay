@@ -1,4 +1,5 @@
 import {
+  MPDataResidency,
   MPDebugOptions,
   MPDebugOverlayColors,
   MPSessionReplay,
@@ -192,6 +193,7 @@ describe('MPSessionReplayConfig', () => {
     expect(config.remoteSettingsMode).toBe(
       MPSessionReplayRemoteSettingsMode.Disabled
     );
+    expect(config.serverURL).toBe(MPDataResidency.US);
   });
 
   it('should accept custom values', () => {
@@ -203,6 +205,7 @@ describe('MPSessionReplayConfig', () => {
       flushInterval: 20,
       enableLogging: true,
       remoteSettingsMode: MPSessionReplayRemoteSettingsMode.Strict,
+      serverURL: MPDataResidency.EU,
     });
 
     expect(config.wifiOnly).toBe(false);
@@ -214,6 +217,15 @@ describe('MPSessionReplayConfig', () => {
     expect(config.remoteSettingsMode).toBe(
       MPSessionReplayRemoteSettingsMode.Strict
     );
+    expect(config.serverURL).toBe('https://api-eu.mixpanel.com');
+  });
+
+  it('should accept a custom serverURL string', () => {
+    const config = new MPSessionReplayConfig({
+      serverURL: 'https://mixpanel-proxy.test',
+    });
+
+    expect(config.serverURL).toBe('https://mixpanel-proxy.test');
   });
 
   it('should serialize to JSON string', () => {
@@ -332,6 +344,62 @@ describe('MPSessionReplayConfig', () => {
       const parsed = JSON.parse(json);
 
       expect(parsed).not.toHaveProperty('enableSessionReplayOniOS26AndLater');
+    });
+
+    it('should serialize serverURL as `serverUrl` for Android', () => {
+      jest.doMock('react-native', () => ({
+        Platform: {
+          OS: 'android',
+          select: (obj: any) => obj.android ?? obj.default,
+        },
+        requireNativeComponent: jest.fn(() => 'MockedNativeComponent'),
+      }));
+
+      const {
+        MPSessionReplayConfig: AndroidConfig,
+        MPDataResidency: AndroidDataResidency,
+      } = require('../index');
+
+      let config = new AndroidConfig();
+      let parsed = JSON.parse(config.toJSON());
+      expect(parsed.serverUrl).toBe('https://api.mixpanel.com');
+      expect(parsed).not.toHaveProperty('serverURL');
+
+      config = new AndroidConfig({ serverURL: AndroidDataResidency.EU });
+      parsed = JSON.parse(config.toJSON());
+      expect(parsed.serverUrl).toBe('https://api-eu.mixpanel.com');
+
+      config = new AndroidConfig({ serverURL: 'https://mixpanel-proxy.test' });
+      parsed = JSON.parse(config.toJSON());
+      expect(parsed.serverUrl).toBe('https://mixpanel-proxy.test');
+    });
+
+    it('should serialize serverURL as `serverURL` for iOS', () => {
+      jest.doMock('react-native', () => ({
+        Platform: {
+          OS: 'ios',
+          select: (obj: any) => obj.ios ?? obj.default,
+        },
+        requireNativeComponent: jest.fn(() => 'MockedNativeComponent'),
+      }));
+
+      const {
+        MPSessionReplayConfig: IOSConfig,
+        MPDataResidency: IOSDataResidency,
+      } = require('../index');
+
+      let config = new IOSConfig();
+      let parsed = JSON.parse(config.toJSON());
+      expect(parsed.serverURL).toBe('https://api.mixpanel.com');
+      expect(parsed).not.toHaveProperty('serverUrl');
+
+      config = new IOSConfig({ serverURL: IOSDataResidency.IN });
+      parsed = JSON.parse(config.toJSON());
+      expect(parsed.serverURL).toBe('https://api-in.mixpanel.com');
+
+      config = new IOSConfig({ serverURL: 'https://mixpanel-proxy.test' });
+      parsed = JSON.parse(config.toJSON());
+      expect(parsed.serverURL).toBe('https://mixpanel-proxy.test');
     });
 
     it('should return empty string for unsupported platforms', () => {
