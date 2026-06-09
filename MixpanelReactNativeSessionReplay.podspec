@@ -15,10 +15,7 @@ Pod::Spec.new do |s|
 
   s.source_files = "ios/**/*.{h,m,mm,cpp,swift}"
   s.private_header_files = "ios/**/*.h"
-  # TODO: bump MixpanelSessionReplay once the release containing data residency
-  # support (https://github.com/mixpanel/mixpanel-ios-session-replay-package/pull/36)
-  # is published — `serverURL` in MPSessionReplayConfig is silently ignored until then.
-  s.dependency 'MixpanelSessionReplay', '1.5.0'
+  s.dependency 'MixpanelSessionReplay', '1.5.1'
 # Use install_modules_dependencies helper to install the dependencies if React Native version >=0.71.0.
 # See https://github.com/facebook/react-native/blob/febf6b7f33fdb4904669f99d795eba4c0f95d7bf/scripts/cocoapods/new_architecture.rb#L79.
 if respond_to?(:install_modules_dependencies, true)
