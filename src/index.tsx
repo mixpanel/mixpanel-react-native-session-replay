@@ -21,14 +21,14 @@ export enum MPSessionReplayRemoteSettingsMode {
  * session replay traffic to the matching region, or pass any other `https://` URL
  * to send traffic through a custom endpoint (for example, a corporate proxy).
  */
-export const MPDataResidency = {
+export const MPDataResidency: Readonly<Record<'US' | 'EU' | 'IN', string>> = {
   /** US data residency (default): `https://api.mixpanel.com`. */
   US: 'https://api.mixpanel.com',
   /** EU data residency: `https://api-eu.mixpanel.com`. */
   EU: 'https://api-eu.mixpanel.com',
   /** India data residency: `https://api-in.mixpanel.com`. */
   IN: 'https://api-in.mixpanel.com',
-} as const;
+};
 
 /**
  * Color configuration for the on-device debug mask overlay.
@@ -267,9 +267,9 @@ export class MPSessionReplayConfig {
    * fully-qualified `https://` URL to route traffic through a custom endpoint such
    * as a corporate proxy.
    *
-   * The URL must use `https://` and must not contain a path. The underlying native
-   * SDKs validate the URL during `initialize` — invalid URLs cause initialization
-   * to fail (Android) or be logged as an error (iOS).
+   * The URL must use `https://`. The underlying native SDKs validate the URL
+   * during `initialize` — invalid URLs cause `initialize` to reject with an error
+   * on both platforms.
    *
    * - **Default:** `MPDataResidency.US` (`https://api.mixpanel.com`)
    */
@@ -289,7 +289,7 @@ export class MPSessionReplayConfig {
     enableLogging = false,
     remoteSettingsMode = MPSessionReplayRemoteSettingsMode.Disabled,
     debugOptions = null,
-    serverURL = MPDataResidency.US as string,
+    serverURL = MPDataResidency.US,
   }: Partial<MPSessionReplayConfig> = {}) {
     this.wifiOnly = wifiOnly;
     this.autoStartRecording = autoStartRecording;
