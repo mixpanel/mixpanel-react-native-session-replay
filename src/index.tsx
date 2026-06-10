@@ -15,6 +15,22 @@ export enum MPSessionReplayRemoteSettingsMode {
 }
 
 /**
+ * Base URLs for Mixpanel's managed data residency regions.
+ *
+ * Pass one of these constants to {@link MPSessionReplayConfig.serverURL} to route
+ * session replay traffic to the matching region, or pass any other `https://` URL
+ * to send traffic through a custom endpoint (for example, a corporate proxy).
+ */
+export const MPDataResidency: Readonly<Record<'US' | 'EU' | 'IN', string>> = {
+  /** US data residency (default): `https://api.mixpanel.com`. */
+  US: 'https://api.mixpanel.com',
+  /** EU data residency: `https://api-eu.mixpanel.com`. */
+  EU: 'https://api-eu.mixpanel.com',
+  /** India data residency: `https://api-in.mixpanel.com`. */
+  IN: 'https://api-in.mixpanel.com',
+};
+
+/**
  * Color configuration for the on-device debug mask overlay.
  *
  * Each color accepts any React Native [`ColorValue`](https://reactnative.dev/docs/colors)
@@ -243,6 +259,22 @@ export class MPSessionReplayConfig {
    */
   debugOptions: MPDebugOptions | null;
 
+  /**
+   * Base URL used to send session replay data to Mixpanel.
+   *
+   * Use one of the {@link MPDataResidency} constants to target a managed region
+   * (`MPDataResidency.US`, `MPDataResidency.EU`, `MPDataResidency.IN`), or pass any
+   * fully-qualified `https://` URL to route traffic through a custom endpoint such
+   * as a corporate proxy.
+   *
+   * The URL must use `https://`. The underlying native SDKs validate the URL
+   * during `initialize` — invalid URLs cause `initialize` to reject with an error
+   * on both platforms.
+   *
+   * - **Default:** `MPDataResidency.US` (`https://api.mixpanel.com`)
+   */
+  serverURL: string;
+
   constructor({
     wifiOnly = true,
     autoStartRecording = true,
@@ -257,6 +289,7 @@ export class MPSessionReplayConfig {
     enableLogging = false,
     remoteSettingsMode = MPSessionReplayRemoteSettingsMode.Disabled,
     debugOptions = null,
+    serverURL = MPDataResidency.US,
   }: Partial<MPSessionReplayConfig> = {}) {
     this.wifiOnly = wifiOnly;
     this.autoStartRecording = autoStartRecording;
@@ -266,6 +299,7 @@ export class MPSessionReplayConfig {
     this.enableLogging = enableLogging;
     this.remoteSettingsMode = remoteSettingsMode;
     this.debugOptions = debugOptions;
+    this.serverURL = serverURL;
   }
 
   private transformMaskValueForPlatform(value: string): string {
@@ -299,9 +333,14 @@ export class MPSessionReplayConfig {
       enableLogging: this.enableLogging,
       remoteSettingsMode: transformedRemoteSettingsMode,
       debugOptions: serializeDebugOptions(this.debugOptions),
-      // iOS-specific config to enable session replay on iOS 26 and later
+      // The native SDKs spell the server URL field differently — Android's
+      // kotlinx.serialization expects `serverUrl`, iOS's Codable expects `serverURL`.
       ...Platform.select({
-        ios: { enableSessionReplayOniOS26AndLater: true },
+        ios: {
+          enableSessionReplayOniOS26AndLater: true,
+          serverURL: this.serverURL,
+        },
+        android: { serverUrl: this.serverURL },
         default: {},
       }),
     };
