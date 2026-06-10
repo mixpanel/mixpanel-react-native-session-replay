@@ -5,7 +5,6 @@
 ### Features
 - add data residency / custom server URL support ([#72](https://github.com/mixpanel/mixpanel-react-native-session-replay/pull/72))
 - add support for Debug Overlay ([#63](https://github.com/mixpanel/mixpanel-react-native-session-replay/pull/63))
-- added remote settings support ([#45](https://github.com/mixpanel/mixpanel-react-native-session-replay/pull/45))
 
 [Full Changelog](https://github.com/mixpanel/mixpanel-react-native-session-replay/compare/v1.0.1...v1.3.0)
 
