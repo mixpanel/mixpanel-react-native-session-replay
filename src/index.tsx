@@ -108,6 +108,11 @@ let wireframeEventEmitter: NativeEventEmitter | null = null;
 // re-init cannot leave the previous config's callback attached.
 let wireframeSubscription: EmitterSubscription | null = null;
 
+// Which `initialize` call the live subscription belongs to. Bumped on every attach, so a
+// call that fails can tell whether the subscription still in place is its own — see
+// `attachWireframeEmitter`.
+let wireframeGeneration = 0;
+
 function getWireframeEventEmitter(): NativeEventEmitter {
   if (wireframeEventEmitter === null) {
     // Constructed lazily: importing this module must not create an emitter for an app
@@ -763,7 +768,9 @@ async function initialize(
   const json = config.toJSON();
   // Attached before the native call so no frame can be emitted before the destination
   // exists.
-  attachWireframeEmitter(config.debugOptions?.wireframeEmitter);
+  const generation = attachWireframeEmitter(
+    config.debugOptions?.wireframeEmitter
+  );
   try {
     return await MixpanelReactNativeSessionReplay.initialize(
       token,
@@ -771,7 +778,7 @@ async function initialize(
       json
     );
   } catch (error) {
-    attachWireframeEmitter(null);
+    detachWireframeEmitterIfCurrent(generation);
     throw error;
   }
 }
@@ -884,12 +891,13 @@ function normalizeSnapshot(raw: MPWireframeSnapshot): MPWireframeSnapshot {
  */
 function attachWireframeEmitter(
   listener: ((snapshot: MPWireframeSnapshot) => void) | null | undefined
-): void {
+): number {
   wireframeSubscription?.remove();
   wireframeSubscription = null;
+  const generation = ++wireframeGeneration;
 
   if (!listener) {
-    return;
+    return generation;
   }
 
   wireframeSubscription = getWireframeEventEmitter().addListener(
@@ -910,6 +918,22 @@ function attachWireframeEmitter(
       listener(snapshot);
     }
   );
+  return generation;
+}
+
+/**
+ * Detaches only if the live subscription is still the one `generation` installed.
+ *
+ * `initialize` is async and nothing stops an app calling it twice. Without this check, an
+ * earlier call that rejects would tear down the subscription a *later*, successful call had
+ * already installed, and that configuration would silently stop receiving snapshots.
+ */
+function detachWireframeEmitterIfCurrent(generation: number): void {
+  if (generation !== wireframeGeneration) {
+    return;
+  }
+  wireframeSubscription?.remove();
+  wireframeSubscription = null;
 }
 
 export { MPSessionReplayView } from './MixpanelSessionReplayView';

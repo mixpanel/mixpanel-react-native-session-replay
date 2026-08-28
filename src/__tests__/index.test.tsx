@@ -919,6 +919,37 @@ describe('MPSessionReplayConfig', () => {
       expect(listener).not.toHaveBeenCalled();
     });
 
+    /**
+     * `initialize` is async and nothing stops an app calling it twice. The destination is
+     * attached before the native call, so a call that rejects must not tear down a
+     * subscription a later, successful call already installed.
+     */
+    it('a failed initialize does not detach a newer callback', async () => {
+      const slowLoser = jest.fn();
+      const winner = jest.fn();
+
+      // A first initialize that rejects, but only after the second has settled.
+      let rejectFirst: (reason: Error) => void = () => {};
+      MockedNativeModule.initialize.mockImplementationOnce(
+        () =>
+          new Promise((_resolve, reject) => {
+            rejectFirst = reject;
+          })
+      );
+
+      const first = listen(slowLoser);
+      await listen(winner);
+      rejectFirst(new Error('init failed'));
+      await expect(first).rejects.toThrow('init failed');
+
+      emitNativeSnapshot(
+        JSON.stringify({ timestamp: 1, viewport: [1, 1], elements: [] })
+      );
+
+      expect(winner).toHaveBeenCalledTimes(1);
+      expect(slowLoser).not.toHaveBeenCalled();
+    });
+
     it('normalizes a missing text key to null', async () => {
       const listener = jest.fn();
       await listen(listener);
