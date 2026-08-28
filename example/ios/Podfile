@@ -19,6 +19,11 @@ end
 target 'MixpanelReactNativeSessionReplayExample' do
   config = use_native_modules!
 
+  # The Session Replay SDK version this package pins carries wireframe support and is not
+  # published yet, so it is consumed from the local working copy. Drop this line once the
+  # version in the podspec is on CocoaPods.
+  pod 'MixpanelSessionReplay', :path => '../../../mixpanel-ios-session-replay'
+
   use_react_native!(
     :path => config[:reactNativePath],
     # An absolute path to your application root.
@@ -31,6 +36,13 @@ target 'MixpanelReactNativeSessionReplayExample' do
     system("cd ../../ && npx bob build --target codegen")
   end
 
+  # Hosted by the app above, so it needs only header/framework search paths — the pods
+  # themselves are already linked into the host. Goldens have to run inside a real app because
+  # the wireframe walk needs a *mounted* React Native surface.
+  target 'WireframeGoldenTests' do
+    inherit! :search_paths
+  end
+
   post_install do |installer|
     # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
     react_native_post_install(
@@ -39,5 +51,16 @@ target 'MixpanelReactNativeSessionReplayExample' do
       :mac_catalyst_enabled => false,
       # :ccache_enabled => true
     )
+
+    # Build `fmt` as C++17. React Native 0.79 pins fmt 11.0.2, whose `consteval` paths do not
+    # compile under Xcode 26's clang; fmt disables them itself below C++20. Affects any RN 0.79
+    # iOS build on that toolchain, nothing to do with this package. Remove once RN ships a
+    # newer fmt.
+    installer.pods_project.targets.each do |target|
+      next unless target.name == 'fmt'
+      target.build_configurations.each do |config|
+        config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
+      end
+    end
   end
 end

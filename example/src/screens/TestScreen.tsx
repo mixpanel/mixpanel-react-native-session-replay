@@ -66,6 +66,45 @@ export default function TestScreen() {
         <Text style={styles.caption}>Caption text in smaller font</Text>
       </View>
 
+      {/* Wireframe Section — only meaningful with `wireframesOptions` on the config */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Wireframe Text</Text>
+        <Text style={styles.caption}>
+          Turn on the Wireframes toggle on the previous screen to see these in
+          the wireframe event.
+        </Text>
+
+        {/* Custom-drawn content the SDK has no way to read: the wireframe would
+            otherwise carry a bare role + bounds shell. */}
+        <MPSessionReplayView wireframeText="Monthly spend chart">
+          <View style={styles.chartPlaceholder}>
+            <View style={[styles.chartBar, styles.chartBarShort]} />
+            <View style={[styles.chartBar, styles.chartBarTall]} />
+            <View style={[styles.chartBar, styles.chartBarMedium]} />
+            <View style={[styles.chartBar, styles.chartBarTallest]} />
+          </View>
+        </MPSessionReplayView>
+
+        {/* Masking and declared text are orthogonal: the pixels are grayed, and the
+            authored label still names the field for the summary. */}
+        <MPSessionReplayView sensitive={true} wireframeText="Card number">
+          <TextInput
+            style={styles.textInput}
+            placeholder="4111 1111 1111 1111"
+            defaultValue="4111 1111 1111 1111"
+          />
+        </MPSessionReplayView>
+
+        {/* Caught by the `strip('account')` rule configured on the previous screen —
+            the element still ships, with no text. */}
+        <Text style={styles.paragraph}>
+          Account 4021-8853 · closing balance
+        </Text>
+
+        {/* Caught by the email redact rule: the surrounding words survive. */}
+        <Text style={styles.paragraph}>Receipt sent to ada@example.com</Text>
+      </View>
+
       {/* Input Elements Section */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Input Controls</Text>
@@ -357,6 +396,25 @@ export default function TestScreen() {
 }
 
 const styles = StyleSheet.create({
+  chartPlaceholder: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'space-around',
+    height: 72,
+    backgroundColor: '#eef2f7',
+    borderRadius: 8,
+    padding: 8,
+    marginBottom: 12,
+  },
+  chartBar: {
+    width: 18,
+    backgroundColor: '#007AFF',
+    borderRadius: 3,
+  },
+  chartBarShort: { height: 24 },
+  chartBarMedium: { height: 36 },
+  chartBarTall: { height: 48 },
+  chartBarTallest: { height: 60 },
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',

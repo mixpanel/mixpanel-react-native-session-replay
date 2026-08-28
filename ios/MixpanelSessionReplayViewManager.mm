@@ -33,4 +33,13 @@ RCT_CUSTOM_VIEW_PROPERTY(sensitive, BOOL, RCTView)
   }
 }
 
+// Declares the text recorded for this view in the wireframe. Orthogonal to `sensitive`:
+// declared text is authored by the developer, so it ships even for a masked view. `nil`
+// clears the declaration, which is what a removed or emptied prop sends.
+RCT_CUSTOM_VIEW_PROPERTY(wireframeText, NSString *, RCTView)
+{
+  NSString *text = [json isKindOfClass:[NSString class]] ? (NSString *)json : nil;
+  [MixpanelSwiftSessionReplay setMPWireframeTextWithValue:text view:view];
+}
+
 @end

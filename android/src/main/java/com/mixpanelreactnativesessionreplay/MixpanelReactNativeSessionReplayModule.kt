@@ -7,9 +7,11 @@ import com.facebook.react.module.annotations.ReactModule
 import com.mixpanel.android.sessionreplay.MPSessionReplay
 import com.mixpanel.android.sessionreplay.MPSessionReplayInstance
 import com.mixpanel.android.sessionreplay.MPSessionReplayError
+import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.mixpanel.android.sessionreplay.models.MPSessionReplayConfig
 import com.mixpanel.android.sessionreplay.sensitive_views.AutoMaskedView
 import com.mixpanel.android.sessionreplay.utils.APIConstants
+import com.mixpanel.android.sessionreplay.wireframe.WireframeDebugSnapshot
 import org.json.JSONObject
 import org.json.JSONArray
 
@@ -51,6 +53,14 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
         return
       }
       println("Mixpanel - Config variable fromJson: $replayConfig")
+
+      // `DebugOptions.emitWireframes` is the serializable switch; `wireframeEmitter` is a
+      // callback and therefore @Transient, so the bridge supplies the destination the config
+      // could not carry. Read off the *decoded* config, not the raw JSON string — the flag is a
+      // real property of the SDK's config model, not a key smuggled past it.
+      replayConfig.debugOptions?.takeIf { it.emitWireframes }?.let { debugOptions ->
+        replayConfig.debugOptions = debugOptions.copy(wireframeEmitter = ::emitWireframeSnapshot)
+      }
 
       // Set library version and name
       APIConstants.setLibVersion(LIB_VERSION)
@@ -175,6 +185,40 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
       promise.resolve(null)
     }
   }
+
+  /**
+   * Forwards one captured wireframe to JavaScript as JSON.
+   *
+   * The snapshot crosses as a string rather than a `WritableMap` because
+   * [WireframeDebugSnapshot.toJson] already exists and is the same shape iOS sends —
+   * building a map here would make the bridge a third place the shape could drift.
+   *
+   * Called on the SDK's debug scope, off the main thread, once per captured frame.
+   * Delivery is best-effort: during teardown or a reload there is no JS runtime to emit
+   * into, and a debug aid must never take down the host app, so failures are logged and
+   * dropped.
+   */
+  private fun emitWireframeSnapshot(snapshot: WireframeDebugSnapshot) {
+    try {
+      if (!reactApplicationContext.hasActiveReactInstance()) return
+      reactApplicationContext
+        .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+        .emit(WIREFRAME_EVENT, snapshot.toJson())
+    } catch (e: Exception) {
+      println("Mixpanel - Failed to deliver wireframe snapshot to JS: ${e.message}")
+    }
+  }
+
+  /**
+   * Required by `NativeEventEmitter` on a TurboModule. No-ops here: events go out over
+   * [DeviceEventManagerModule.RCTDeviceEventEmitter], which broadcasts without per-listener
+   * registration. iOS inherits real implementations from `RCTEventEmitter`.
+   */
+  @ReactMethod
+  override fun addListener(eventName: String) = Unit
+
+  @ReactMethod
+  override fun removeListeners(count: Double) = Unit
 
   /**
    * Safely configure sensitive classes for comprehensive React Native view masking
@@ -309,5 +353,8 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
     const val NAME = "MixpanelReactNativeSessionReplay"
     const val LIB_VERSION = "1.2.0"
     const val MP_LIB = "react-native-sr"
+
+    /** Must match `WIREFRAME_EVENT` in `src/index.tsx` and `supportedEvents` on iOS. */
+    const val WIREFRAME_EVENT = "MixpanelSessionReplayWireframe"
   }
 }

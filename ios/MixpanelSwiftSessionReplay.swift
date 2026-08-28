@@ -18,8 +18,14 @@ import UIKit
     MPSessionReplay.getInstance()?.captureScreenshot()
   }
 
+  /// - Parameter wireframeHandler: Destination for each captured wireframe's debug JSON.
+  ///   Attached only when the config's `debugOptions.emitWireframes` is set — that flag is the
+  ///   switch, and it is a real property of the SDK's config model rather than a key read out of
+  ///   the raw JSON. Without it the SDK builds no snapshot at all, so an app that has not asked
+  ///   pays nothing.
   @objc public static func initialize(
     _ token: String, distinctId: String, configJSON: String,
+    wireframeHandler: ((String) -> Void)? = nil,
     completion: @escaping (Bool, NSError?) -> Void
   ) {
     guard let data = configJSON.data(using: .utf8) else {
@@ -31,7 +37,17 @@ import UIKit
     do {
       APIConstants.setLibVersion(libVersion)
       APIConstants.setMpLib(mpLib)
-      let config = try MPSessionReplayConfig.from(json: data)
+      var config = try MPSessionReplayConfig.from(json: data)
+
+      // `emitWireframes` is the serializable switch; `wireframeEmitter` is a closure and is
+      // therefore excluded from `Codable`, so the bridge supplies the destination the config
+      // could not carry. Read off the *decoded* config, not the raw JSON string.
+      if let wireframeHandler, config.debugOptions?.emitWireframes == true {
+        config.debugOptions?.wireframeEmitter = { snapshot in
+          wireframeHandler(snapshot.toJson())
+        }
+      }
+
       MPSessionReplay.initialize(token: token, distinctId: distinctId, config: config) { result in
         switch result {
         case .success(_?):
@@ -84,6 +100,16 @@ import UIKit
 
   @objc public static func setMPReplaySensitive(value: Bool, view: UIView) {
     view.mpReplaySensitive = value
+  }
+
+  /// Declares the text recorded for `view` in the wireframe.
+  ///
+  /// Orthogonal to `setMPReplaySensitive` — the declared text is sent even when the view
+  /// is masked, because it is authored by the developer rather than scraped from the
+  /// screen. Pass `nil` (or a blank string) to clear it.
+  @objc public static func setMPWireframeText(value: String?, view: UIView) {
+    let trimmed = value?.trimmingCharacters(in: .whitespacesAndNewlines)
+    view.mpWireframeText = (trimmed?.isEmpty == false) ? trimmed : nil
   }
 
   private static func createError(_ message: String, code: Int = -1) -> NSError {

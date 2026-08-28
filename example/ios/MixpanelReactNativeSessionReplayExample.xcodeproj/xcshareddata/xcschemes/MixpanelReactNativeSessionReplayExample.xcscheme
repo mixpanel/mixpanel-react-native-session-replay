@@ -38,6 +38,16 @@
                ReferencedContainer = "container:MixpanelReactNativeSessionReplayExample.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "F926690BD49B92F70D4D031C"
+               BuildableName = "WireframeGoldenTests.xctest"
+               BlueprintName = "WireframeGoldenTests"
+               ReferencedContainer = "container:MixpanelReactNativeSessionReplayExample.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

@@ -1,0 +1,52 @@
+{
+  "viewport": [
+    1080,
+    2340
+  ],
+  "elements": [
+    {
+      "role": "button",
+      "text": null,
+      "bounds": [
+        16,
+        16,
+        240,
+        32
+      ],
+      "maskDecision": "NONE"
+    },
+    {
+      "role": "text",
+      "text": "Cupcake",
+      "bounds": [
+        24,
+        20,
+        120,
+        20
+      ],
+      "maskDecision": "NONE"
+    },
+    {
+      "role": "button",
+      "text": null,
+      "bounds": [
+        176,
+        20,
+        40,
+        20
+      ],
+      "maskDecision": "NONE"
+    },
+    {
+      "role": "text",
+      "text": "Add",
+      "bounds": [
+        176,
+        20,
+        40,
+        20
+      ],
+      "maskDecision": "NONE"
+    }
+  ]
+}
