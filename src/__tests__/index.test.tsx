@@ -950,6 +950,39 @@ describe('MPSessionReplayConfig', () => {
       expect(slowLoser).not.toHaveBeenCalled();
     });
 
+    /**
+     * The mirror of the case above: the *newer* call fails first, so it tears down its
+     * own subscription — having already replaced the older call's. The older call then
+     * succeeds and must end up owning the destination rather than none existing at all.
+     */
+    it('an older initialize that succeeds last still owns the callback', async () => {
+      const older = jest.fn();
+      const newer = jest.fn();
+
+      let resolveOlder: () => void = () => {};
+      MockedNativeModule.initialize.mockImplementationOnce(
+        () =>
+          new Promise<void>((resolve) => {
+            resolveOlder = resolve;
+          })
+      );
+      MockedNativeModule.initialize.mockImplementationOnce(() =>
+        Promise.reject(new Error('newer failed'))
+      );
+
+      const olderCall = listen(older);
+      await expect(listen(newer)).rejects.toThrow('newer failed');
+      resolveOlder();
+      await olderCall;
+
+      emitNativeSnapshot(
+        JSON.stringify({ timestamp: 1, viewport: [1, 1], elements: [] })
+      );
+
+      expect(older).toHaveBeenCalledTimes(1);
+      expect(newer).not.toHaveBeenCalled();
+    });
+
     it('normalizes a missing text key to null', async () => {
       const listener = jest.fn();
       await listen(listener);

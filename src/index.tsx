@@ -767,16 +767,29 @@ async function initialize(
   }
   const json = config.toJSON();
   // Attached before the native call so no frame can be emitted before the destination
-  // exists.
+  // exists, then reconciled once the call settles.
+  //
+  // `initialize` is async and nothing stops an app calling it twice, so the two paths
+  // below hold one invariant between them: a call that succeeds ends up owning the
+  // subscription, and a call that fails never leaves one behind that outlives it.
+  // Without both halves an overlap silently ends with no destination attached at all —
+  // the newer call tears its own down on failure, while the older one has already had
+  // its callback replaced and would never restore it.
   const generation = attachWireframeEmitter(
     config.debugOptions?.wireframeEmitter
   );
   try {
-    return await MixpanelReactNativeSessionReplay.initialize(
+    const result = await MixpanelReactNativeSessionReplay.initialize(
       token,
       distinctId,
       json
     );
+    if (generation !== wireframeGeneration) {
+      // Another initialize attached after this one started. This call is the one that
+      // succeeded, so its configuration is the one that should be delivering.
+      attachWireframeEmitter(config.debugOptions?.wireframeEmitter);
+    }
+    return result;
   } catch (error) {
     detachWireframeEmitterIfCurrent(generation);
     throw error;
