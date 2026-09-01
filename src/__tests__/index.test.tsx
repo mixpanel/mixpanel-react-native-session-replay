@@ -746,9 +746,9 @@ describe('MPSessionReplayConfig', () => {
    * This is the only way to see what a wireframe *says* from React Native: the SDK's own
    * log is deliberately content-free (element text is customer data), and
    * `DebugOptions.wireframeEmitter` is a native callback that cannot cross as JSON. So the
-   * config carries an `emitWireframes` flag for the native SDKs to decode, each bridge
-   * installs its own forwarder, and this module attaches the JavaScript destination at
-   * `initialize`.
+   * config carries an `emitWireframes` flag for each bridge to read — the SDKs themselves do
+   * not model it — each bridge installs its own forwarder, and this module attaches the
+   * JavaScript destination at `initialize`.
    *
    * The flag is derived from the callback rather than declared, and there is no runtime
    * subscribe — the callback's lifetime is the instance's, matching Android, iOS and Flutter.
@@ -805,7 +805,7 @@ describe('MPSessionReplayConfig', () => {
      * Deriving it from the callback is what makes "build snapshots nobody is listening for"
      * unrepresentable: the work is paid for only when there is somewhere to deliver it.
      */
-    it('derives emitWireframes from the callback for the SDKs to decode', () => {
+    it('derives emitWireframes from the callback for the bridges to read', () => {
       const parsed = JSON.parse(
         new MPSessionReplayConfig({
           debugOptions: new MPDebugOptions({

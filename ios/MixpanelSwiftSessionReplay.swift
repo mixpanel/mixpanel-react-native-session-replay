@@ -19,10 +19,9 @@ import UIKit
   }
 
   /// - Parameter wireframeHandler: Destination for each captured wireframe's debug JSON.
-  ///   Attached only when the config's `debugOptions.emitWireframes` is set — that flag is the
-  ///   switch, and it is a real property of the SDK's config model rather than a key read out of
-  ///   the raw JSON. Without it the SDK builds no snapshot at all, so an app that has not asked
-  ///   pays nothing.
+  ///   Attached only when the payload's `debugOptions.emitWireframes` is set — this bridge's own
+  ///   debug switch, read here rather than modelled by the SDK (see `BridgeDebugFlags`). Without
+  ///   it the SDK builds no snapshot at all, so an app that has not asked pays nothing.
   @objc public static func initialize(
     _ token: String, distinctId: String, configJSON: String,
     wireframeHandler: ((String) -> Void)? = nil,
@@ -39,10 +38,13 @@ import UIKit
       APIConstants.setMpLib(mpLib)
       var config = try MPSessionReplayConfig.from(json: data)
 
-      // `emitWireframes` is the serializable switch; `wireframeEmitter` is a closure and is
-      // therefore excluded from `Codable`, so the bridge supplies the destination the config
-      // could not carry. Read off the *decoded* config, not the raw JSON string.
-      if let wireframeHandler, config.debugOptions?.emitWireframes == true {
+      // `emitWireframes` is this bridge's switch, not SDK configuration; the SDK ignores the
+      // key and the bridge attaches the destination the config could not carry.
+      let emitWireframes =
+        (try? JSONDecoder().decode(BridgeDebugFlags.self, from: data))?
+        .debugOptions?.emitWireframes ?? false
+
+      if let wireframeHandler, emitWireframes {
         config.debugOptions?.wireframeEmitter = { snapshot in
           wireframeHandler(snapshot.toJson())
         }
@@ -137,4 +139,18 @@ import UIKit
       sessionReplay?.addSensitiveClass(legacyTextViewClass)
     }
   }
+}
+
+/// The one key JS sends inside `debugOptions` that the SDK does not model.
+///
+/// `emitWireframes` is a bridge-level debug switch rather than SDK configuration: the SDK's
+/// `DebugOptions.wireframeEmitter` is a closure and cannot cross the bridge as JSON, so JS sends
+/// a boolean and the bridge supplies the callback. Keeping the flag here rather than in the SDK's
+/// public `DebugOptions` leaves no inert knob on the native API surface.
+private struct BridgeDebugFlags: Decodable {
+  struct DebugSection: Decodable {
+    var emitWireframes: Bool?
+  }
+
+  var debugOptions: DebugSection?
 }

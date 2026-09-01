@@ -54,12 +54,16 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
       }
       println("Mixpanel - Config variable fromJson: $replayConfig")
 
-      // `DebugOptions.emitWireframes` is the serializable switch; `wireframeEmitter` is a
-      // callback and therefore @Transient, so the bridge supplies the destination the config
-      // could not carry. Read off the *decoded* config, not the raw JSON string — the flag is a
-      // real property of the SDK's config model, not a key smuggled past it.
-      replayConfig.debugOptions?.takeIf { it.emitWireframes }?.let { debugOptions ->
-        replayConfig.debugOptions = debugOptions.copy(wireframeEmitter = ::emitWireframeSnapshot)
+      // `emitWireframes` is this bridge's own debug switch, not SDK configuration: the SDK's
+      // `DebugOptions.wireframeEmitter` is a callback, which cannot cross as JSON, so JS sends a
+      // boolean alongside it and the bridge attaches the destination the config could not carry.
+      // The SDK deliberately does not model the flag, so read it from the payload.
+      val emitWireframes =
+        config.optJSONObject("debugOptions")?.optBoolean("emitWireframes") == true
+      if (emitWireframes) {
+        replayConfig.debugOptions?.let { debugOptions ->
+          replayConfig.debugOptions = debugOptions.copy(wireframeEmitter = ::emitWireframeSnapshot)
+        }
       }
 
       // Set library version and name

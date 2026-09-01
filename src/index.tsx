@@ -287,9 +287,11 @@ function serializeDebugOptions(
             unmaskColor: processOverlayColor(overlayColors.unmaskColor),
             alpha: overlayColors.alpha,
           },
-    // A real property of both SDKs' `DebugOptions`, decoded by their own config parsing — not
-    // a key the bridges pick out of the raw JSON. Their `wireframeEmitter` is a callback and
-    // cannot travel here, so each bridge attaches the destination when this is set.
+    // This package's own debug switch, not SDK configuration: neither SDK models the key, and
+    // both ignore it when they decode this payload. Their `wireframeEmitter` is a callback and
+    // cannot travel here, so each bridge reads the flag and attaches the destination itself.
+    // Keeping it out of the SDKs' public `DebugOptions` keeps an RN-only knob off their native
+    // API surface, where it would do nothing.
     //
     // Derived rather than declared: a caller who wants snapshots supplies a callback, and the
     // flag follows from that. It is never possible to ask the SDKs to build snapshots that

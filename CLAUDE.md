@@ -94,13 +94,16 @@ it only lets the native SDKs know to. Two consequences worth knowing before edit
   object; keep it in step with `WireframesOptionsTest.kt` and
   `MPWireframesOptionsCodableTests.swift` in the SDK repos.
 - **The debug emitter is configured, not toggled.** The SDKs expose
-  `DebugOptions.wireframeEmitter` as a native closure, which cannot cross as JSON. The first
-  attempt smuggled an `emitWireframes` boolean inside `debugOptions` and had each bridge pick it
-  out of the *raw JSON string*, then mutate the decoded config — a side channel the SDKs' own
-  config model knew nothing about. `emitWireframes` is now a **real serializable property** of
-  `DebugOptions` on both SDKs, so their own config parsing decodes it and the bridges read it off
-  the decoded object. Each bridge then attaches the destination the config could not carry, at
-  `initialize` time.
+  `DebugOptions.wireframeEmitter` as a native closure, which cannot cross as JSON, so JS sends an
+  `emitWireframes` boolean inside `debugOptions` and each bridge attaches the destination the
+  config could not carry, at `initialize` time.
+  **The flag belongs to this package, not to the SDKs.** An intermediate version promoted it to a
+  real serializable property of `DebugOptions` on both SDKs, on the grounds that a bridge reading
+  a key out of the raw payload was a side channel. That was the wrong trade: no SDK code ever read
+  the property, so it left a public, settable, permanently inert knob on two GA native API
+  surfaces. It is now read by each bridge from the payload it already parses — `BridgeDebugFlags`
+  on iOS, the existing `JSONObject` on Android — and neither SDK models it. If you find yourself
+  adding an SDK property that only a bridge reads, this is the precedent against it.
   There is deliberately **no runtime setter** on either SDK or in the spec — an intermediate
   version added `setWireframeDebugEmitter`/`setWireframeDebugEnabled` and it was removed on the
   grounds that this should be configurable only, not flippable at runtime by anything holding the
