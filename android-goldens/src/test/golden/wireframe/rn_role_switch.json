@@ -1,0 +1,30 @@
+{
+  "viewport": [
+    1080,
+    2340
+  ],
+  "elements": [
+    {
+      "role": "switch",
+      "text": null,
+      "bounds": [
+        0,
+        0,
+        280,
+        60
+      ],
+      "maskDecision": "NONE"
+    },
+    {
+      "role": "text",
+      "text": "Log in",
+      "bounds": [
+        8,
+        8,
+        240,
+        20
+      ],
+      "maskDecision": "NONE"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "viewport": [
+    1080,
+    2340
+  ],
+  "elements": [
+    {
+      "role": "button",
+      "text": null,
+      "bounds": [
+        16,
+        16,
+        240,
+        56
+      ],
+      "maskDecision": "NONE"
+    },
+    {
+      "role": "text",
+      "text": "Pay",
+      "bounds": [
+        24,
+        20,
+        60,
+        20
+      ],
+      "maskDecision": "NONE"
+    },
+    {
+      "role": "text",
+      "text": null,
+      "bounds": [
+        24,
+        44,
+        200,
+        20
+      ],
+      "maskDecision": "EXPLICIT"
+    }
+  ]
+}

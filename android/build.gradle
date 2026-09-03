@@ -78,8 +78,12 @@ dependencies {
   // Mixpanel Android SDK dependency (minimum v8.0.2)
   implementation "com.mixpanel.android:mixpanel-android:8.0.2"
   
-  // Mixpanel Android Session Replay SDK dependency
-  implementation "com.mixpanel.android:mixpanel-android-session-replay:1.4.0"
+  // Mixpanel Android Session Replay SDK dependency.
+  //
+  // RELEASE: 1.5.0 is the first version expected to carry wireframe support
+  // (`MPSessionReplayConfig.wireframesOptions`, `View.mpWireframeText`). It intentionally
+  // will not resolve until the native SDK release runs.
+  implementation "com.mixpanel.android:mixpanel-android-session-replay:1.5.0"
 }
 
 react {

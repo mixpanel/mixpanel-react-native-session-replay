@@ -1,0 +1,30 @@
+{
+  "viewport": [
+    320,
+    480
+  ],
+  "elements": [
+    {
+      "role": "link",
+      "text": null,
+      "bounds": [
+        0,
+        0,
+        280,
+        60
+      ],
+      "maskDecision": "NONE"
+    },
+    {
+      "role": "text",
+      "text": "Terms of service",
+      "bounds": [
+        8,
+        8,
+        240,
+        20
+      ],
+      "maskDecision": "NONE"
+    }
+  ]
+}

@@ -12,9 +12,12 @@ import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import {
   MPDebugOptions,
+  MPSensitiveRule,
   MPSessionReplay,
   MPSessionReplayConfig,
+  MPSessionReplayMask,
   MPSessionReplayRemoteSettingsMode,
+  MPWireframesOptions,
 } from '@mixpanel/react-native-session-replay';
 import type { RootStackParamList } from '../types/navigation';
 
@@ -29,6 +32,7 @@ export default function HomeScreen() {
     () => `user-${Math.floor(Math.random() * 1e9)}`
   );
   const [debugOverlayEnabled, setDebugOverlayEnabled] = useState(false);
+  const [wireframesEnabled, setWireframesEnabled] = useState(false);
 
   const checkRecordingStatus = async () => {
     try {
@@ -42,10 +46,36 @@ export default function HomeScreen() {
   const handleInitialize = async () => {
     try {
       const config: MPSessionReplayConfig = new MPSessionReplayConfig({
-        // autoMaskedViews: [MPSessionReplayMask.Text],
+        // Wireframes describe what a screen *says*, and masked text is dropped from
+        // that description as well as from the pixels. Leaving `Text` in
+        // `autoMaskedViews` — the default — therefore ships nothing but textless
+        // shells, so the demo narrows automasking to images and web content and
+        // relies on `<MPSessionReplayView sensitive>` for the rest.
+        autoMaskedViews: wireframesEnabled
+          ? [
+              MPSessionReplayMask.Image,
+              MPSessionReplayMask.Web,
+              MPSessionReplayMask.Map,
+            ]
+          : undefined,
         enableLogging: true,
         remoteSettingsMode: MPSessionReplayRemoteSettingsMode.Fallback,
         debugOptions: debugOverlayEnabled ? new MPDebugOptions() : null,
+        wireframesOptions: wireframesEnabled
+          ? new MPWireframesOptions({
+              sensitiveRules: [
+                // Anything mentioning an account number loses its text entirely.
+                MPSensitiveRule.strip('account'),
+                // Email addresses are rewritten in place, so the rest of the line
+                // still describes the screen.
+                MPSensitiveRule.redactRegex(
+                  /[\w.+-]+@[\w-]+\.[\w.]+/g,
+                  '[EMAIL]'
+                ),
+              ],
+              useAccessibilityLabelFallback: true,
+            })
+          : null,
       });
       console.log('config', config);
       await MPSessionReplay.initialize(token, distinctId, config);
@@ -139,6 +169,21 @@ export default function HomeScreen() {
             <Switch
               value={debugOverlayEnabled}
               onValueChange={setDebugOverlayEnabled}
+            />
+          </View>
+
+          <View style={styles.toggleRow}>
+            <View style={styles.toggleLabelContainer}>
+              <Text style={styles.label}>Wireframes</Text>
+              <Text style={styles.toggleHint}>
+                Records a text outline of each screen alongside the replay. Also
+                narrows text automasking, without which every element ships
+                textless.
+              </Text>
+            </View>
+            <Switch
+              value={wireframesEnabled}
+              onValueChange={setWireframesEnabled}
             />
           </View>
 

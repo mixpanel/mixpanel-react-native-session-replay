@@ -1,0 +1,30 @@
+{
+  "viewport": [
+    1080,
+    2340
+  ],
+  "elements": [
+    {
+      "role": "text",
+      "text": "Checkout summary",
+      "bounds": [
+        0,
+        0,
+        300,
+        60
+      ],
+      "maskDecision": "DECLARED"
+    },
+    {
+      "role": "input",
+      "text": null,
+      "bounds": [
+        8,
+        8,
+        264,
+        40
+      ],
+      "maskDecision": "TEXT_ENTRY"
+    }
+  ]
+}

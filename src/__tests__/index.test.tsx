@@ -1,12 +1,18 @@
+import { NativeEventEmitter } from 'react-native';
 import {
+  MP_DEFAULT_REPLACEMENT,
   MPDataResidency,
   MPDebugOptions,
   MPDebugOverlayColors,
+  MPMaskDecision,
+  MPSensitiveRule,
   MPSessionReplay,
   MPSessionReplayConfig,
   MPSessionReplayMask,
   MPSessionReplayRemoteSettingsMode,
+  MPWireframesOptions,
 } from '../index';
+import type { MPWireframeSnapshot } from '../index';
 
 // Mock the native module
 jest.mock('../NativeMixpanelReactNativeSessionReplay', () => ({
@@ -19,6 +25,8 @@ jest.mock('../NativeMixpanelReactNativeSessionReplay', () => ({
     identify: jest.fn().mockResolvedValue(undefined),
     getReplayId: jest.fn().mockResolvedValue(null),
     flush: jest.fn().mockResolvedValue(undefined),
+    addListener: jest.fn(),
+    removeListeners: jest.fn(),
   },
 }));
 
@@ -483,7 +491,10 @@ describe('MPSessionReplayConfig', () => {
       });
       const parsed = JSON.parse(config.toJSON());
 
-      expect(parsed.debugOptions).toEqual({ overlayColors: null });
+      expect(parsed.debugOptions).toEqual({
+        overlayColors: null,
+        emitWireframes: false,
+      });
     });
 
     it('warns and serializes invalid colors as null', () => {
@@ -501,30 +512,13 @@ describe('MPSessionReplayConfig', () => {
       expect(warnSpy.mock.calls[0][0]).toContain('not-a-real-color');
     });
 
-    it('drops debugOptions and warns when __DEV__ is false', () => {
-      (global as any).__DEV__ = false;
-
-      const config = new MPSessionReplayConfig({
-        debugOptions: new MPDebugOptions(),
-      });
-      const parsed = JSON.parse(config.toJSON());
-
-      expect(parsed.debugOptions).toBeNull();
-      expect(warnSpy).toHaveBeenCalledTimes(1);
-      expect(warnSpy.mock.calls[0][0]).toContain('production');
-    });
-
-    it('does not warn in production when debugOptions is null', () => {
-      (global as any).__DEV__ = false;
-
-      const config = new MPSessionReplayConfig();
-      const parsed = JSON.parse(config.toJSON());
-
-      expect(parsed.debugOptions).toBeNull();
-      expect(warnSpy).not.toHaveBeenCalled();
-    });
-
-    it('does not warn in production when overlayColors is null', () => {
+    /**
+     * There is no `__DEV__` gate. `debugOptions` crosses in every bundle, exactly as it
+     * would if configured natively, and each feature decides for itself what a release
+     * build may do — the overlay is restricted to debuggable builds by the native SDKs.
+     * JavaScript holding a second, differently-shaped opinion is what this pins against.
+     */
+    it('passes debugOptions through regardless of the bundle', () => {
       (global as any).__DEV__ = false;
 
       const config = new MPSessionReplayConfig({
@@ -532,8 +526,527 @@ describe('MPSessionReplayConfig', () => {
       });
       const parsed = JSON.parse(config.toJSON());
 
+      expect(parsed.debugOptions).toEqual({
+        overlayColors: null,
+        emitWireframes: false,
+      });
+      expect(warnSpy).not.toHaveBeenCalled();
+    });
+
+    it('still serializes debugOptions as null when it is null', () => {
+      const config = new MPSessionReplayConfig();
+      const parsed = JSON.parse(config.toJSON());
+
       expect(parsed.debugOptions).toBeNull();
       expect(warnSpy).not.toHaveBeenCalled();
     });
   });
+
+  /**
+   * The `wireframesOptions` payload.
+   *
+   * Both native SDKs decode the *same* object — Android's `SensitiveRuleSerializer` and
+   * iOS's `MPSensitiveRule` decoder were written against these field names and `type`
+   * tokens, and each platform's suite pins them as literal text. That is why, unlike
+   * `autoMaskedViews` and `remoteSettingsMode`, nothing here is transformed per platform.
+   * Keep these assertions in step with `WireframesOptionsTest.kt` and
+   * `MPWireframesOptionsCodableTests.swift`.
+   */
+  describe('wireframesOptions serialization', () => {
+    let warnSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+      warnSpy.mockRestore();
+    });
+
+    it('leaves wireframe capture off by default', () => {
+      const config = new MPSessionReplayConfig();
+      const parsed = JSON.parse(config.toJSON());
+
+      expect(config.wireframesOptions).toBeNull();
+      expect(parsed.wireframesOptions).toBeNull();
+    });
+
+    it('turns capture on with the defaults for a bare MPWireframesOptions', () => {
+      const config = new MPSessionReplayConfig({
+        wireframesOptions: new MPWireframesOptions(),
+      });
+      const parsed = JSON.parse(config.toJSON());
+
+      expect(parsed.wireframesOptions).toEqual({
+        sensitiveRules: [],
+        useAccessibilityLabelFallback: false,
+      });
+    });
+
+    it('serializes useAccessibilityLabelFallback', () => {
+      const config = new MPSessionReplayConfig({
+        wireframesOptions: new MPWireframesOptions({
+          useAccessibilityLabelFallback: true,
+        }),
+      });
+      const parsed = JSON.parse(config.toJSON());
+
+      expect(parsed.wireframesOptions.useAccessibilityLabelFallback).toBe(true);
+    });
+
+    it('serializes every rule variant in the shape both SDKs decode', () => {
+      const config = new MPSessionReplayConfig({
+        wireframesOptions: new MPWireframesOptions({
+          sensitiveRules: [
+            MPSensitiveRule.strip('password'),
+            MPSensitiveRule.redact('SSN', '[SSN]'),
+            MPSensitiveRule.stripRegex(/\d{16}/),
+            MPSensitiveRule.redactRegex(/[^@]+@[^@]+/, '[EMAIL]'),
+          ],
+        }),
+      });
+      const parsed = JSON.parse(config.toJSON());
+
+      expect(parsed.wireframesOptions.sensitiveRules).toEqual([
+        { type: 'strip', text: 'password' },
+        { type: 'redact', text: 'SSN', replacement: '[SSN]' },
+        {
+          type: 'stripRegex',
+          pattern: '\\d{16}',
+          caseInsensitive: false,
+          multiline: false,
+          dotMatchesAll: false,
+        },
+        {
+          type: 'redactRegex',
+          pattern: '[^@]+@[^@]+',
+          replacement: '[EMAIL]',
+          caseInsensitive: false,
+          multiline: false,
+          dotMatchesAll: false,
+        },
+      ]);
+    });
+
+    it('defaults the redact replacement to the shared token', () => {
+      const config = new MPSessionReplayConfig({
+        wireframesOptions: new MPWireframesOptions({
+          sensitiveRules: [
+            MPSensitiveRule.redact('SSN'),
+            MPSensitiveRule.redactRegex(/\d+/),
+          ],
+        }),
+      });
+      const parsed = JSON.parse(config.toJSON());
+
+      // Both native SDKs fall back to the same literal when `replacement` is absent, so
+      // this value has to agree with `SensitiveRule.DEFAULT_REPLACEMENT` (Android) and
+      // `MPSensitiveRule.defaultReplacement` (iOS).
+      expect(MP_DEFAULT_REPLACEMENT).toBe('[REDACTED]');
+      expect(parsed.wireframesOptions.sensitiveRules[0].replacement).toBe(
+        MP_DEFAULT_REPLACEMENT
+      );
+      expect(parsed.wireframesOptions.sensitiveRules[1].replacement).toBe(
+        MP_DEFAULT_REPLACEMENT
+      );
+    });
+
+    it('maps the i, m and s regex flags across the bridge', () => {
+      const config = new MPSessionReplayConfig({
+        wireframesOptions: new MPWireframesOptions({
+          sensitiveRules: [MPSensitiveRule.stripRegex(/a.b/ims)],
+        }),
+      });
+      const parsed = JSON.parse(config.toJSON());
+
+      expect(parsed.wireframesOptions.sensitiveRules[0]).toEqual({
+        type: 'stripRegex',
+        pattern: 'a.b',
+        caseInsensitive: true,
+        multiline: true,
+        dotMatchesAll: true,
+      });
+      expect(warnSpy).not.toHaveBeenCalled();
+    });
+
+    it('accepts the g flag silently — native always replaces every match', () => {
+      const config = new MPSessionReplayConfig({
+        wireframesOptions: new MPWireframesOptions({
+          sensitiveRules: [MPSensitiveRule.redactRegex(/a/g)],
+        }),
+      });
+      JSON.parse(config.toJSON());
+
+      expect(warnSpy).not.toHaveBeenCalled();
+    });
+
+    it('warns about flags the native engines do not share, and still sends the pattern', () => {
+      const config = new MPSessionReplayConfig({
+        wireframesOptions: new MPWireframesOptions({
+          sensitiveRules: [MPSensitiveRule.stripRegex(/a/u)],
+        }),
+      });
+      const parsed = JSON.parse(config.toJSON());
+
+      expect(parsed.wireframesOptions.sensitiveRules[0].pattern).toBe('a');
+      expect(warnSpy).toHaveBeenCalledTimes(1);
+      expect(warnSpy.mock.calls[0][0]).toContain('u');
+    });
+
+    it('preserves rule order — a strip short-circuits the rules after it', () => {
+      const config = new MPSessionReplayConfig({
+        wireframesOptions: new MPWireframesOptions({
+          sensitiveRules: [
+            MPSensitiveRule.redact('a'),
+            MPSensitiveRule.strip('b'),
+            MPSensitiveRule.redact('c'),
+          ],
+        }),
+      });
+      const parsed = JSON.parse(config.toJSON());
+
+      expect(
+        parsed.wireframesOptions.sensitiveRules.map((rule: any) => rule.text)
+      ).toEqual(['a', 'b', 'c']);
+    });
+
+    it('sends the identical payload on both platforms', () => {
+      const build = (platform: 'ios' | 'android') => {
+        jest.resetModules();
+        jest.doMock('react-native', () => ({
+          Platform: {
+            OS: platform,
+            select: (obj: any) => obj[platform] ?? obj.default,
+          },
+          processColor: jest.fn(() => 0),
+          requireNativeComponent: jest.fn(() => 'MockedNativeComponent'),
+        }));
+        const mod = require('../index');
+        const config = new mod.MPSessionReplayConfig({
+          wireframesOptions: new mod.MPWireframesOptions({
+            sensitiveRules: [
+              mod.MPSensitiveRule.strip('password'),
+              mod.MPSensitiveRule.redactRegex(/\d+/i, '[N]'),
+            ],
+            useAccessibilityLabelFallback: true,
+          }),
+        });
+        return JSON.parse(config.toJSON()).wireframesOptions;
+      };
+
+      // `autoMaskedViews` and `remoteSettingsMode` need per-platform casing; this one
+      // deliberately does not, so a divergence here is a bug rather than a convention.
+      expect(build('ios')).toEqual(build('android'));
+    });
+  });
+
+  /**
+   * The wireframe debug channel.
+   *
+   * This is the only way to see what a wireframe *says* from React Native: the SDK's own
+   * log is deliberately content-free (element text is customer data), and
+   * `DebugOptions.wireframeEmitter` is a native callback that cannot cross as JSON. So the
+   * config carries an `emitWireframes` flag for each bridge to read — the SDKs themselves do
+   * not model it — each bridge installs its own forwarder, and this module attaches the
+   * JavaScript destination at `initialize`.
+   *
+   * The flag is derived from the callback rather than declared, and there is no runtime
+   * subscribe — the callback's lifetime is the instance's, matching Android, iOS and Flutter.
+   */
+  describe('wireframe debug emitter', () => {
+    const originalDev = (global as any).__DEV__;
+    let warnSpy: jest.SpyInstance;
+
+    /** Initializes with `listener` as the config's emitter — the only way to subscribe. */
+    const listen = async (
+      listener: ((snapshot: MPWireframeSnapshot) => void) | null
+    ) => {
+      await MPSessionReplay.initialize(
+        'test-token',
+        'user-123',
+        new MPSessionReplayConfig({
+          wireframesOptions: new MPWireframesOptions(),
+          debugOptions: new MPDebugOptions({ wireframeEmitter: listener }),
+        })
+      );
+    };
+
+    beforeEach(() => {
+      (global as any).__DEV__ = true;
+      warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    });
+
+    afterEach(async () => {
+      // Every `NativeEventEmitter` over the same native module shares one subscription
+      // registry, so a callback left attached would still receive the next test's payloads
+      // and double its call counts. Re-initializing without one is the teardown.
+      await listen(null);
+      (global as any).__DEV__ = originalDev;
+      warnSpy.mockRestore();
+    });
+
+    it('defaults wireframeEmitter to off', () => {
+      expect(new MPDebugOptions().wireframeEmitter).toBeNull();
+
+      const parsed = JSON.parse(
+        new MPSessionReplayConfig({
+          debugOptions: new MPDebugOptions(),
+        }).toJSON()
+      );
+      expect(parsed.debugOptions.emitWireframes).toBe(false);
+    });
+
+    /**
+     * The flag is a real property of both SDKs' `DebugOptions`, decoded by their own config
+     * parsing. An earlier version smuggled it past that model and had each bridge pick it out of
+     * the raw JSON string, which is why this asserts the serialized shape rather than just the
+     * round trip.
+     *
+     * Deriving it from the callback is what makes "build snapshots nobody is listening for"
+     * unrepresentable: the work is paid for only when there is somewhere to deliver it.
+     */
+    it('derives emitWireframes from the callback for the bridges to read', () => {
+      const parsed = JSON.parse(
+        new MPSessionReplayConfig({
+          debugOptions: new MPDebugOptions({
+            overlayColors: null,
+            wireframeEmitter: () => {},
+          }),
+        }).toJSON()
+      );
+
+      expect(parsed.debugOptions).toEqual({
+        overlayColors: null,
+        emitWireframes: true,
+      });
+    });
+
+    it('delivers in a production bundle too, like the native SDKs', async () => {
+      (global as any).__DEV__ = false;
+      const listener = jest.fn();
+      await listen(listener);
+
+      emitNativeSnapshot(
+        JSON.stringify({ timestamp: 1, viewport: [1, 1], elements: [] })
+      );
+
+      expect(listener).toHaveBeenCalledTimes(1);
+      expect(warnSpy).not.toHaveBeenCalled();
+    });
+
+    /** Configuration only: no runtime subscribe, and no runtime setter. */
+    it('exposes no runtime way in or out', () => {
+      const surface = MPSessionReplay as Record<string, unknown>;
+      expect(surface.addWireframeListener).toBeUndefined();
+      expect(surface.setWireframeDebugEnabled).toBeUndefined();
+      expect(MockedNativeModule.setWireframeDebugEnabled).toBeUndefined();
+    });
+
+    it('parses a snapshot and hands it to the callback', async () => {
+      const listener = jest.fn();
+      await listen(listener);
+
+      const snapshot = {
+        timestamp: 1717171717171,
+        viewport: [393, 852],
+        elements: [
+          {
+            role: 'text',
+            text: 'Order total',
+            bounds: [16, 100, 200, 24],
+            maskDecision: 'NONE',
+          },
+          {
+            role: 'input',
+            text: null,
+            bounds: [16, 140, 200, 44],
+            maskDecision: 'TEXT_ENTRY',
+          },
+        ],
+      };
+      emitNativeSnapshot(JSON.stringify(snapshot));
+
+      expect(listener).toHaveBeenCalledTimes(1);
+      expect(listener).toHaveBeenCalledWith(snapshot);
+    });
+
+    it('replaces the callback on the next initialize', async () => {
+      const first = jest.fn();
+      const second = jest.fn();
+      await listen(first);
+      await listen(second);
+
+      emitNativeSnapshot(
+        JSON.stringify({ timestamp: 1, viewport: [1, 1], elements: [] })
+      );
+
+      expect(first).not.toHaveBeenCalled();
+      expect(second).toHaveBeenCalledTimes(1);
+    });
+
+    it('detaches when initialized without a callback', async () => {
+      const listener = jest.fn();
+      await listen(listener);
+
+      emitNativeSnapshot(
+        JSON.stringify({ timestamp: 1, viewport: [1, 1], elements: [] })
+      );
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      await listen(null);
+      emitNativeSnapshot(
+        JSON.stringify({ timestamp: 2, viewport: [1, 1], elements: [] })
+      );
+      expect(listener).toHaveBeenCalledTimes(1);
+    });
+
+    /**
+     * The destination is attached before the native call so no frame can arrive without one.
+     * A failed initialize has to undo that, or the callback outlives the config that declared
+     * it and fires for whatever initializes next.
+     */
+    it('detaches when initialization fails', async () => {
+      const listener = jest.fn();
+      MockedNativeModule.initialize.mockRejectedValueOnce(
+        new Error('init failed')
+      );
+
+      await expect(listen(listener)).rejects.toThrow('init failed');
+
+      emitNativeSnapshot(
+        JSON.stringify({ timestamp: 1, viewport: [1, 1], elements: [] })
+      );
+      expect(listener).not.toHaveBeenCalled();
+    });
+
+    /**
+     * `initialize` is async and nothing stops an app calling it twice. The destination is
+     * attached before the native call, so a call that rejects must not tear down a
+     * subscription a later, successful call already installed.
+     */
+    it('a failed initialize does not detach a newer callback', async () => {
+      const slowLoser = jest.fn();
+      const winner = jest.fn();
+
+      // A first initialize that rejects, but only after the second has settled.
+      let rejectFirst: (reason: Error) => void = () => {};
+      MockedNativeModule.initialize.mockImplementationOnce(
+        () =>
+          new Promise((_resolve, reject) => {
+            rejectFirst = reject;
+          })
+      );
+
+      const first = listen(slowLoser);
+      await listen(winner);
+      rejectFirst(new Error('init failed'));
+      await expect(first).rejects.toThrow('init failed');
+
+      emitNativeSnapshot(
+        JSON.stringify({ timestamp: 1, viewport: [1, 1], elements: [] })
+      );
+
+      expect(winner).toHaveBeenCalledTimes(1);
+      expect(slowLoser).not.toHaveBeenCalled();
+    });
+
+    /**
+     * The mirror of the case above: the *newer* call fails first, so it tears down its
+     * own subscription — having already replaced the older call's. The older call then
+     * succeeds and must end up owning the destination rather than none existing at all.
+     */
+    it('an older initialize that succeeds last still owns the callback', async () => {
+      const older = jest.fn();
+      const newer = jest.fn();
+
+      let resolveOlder: () => void = () => {};
+      MockedNativeModule.initialize.mockImplementationOnce(
+        () =>
+          new Promise<void>((resolve) => {
+            resolveOlder = resolve;
+          })
+      );
+      MockedNativeModule.initialize.mockImplementationOnce(() =>
+        Promise.reject(new Error('newer failed'))
+      );
+
+      const olderCall = listen(older);
+      await expect(listen(newer)).rejects.toThrow('newer failed');
+      resolveOlder();
+      await olderCall;
+
+      emitNativeSnapshot(
+        JSON.stringify({ timestamp: 1, viewport: [1, 1], elements: [] })
+      );
+
+      expect(older).toHaveBeenCalledTimes(1);
+      expect(newer).not.toHaveBeenCalled();
+    });
+
+    it('normalizes a missing text key to null', async () => {
+      const listener = jest.fn();
+      await listen(listener);
+
+      // iOS omitted the key for a textless element until the SDK was fixed, and a
+      // consumer checking only for `null` then printed the string "undefined". The
+      // declared contract is `text: string | null`, so the bridge holds it either way.
+      emitNativeSnapshot(
+        JSON.stringify({
+          timestamp: 1,
+          viewport: [393, 852],
+          elements: [
+            { role: 'image', bounds: [16, 141, 40, 40], maskDecision: 'NONE' },
+          ],
+        })
+      );
+
+      expect(listener.mock.calls[0][0].elements[0]).toEqual({
+        role: 'image',
+        text: null,
+        bounds: [16, 141, 40, 40],
+        maskDecision: 'NONE',
+      });
+    });
+
+    it('warns and drops a malformed payload instead of throwing', async () => {
+      const listener = jest.fn();
+      await listen(listener);
+
+      // A throw here would propagate through the emitter and take the subscription down
+      // with it, so the frame is dropped instead.
+      expect(() => emitNativeSnapshot('{ not json')).not.toThrow();
+      expect(listener).not.toHaveBeenCalled();
+      expect(warnSpy).toHaveBeenCalledTimes(1);
+      expect(warnSpy.mock.calls[0][0]).toContain('wireframe snapshot');
+    });
+
+    it('exposes the mask decisions the native SDKs report', () => {
+      // Same SCREAMING_SNAKE tokens Android, iOS and Flutter print, so a snapshot read
+      // here is comparable with the other platforms' debug output and the goldens.
+      expect(Object.values(MPMaskDecision)).toEqual([
+        'NONE',
+        'DECLARED',
+        'EXPLICIT',
+        'AUTO',
+        'TEXT_ENTRY',
+        'GEOMETRIC',
+        'RULE_STRIP',
+        'RULE_REDACT',
+      ]);
+    });
+  });
 });
+
+/**
+ * Fires the native event the wireframe bridge listens on.
+ *
+ * The module builds its own `NativeEventEmitter`, so the test drives the event through a
+ * second emitter over the same (mocked) native module — which is how `NativeEventEmitter`
+ * instances share a subscription registry.
+ */
+function emitNativeSnapshot(payload: string) {
+  new NativeEventEmitter(MockedNativeModule).emit(
+    'MixpanelSessionReplayWireframe',
+    payload
+  );
+}

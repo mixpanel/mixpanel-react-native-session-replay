@@ -26,4 +26,9 @@ class MixpanelSessionReplayViewManager : ViewGroupManager<MixpanelSessionReplayV
         println("MixpanelSessionReplayView - setSensitive called with value: $sensitive for view: $view")
         view.setSensitive(sensitive)
     }
+
+    @ReactProp(name = "wireframeText")
+    fun setWireframeText(view: MixpanelSessionReplayView, wireframeText: String?) {
+        view.setWireframeText(wireframeText)
+    }
 }

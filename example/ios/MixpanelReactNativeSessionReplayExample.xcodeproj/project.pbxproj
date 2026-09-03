@@ -11,20 +11,43 @@
 		5DD28CF9F145B10F2B88A54B /* libPods-MixpanelReactNativeSessionReplayExample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 28D78A25F1B4880558918D34 /* libPods-MixpanelReactNativeSessionReplayExample.a */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		8E7B80A6DE44EDDE3C2E542C /* WireframeGoldenHarness.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB7A9E1EEBCE1172684346FF /* WireframeGoldenHarness.swift */; };
+		C6B91ED7ACC21C42B9B97FD7 /* libPods-WireframeGoldenTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 40E959132E686B1136C2728A /* libPods-WireframeGoldenTests.a */; };
+		CEB7775D5C9BFD57E6F7152D /* WireframeGoldenFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491AA17B28C18810A6D234E4 /* WireframeGoldenFormat.swift */; };
 		CFBEEDD2132FA63E1348CADD /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
+		D2BEF7FAD50BE3C5DD235123 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 066B038A02C9939351707239 /* Foundation.framework */; };
+		FD45E753C7893228FA88FB69 /* ReactNativeWireframeGoldenTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F0F3AFC1D19F72D5D34257 /* ReactNativeWireframeGoldenTests.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		2812EC1418E1EECC1121195D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
+			remoteInfo = MixpanelReactNativeSessionReplayExample;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		066B038A02C9939351707239 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		13B07F961A680F5B00A75B9A /* MixpanelReactNativeSessionReplayExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MixpanelReactNativeSessionReplayExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = MixpanelReactNativeSessionReplayExample/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = MixpanelReactNativeSessionReplayExample/Info.plist; sourceTree = "<group>"; };
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = MixpanelReactNativeSessionReplayExample/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		2269FCC572C626744249C334 /* Pods-MixpanelReactNativeSessionReplayExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MixpanelReactNativeSessionReplayExample.debug.xcconfig"; path = "Target Support Files/Pods-MixpanelReactNativeSessionReplayExample/Pods-MixpanelReactNativeSessionReplayExample.debug.xcconfig"; sourceTree = "<group>"; };
 		28D78A25F1B4880558918D34 /* libPods-MixpanelReactNativeSessionReplayExample.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MixpanelReactNativeSessionReplayExample.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		33F26F1F964F2511F4B12F51 /* Pods-WireframeGoldenTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WireframeGoldenTests.debug.xcconfig"; path = "Target Support Files/Pods-WireframeGoldenTests/Pods-WireframeGoldenTests.debug.xcconfig"; sourceTree = "<group>"; };
+		40E959132E686B1136C2728A /* libPods-WireframeGoldenTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-WireframeGoldenTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		491AA17B28C18810A6D234E4 /* WireframeGoldenFormat.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WireframeGoldenFormat.swift; sourceTree = "<group>"; };
 		6E4EFCF473C3576AA99A6B95 /* Pods-MixpanelReactNativeSessionReplayExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MixpanelReactNativeSessionReplayExample.release.xcconfig"; path = "Target Support Files/Pods-MixpanelReactNativeSessionReplayExample/Pods-MixpanelReactNativeSessionReplayExample.release.xcconfig"; sourceTree = "<group>"; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = MixpanelReactNativeSessionReplayExample/AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = MixpanelReactNativeSessionReplayExample/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		90F0F3AFC1D19F72D5D34257 /* ReactNativeWireframeGoldenTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReactNativeWireframeGoldenTests.swift; sourceTree = "<group>"; };
+		9316C85E6899A4E50D5F7BE7 /* Pods-WireframeGoldenTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WireframeGoldenTests.release.xcconfig"; path = "Target Support Files/Pods-WireframeGoldenTests/Pods-WireframeGoldenTests.release.xcconfig"; sourceTree = "<group>"; };
+		DB7A9E1EEBCE1172684346FF /* WireframeGoldenHarness.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WireframeGoldenHarness.swift; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		FD8356E8A7DD17E871486B12 /* WireframeGoldenTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WireframeGoldenTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,6 +56,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				5DD28CF9F145B10F2B88A54B /* libPods-MixpanelReactNativeSessionReplayExample.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F11B85DF44C1CF3149B6BE05 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D2BEF7FAD50BE3C5DD235123 /* Foundation.framework in Frameworks */,
+				C6B91ED7ACC21C42B9B97FD7 /* libPods-WireframeGoldenTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -56,6 +88,8 @@
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				28D78A25F1B4880558918D34 /* libPods-MixpanelReactNativeSessionReplayExample.a */,
+				A21940151DF8035A60F2D6C1 /* iOS */,
+				40E959132E686B1136C2728A /* libPods-WireframeGoldenTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -75,6 +109,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				8C8FA8AE1B834B6FF31A5BCB /* WireframeGoldenTests */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -85,8 +120,28 @@
 			isa = PBXGroup;
 			children = (
 				13B07F961A680F5B00A75B9A /* MixpanelReactNativeSessionReplayExample.app */,
+				FD8356E8A7DD17E871486B12 /* WireframeGoldenTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		8C8FA8AE1B834B6FF31A5BCB /* WireframeGoldenTests */ = {
+			isa = PBXGroup;
+			children = (
+				90F0F3AFC1D19F72D5D34257 /* ReactNativeWireframeGoldenTests.swift */,
+				491AA17B28C18810A6D234E4 /* WireframeGoldenFormat.swift */,
+				DB7A9E1EEBCE1172684346FF /* WireframeGoldenHarness.swift */,
+			);
+			name = WireframeGoldenTests;
+			path = WireframeGoldenTests;
+			sourceTree = "<group>";
+		};
+		A21940151DF8035A60F2D6C1 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				066B038A02C9939351707239 /* Foundation.framework */,
+			);
+			name = iOS;
 			sourceTree = "<group>";
 		};
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
@@ -94,6 +149,8 @@
 			children = (
 				2269FCC572C626744249C334 /* Pods-MixpanelReactNativeSessionReplayExample.debug.xcconfig */,
 				6E4EFCF473C3576AA99A6B95 /* Pods-MixpanelReactNativeSessionReplayExample.release.xcconfig */,
+				9316C85E6899A4E50D5F7BE7 /* Pods-WireframeGoldenTests.release.xcconfig */,
+				33F26F1F964F2511F4B12F51 /* Pods-WireframeGoldenTests.debug.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -122,6 +179,25 @@
 			productReference = 13B07F961A680F5B00A75B9A /* MixpanelReactNativeSessionReplayExample.app */;
 			productType = "com.apple.product-type.application";
 		};
+		F926690BD49B92F70D4D031C /* WireframeGoldenTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4A83E3B76B078D11E357E258 /* Build configuration list for PBXNativeTarget "WireframeGoldenTests" */;
+			buildPhases = (
+				36A21383B52CB6890174A209 /* [CP] Check Pods Manifest.lock */,
+				876AE931A73EEA538E930601 /* Sources */,
+				F11B85DF44C1CF3149B6BE05 /* Frameworks */,
+				4AA56BBAFC41D316E253C2E3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3F28510F9BB1044AF863711C /* PBXTargetDependency */,
+			);
+			name = WireframeGoldenTests;
+			productName = WireframeGoldenTests;
+			productReference = FD8356E8A7DD17E871486B12 /* WireframeGoldenTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -149,6 +225,7 @@
 			projectRoot = "";
 			targets = (
 				13B07F861A680F5B00A75B9A /* MixpanelReactNativeSessionReplayExample */,
+				F926690BD49B92F70D4D031C /* WireframeGoldenTests */,
 			);
 		};
 /* End PBXProject section */
@@ -161,6 +238,13 @@
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				CFBEEDD2132FA63E1348CADD /* PrivacyInfo.xcprivacy in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4AA56BBAFC41D316E253C2E3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -199,6 +283,28 @@
 			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-MixpanelReactNativeSessionReplayExample-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		36A21383B52CB6890174A209 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-WireframeGoldenTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -250,7 +356,26 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		876AE931A73EEA538E930601 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FD45E753C7893228FA88FB69 /* ReactNativeWireframeGoldenTests.swift in Sources */,
+				CEB7775D5C9BFD57E6F7152D /* WireframeGoldenFormat.swift in Sources */,
+				8E7B80A6DE44EDDE3C2E542C /* WireframeGoldenHarness.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		3F28510F9BB1044AF863711C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = MixpanelReactNativeSessionReplayExample;
+			target = 13B07F861A680F5B00A75B9A /* MixpanelReactNativeSessionReplayExample */;
+			targetProxy = 2812EC1418E1EECC1121195D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
@@ -304,6 +429,25 @@
 				PRODUCT_NAME = MixpanelReactNativeSessionReplayExample;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Release;
+		};
+		7D0F905891ECF750EE426349 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9316C85E6899A4E50D5F7BE7 /* Pods-WireframeGoldenTests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mixpanel.example.WireframeGoldenTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MixpanelReactNativeSessionReplayExample.app/MixpanelReactNativeSessionReplayExample";
+				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
 		};
@@ -481,6 +625,24 @@
 			};
 			name = Release;
 		};
+		F2CC8DBBFB1F7A9AA15519BD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 33F26F1F964F2511F4B12F51 /* Pods-WireframeGoldenTests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mixpanel.example.WireframeGoldenTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MixpanelReactNativeSessionReplayExample.app/MixpanelReactNativeSessionReplayExample";
+			};
+			name = Debug;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -489,6 +651,15 @@
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
 				13B07F951A680F5B00A75B9A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4A83E3B76B078D11E357E258 /* Build configuration list for PBXNativeTarget "WireframeGoldenTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7D0F905891ECF750EE426349 /* Release */,
+				F2CC8DBBFB1F7A9AA15519BD /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

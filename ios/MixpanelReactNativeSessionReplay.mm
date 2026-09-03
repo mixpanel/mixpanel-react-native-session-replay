@@ -5,8 +5,32 @@
   #import <MixpanelReactNativeSessionReplay/MixpanelReactNativeSessionReplay-Swift.h>
 #endif
 
-@implementation MixpanelReactNativeSessionReplay
+/// Must match `WIREFRAME_EVENT` in `src/index.tsx` and `WIREFRAME_EVENT` on Android.
+static NSString *const kMixpanelWireframeEvent = @"MixpanelSessionReplayWireframe";
+
+@implementation MixpanelReactNativeSessionReplay {
+  // Set between `startObserving` and `stopObserving`. `sendEventWithName:` logs a warning
+  // when nothing is listening, and wireframes fire once per captured frame, so an app that
+  // enabled the emitter and then removed its listener would otherwise flood the console.
+  BOOL _hasWireframeListeners;
+}
+
 RCT_EXPORT_MODULE()
+
+- (NSArray<NSString *> *)supportedEvents
+{
+  return @[ kMixpanelWireframeEvent ];
+}
+
+- (void)startObserving
+{
+  _hasWireframeListeners = YES;
+}
+
+- (void)stopObserving
+{
+  _hasWireframeListeners = NO;
+}
 
 RCT_EXPORT_METHOD(initialize:(nonnull NSString *)token distinctId:(nonnull NSString *)distinctId configJSON:(nonnull NSString *)configJSON resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject)
 {
@@ -15,7 +39,16 @@ RCT_EXPORT_METHOD(initialize:(nonnull NSString *)token distinctId:(nonnull NSStr
             reject(@"INVALID_CONFIG", @"Token and distinctId are required", nil);
             return;
         }
-      [MixpanelSwiftSessionReplay initialize:token distinctId:distinctId configJSON:configJSON completion:^(BOOL success, NSError * _Nullable error) {
+      // Weak, because the SDK holds this block for the process lifetime — the module must not
+      // be kept alive by it, and after a reload there may be no module to deliver to.
+      __weak MixpanelReactNativeSessionReplay *weakSelf = self;
+      [MixpanelSwiftSessionReplay initialize:token distinctId:distinctId configJSON:configJSON wireframeHandler:^(NSString *snapshotJSON) {
+        MixpanelReactNativeSessionReplay *strongSelf = weakSelf;
+        if (strongSelf == nil || !strongSelf->_hasWireframeListeners) {
+          return;
+        }
+        [strongSelf sendEventWithName:kMixpanelWireframeEvent body:snapshotJSON];
+      } completion:^(BOOL success, NSError * _Nullable error) {
         if (success) {
           resolve(nil);
         } else {

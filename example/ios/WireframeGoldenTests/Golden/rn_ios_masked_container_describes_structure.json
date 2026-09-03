@@ -1,0 +1,41 @@
+{
+  "viewport": [
+    320,
+    480
+  ],
+  "elements": [
+    {
+      "role": "text",
+      "text": null,
+      "bounds": [
+        8,
+        8,
+        240,
+        20
+      ],
+      "maskDecision": "GEOMETRIC"
+    },
+    {
+      "role": "image",
+      "text": null,
+      "bounds": [
+        220,
+        8,
+        24,
+        24
+      ],
+      "maskDecision": "NONE"
+    },
+    {
+      "role": "text",
+      "text": null,
+      "bounds": [
+        8,
+        32,
+        200,
+        20
+      ],
+      "maskDecision": "GEOMETRIC"
+    }
+  ]
+}
