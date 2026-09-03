@@ -67,7 +67,7 @@ dependencies {
     // bumping this and re-running the goldens: a diff here is the upgrade's blast radius on
     // the wireframe, which is the whole point of the module.
     testImplementation("com.facebook.react:react-android:0.79.2")
-    testImplementation("com.mixpanel.android:mixpanel-android-session-replay:1.4.0-wire15")
+    testImplementation("com.mixpanel.android:mixpanel-android-session-replay:1.5.0")
     testImplementation("junit:junit:4.13.2")
 }
 

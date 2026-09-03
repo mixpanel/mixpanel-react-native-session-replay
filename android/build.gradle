@@ -67,10 +67,6 @@ android {
 repositories {
   mavenCentral()
   google()
-  // Last, so it only supplies what the remote repositories don't have. Wireframe support
-  // landed in the Session Replay SDK before it was published, and the SDK repo's
-  // `publishToMavenLocal` is how you build against it in the meantime.
-  mavenLocal()
 }
 
 def kotlin_version = getExtOrDefault("kotlinVersion")
@@ -84,11 +80,10 @@ dependencies {
   
   // Mixpanel Android Session Replay SDK dependency.
   //
-  // RELEASE: this is the pre-release build that carries wireframe support
-  // (`MPSessionReplayConfig.wireframesOptions`, `View.mpWireframeText`). Bump it to the
-  // released version before publishing this package — wireframes are the reason for the
-  // pin, and the module will not compile against 1.4.0.
-  implementation "com.mixpanel.android:mixpanel-android-session-replay:1.4.0-wire15"
+  // RELEASE: 1.5.0 is the first version expected to carry wireframe support
+  // (`MPSessionReplayConfig.wireframesOptions`, `View.mpWireframeText`). It intentionally
+  // will not resolve until the native SDK release runs.
+  implementation "com.mixpanel.android:mixpanel-android-session-replay:1.5.0"
 }
 
 react {

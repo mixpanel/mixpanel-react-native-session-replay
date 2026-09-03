@@ -22,7 +22,7 @@ target 'MixpanelReactNativeSessionReplayExample' do
   # The Session Replay SDK version this package pins carries wireframe support and is not
   # published yet, so it is consumed from the local working copy. Drop this line once the
   # version in the podspec is on CocoaPods.
-  pod 'MixpanelSessionReplay', :path => '../../../mixpanel-ios-session-replay'
+  pod 'MixpanelSessionReplay', :path => '../../../mixpanel-ios-session-replay-package'
 
   use_react_native!(
     :path => config[:reactNativePath],

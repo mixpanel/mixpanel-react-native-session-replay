@@ -124,9 +124,8 @@ it only lets the native SDKs know to. Two consequences worth knowing before edit
   `override(...)`, which itself goes through the native accessor).
 - **The SDK pins are load-bearing.** Wireframes require SDK versions newer than what was
   previously pinned; both `android/build.gradle` and the podspec carry a `RELEASE:` comment,
-  and `android/` / `ios/` will not compile against the older versions. To build against a
-  pre-release Android SDK, run `./gradlew :session-replay:publishToMavenLocal` in the SDK
-  repo — `mavenLocal()` is already in the module's repositories, listed last.
+  and `android/` / `ios/` will not compile against the older versions. The dependency pins
+  intentionally remain unavailable until the native SDK release process publishes them.
 
 ## Important Notes
 
