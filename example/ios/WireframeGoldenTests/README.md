@@ -15,9 +15,8 @@ killing it. Everything else is a plain `xcodebuild test-without-building`. Set `
 to scope the build directory; by default it uses Xcode's shared DerivedData so builds stay
 incremental — a private path means rebuilding all ~78 pods every run, roughly 2.8 GB a tree.
 
-**Not wired into CI yet**, deliberately: this suite and `android-goldens/` both depend on SDK
-versions that are not published, so a CI job would fail at `pod install` / dependency
-resolution rather than on anything real. Wire them up with the version bump.
+**Not wired into CI yet.** When adding it, provision a simulator and Metro as the runner script
+does, and set `DERIVED_DATA` to keep the build isolated from other jobs.
 
 **46 cases, the same case names as `android-goldens/`** and the same principles the Android SDK,
 Flutter and iOS SDK suites pin. Each case writes two files: the element list, and

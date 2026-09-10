@@ -40,15 +40,6 @@ because `ReactTextView` is a `TextView` and `ReactImageView` is an `ImageView` â
 assumption about someone else's library, which a React Native upgrade could break with
 nothing else noticing.
 
-## Prerequisites
-
-The Session Replay SDK build that carries wireframe support is not published yet, so publish
-it to the local Maven cache first:
-
-```bash
-cd ../../mixpanel-android-private && ./gradlew :session-replay:publishToMavenLocal
-```
-
 ## Two React Native facts the harness has to work around
 
 Both cost real time, and both silently produce *passing* tests if you get them wrong.

@@ -123,9 +123,9 @@ it only lets the native SDKs know to. Two consequences worth knowing before edit
   through JNI (use `ReactNativeFeatureFlagsForTests.setUp()`, not the public
   `override(...)`, which itself goes through the native accessor).
 - **The SDK pins are load-bearing.** Wireframes require SDK versions newer than what was
-  previously pinned; both `android/build.gradle` and the podspec carry a `RELEASE:` comment,
-  and `android/` / `ios/` will not compile against the older versions. The dependency pins
-  intentionally remain unavailable until the native SDK release process publishes them.
+  previously pinned: Android Session Replay 1.5.0 and iOS Session Replay 1.6.0 are the minimum
+  supported versions. Both are published dependencies; do not downgrade either pin without
+  removing or conditionally compiling the wireframe bridge surface.
 
 ## Important Notes
 
