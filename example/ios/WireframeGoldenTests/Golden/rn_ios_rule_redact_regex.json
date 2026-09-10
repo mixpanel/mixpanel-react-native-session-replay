@@ -1,0 +1,19 @@
+{
+  "viewport": [
+    320,
+    480
+  ],
+  "elements": [
+    {
+      "role": "text",
+      "text": "Receipt sent to [EMAIL]",
+      "bounds": [
+        16,
+        16,
+        240,
+        24
+      ],
+      "maskDecision": "RULE_REDACT"
+    }
+  ]
+}

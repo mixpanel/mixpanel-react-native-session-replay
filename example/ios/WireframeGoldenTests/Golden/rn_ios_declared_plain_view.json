@@ -1,0 +1,19 @@
+{
+  "viewport": [
+    320,
+    480
+  ],
+  "elements": [
+    {
+      "role": "text",
+      "text": "Monthly spend chart",
+      "bounds": [
+        16,
+        16,
+        280,
+        60
+      ],
+      "maskDecision": "DECLARED"
+    }
+  ]
+}
