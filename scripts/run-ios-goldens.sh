@@ -72,7 +72,7 @@ echo "→ building"
 xcodebuild build-for-testing \
   -workspace "$WORKSPACE" -scheme "$SCHEME" -configuration Debug \
   -destination "platform=iOS Simulator,id=$UDID" ${DERIVED_ARGS[@]+"${DERIVED_ARGS[@]}"} \
-  -quiet 2>&1 | grep -E "error:|warning: no rule|BUILD" || true
+  -quiet 2>&1 | { grep -E "error:|warning: no rule|BUILD" || true; }
 
 echo "→ running goldens"
 xcodebuild test-without-building \

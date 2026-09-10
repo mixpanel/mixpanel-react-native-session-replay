@@ -217,9 +217,14 @@ enum WireframeGoldenHarness {
       // A scene with no text has nothing to wait for; one run loop turn was enough.
       return
     }
-    throw XCTSkip(
-      "React Native never mounted the golden fixture within \(Int(timeout))s. "
-        + "In Debug this usually means Metro is not running: `yarn example start`.")
+    throw NSError(
+      domain: "WireframeGoldenHarness",
+      code: 1,
+      userInfo: [
+        NSLocalizedDescriptionKey:
+          "React Native never mounted the golden fixture within \(Int(timeout))s. "
+          + "In Debug, confirm Metro is running with `yarn example start`."
+      ])
   }
 
   private static func walk(_ view: UIView, _ visit: (UIView) -> Void) {

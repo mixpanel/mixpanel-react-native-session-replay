@@ -1020,6 +1020,28 @@ describe('MPSessionReplayConfig', () => {
       expect(warnSpy.mock.calls[0][0]).toContain('wireframe snapshot');
     });
 
+    it('warns and continues after the consumer callback throws', async () => {
+      let calls = 0;
+      await listen(() => {
+        calls += 1;
+        if (calls === 1) {
+          throw new Error('consumer failed');
+        }
+      });
+
+      const payload = JSON.stringify({
+        timestamp: 1,
+        viewport: [1, 1],
+        elements: [],
+      });
+      expect(() => emitNativeSnapshot(payload)).not.toThrow();
+      expect(() => emitNativeSnapshot(payload)).not.toThrow();
+
+      expect(calls).toBe(2);
+      expect(warnSpy).toHaveBeenCalledTimes(1);
+      expect(warnSpy.mock.calls[0][0]).toContain('wireframe callback threw');
+    });
+
     it('exposes the mask decisions the native SDKs report', () => {
       // Same SCREAMING_SNAKE tokens Android, iOS and Flutter print, so a snapshot read
       // here is comparable with the other platforms' debug output and the goldens.

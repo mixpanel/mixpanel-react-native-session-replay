@@ -930,7 +930,15 @@ function attachWireframeEmitter(
         );
         return;
       }
-      listener(snapshot);
+      try {
+        listener(snapshot);
+      } catch (error) {
+        // A consumer callback is application code. Keep it from escaping through React
+        // Native's synchronous EventEmitter and destabilizing the host app or later frames.
+        console.warn(
+          `MixpanelSessionReplay: wireframe callback threw: ${error}`
+        );
+      }
     }
   );
   return generation;
