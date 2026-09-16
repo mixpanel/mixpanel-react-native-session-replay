@@ -84,6 +84,9 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
               try {
                 // Configure AutoMaskedView categories with comprehensive React Native support
                 configureSensitiveClasses(instance, replayConfig)
+                // Android clears its native declaration registry during reinitialization. React
+                // does not resend unchanged props, so restore declarations cached by mounted views.
+                WireframeTextDeclarationRegistry.reapplyAll()
                 println("Mixpanel - Session Replay initialized successfully with enhanced view masking")
                 promise.resolve(null)
               } catch (e: Exception) {

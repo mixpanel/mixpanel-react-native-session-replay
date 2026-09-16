@@ -4,10 +4,52 @@ import android.content.Context
 import com.facebook.react.views.view.ReactViewGroup
 import com.mixpanel.android.sessionreplay.MPSessionReplay
 import com.mixpanel.android.sessionreplay.extensions.mpWireframeText
+import java.util.Collections
+import java.util.WeakHashMap
+
+internal class WireframeTextDeclaration(
+    private val applyText: (String?) -> Unit,
+) {
+    private var text: String? = null
+
+    init {
+        WireframeTextDeclarationRegistry.register(this)
+    }
+
+    fun update(text: String?) {
+        if (this.text == text) return
+
+        this.text = text
+        applyText(text)
+    }
+
+    fun reapply() {
+        // A null value means the declaration is already absent from the freshly reset SDK registry.
+        text?.let(applyText)
+    }
+}
+
+internal object WireframeTextDeclarationRegistry {
+    private val declarations =
+        Collections.synchronizedMap(WeakHashMap<WireframeTextDeclaration, Unit>())
+
+    fun register(declaration: WireframeTextDeclaration) {
+        declarations[declaration] = Unit
+    }
+
+    fun reapplyAll() {
+        val snapshot = synchronized(declarations) { declarations.keys.toList() }
+        snapshot.forEach(WireframeTextDeclaration::reapply)
+    }
+
+    internal fun clearForTests() {
+        declarations.clear()
+    }
+}
 
 class MixpanelSessionReplayView(context: Context) : ReactViewGroup(context) {
     private var isSensitive: Boolean = false
-    private var wireframeText: String? = null
+    private val wireframeTextDeclaration = WireframeTextDeclaration(::mpWireframeText)
 
     fun setSensitive(sensitive: Boolean) {
         if (isSensitive == sensitive) return
@@ -25,10 +67,7 @@ class MixpanelSessionReplayView(context: Context) : ReactViewGroup(context) {
      * so a prop that arrives before `initialize` still applies.
      */
     fun setWireframeText(text: String?) {
-        if (wireframeText == text) return
-
-        wireframeText = text
-        mpWireframeText(text)
+        wireframeTextDeclaration.update(text)
     }
     
     private fun updateViewSensitivity() {
