@@ -1,0 +1,74 @@
+{
+  "viewport": [
+    1080,
+    2340
+  ],
+  "elements": [
+    {
+      "role": "text",
+      "text": "Checkout",
+      "bounds": [
+        16,
+        16,
+        200,
+        24
+      ],
+      "maskDecision": "NONE"
+    },
+    {
+      "role": "image",
+      "text": "profile photo",
+      "bounds": [
+        16,
+        56,
+        40,
+        40
+      ],
+      "maskDecision": "NONE"
+    },
+    {
+      "role": "input",
+      "text": "Card number",
+      "bounds": [
+        16,
+        112,
+        280,
+        40
+      ],
+      "maskDecision": "DECLARED"
+    },
+    {
+      "role": "text",
+      "text": null,
+      "bounds": [
+        24,
+        168,
+        240,
+        20
+      ],
+      "maskDecision": "GEOMETRIC"
+    },
+    {
+      "role": "text",
+      "text": "Receipt sent to [EMAIL]",
+      "bounds": [
+        16,
+        208,
+        300,
+        22
+      ],
+      "maskDecision": "RULE_REDACT"
+    },
+    {
+      "role": "text",
+      "text": "Place order",
+      "bounds": [
+        24,
+        252,
+        160,
+        24
+      ],
+      "maskDecision": "NONE"
+    }
+  ]
+}

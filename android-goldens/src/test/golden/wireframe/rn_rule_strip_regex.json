@@ -1,0 +1,30 @@
+{
+  "viewport": [
+    1080,
+    2340
+  ],
+  "elements": [
+    {
+      "role": "text",
+      "text": null,
+      "bounds": [
+        16,
+        24,
+        300,
+        22
+      ],
+      "maskDecision": "RULE_STRIP"
+    },
+    {
+      "role": "text",
+      "text": "Order total",
+      "bounds": [
+        16,
+        56,
+        300,
+        22
+      ],
+      "maskDecision": "NONE"
+    }
+  ]
+}

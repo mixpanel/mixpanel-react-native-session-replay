@@ -1,0 +1,19 @@
+{
+  "viewport": [
+    320,
+    480
+  ],
+  "elements": [
+    {
+      "role": "text",
+      "text": "This paragraph is comfortably longer than the fif…",
+      "bounds": [
+        16,
+        16,
+        280,
+        60
+      ],
+      "maskDecision": "NONE"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "viewport": [
+    320,
+    480
+  ],
+  "elements": [
+    {
+      "role": "text",
+      "text": "declared",
+      "bounds": [
+        16,
+        16,
+        240,
+        24
+      ],
+      "maskDecision": "DECLARED"
+    },
+    {
+      "role": "text",
+      "text": "scraped",
+      "bounds": [
+        16,
+        16,
+        240,
+        24
+      ],
+      "maskDecision": "NONE"
+    }
+  ]
+}
