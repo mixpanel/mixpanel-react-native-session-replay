@@ -24,6 +24,8 @@ export default defineConfig([
     },
   },
   {
-    ignores: ['node_modules/', 'lib/'],
+    // `android-goldens/` is a Gradle project (Kotlin + Paparazzi). Its `build/` holds
+    // generated HTML/JS reports, which ESLint would otherwise lint by the hundred.
+    ignores: ['node_modules/', 'lib/', 'android-goldens/build/'],
   },
 ]);

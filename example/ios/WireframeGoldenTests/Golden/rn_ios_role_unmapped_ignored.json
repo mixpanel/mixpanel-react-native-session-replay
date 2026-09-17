@@ -1,0 +1,19 @@
+{
+  "viewport": [
+    320,
+    480
+  ],
+  "elements": [
+    {
+      "role": "text",
+      "text": "Log in",
+      "bounds": [
+        8,
+        8,
+        240,
+        20
+      ],
+      "maskDecision": "NONE"
+    }
+  ]
+}

@@ -14,6 +14,13 @@ export interface Spec extends TurboModule {
   identify(distinctId: string): Promise<void>;
   getReplayId(): Promise<string | null>;
   flush(): Promise<void>;
+
+  // Event-emitter plumbing for the wireframe debug channel. `NativeEventEmitter`
+  // requires both on a TurboModule; on iOS they are inherited from `RCTEventEmitter`,
+  // and on Android they are no-ops because events go out over `RCTDeviceEventEmitter`,
+  // which needs no per-listener registration.
+  addListener(eventName: string): void;
+  removeListeners(count: number): void;
 }
 
 // Type declaration for global to include __turboModuleProxy

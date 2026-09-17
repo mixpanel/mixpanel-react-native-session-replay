@@ -18,8 +18,13 @@ import UIKit
     MPSessionReplay.getInstance()?.captureScreenshot()
   }
 
+  /// - Parameter wireframeHandler: Destination for each captured wireframe's debug JSON.
+  ///   Attached only when the payload's `debugOptions.emitWireframes` is set — this bridge's own
+  ///   debug switch, read here rather than modelled by the SDK (see `BridgeDebugFlags`). Without
+  ///   it the SDK builds no snapshot at all, so an app that has not asked pays nothing.
   @objc public static func initialize(
     _ token: String, distinctId: String, configJSON: String,
+    wireframeHandler: ((String) -> Void)? = nil,
     completion: @escaping (Bool, NSError?) -> Void
   ) {
     guard let data = configJSON.data(using: .utf8) else {
@@ -31,7 +36,20 @@ import UIKit
     do {
       APIConstants.setLibVersion(libVersion)
       APIConstants.setMpLib(mpLib)
-      let config = try MPSessionReplayConfig.from(json: data)
+      var config = try MPSessionReplayConfig.from(json: data)
+
+      // `emitWireframes` is this bridge's switch, not SDK configuration; the SDK ignores the
+      // key and the bridge attaches the destination the config could not carry.
+      let emitWireframes =
+        (try? JSONDecoder().decode(BridgeDebugFlags.self, from: data))?
+        .debugOptions?.emitWireframes ?? false
+
+      if let wireframeHandler, emitWireframes {
+        config.debugOptions?.wireframeEmitter = { snapshot in
+          wireframeHandler(snapshot.toJson())
+        }
+      }
+
       MPSessionReplay.initialize(token: token, distinctId: distinctId, config: config) { result in
         switch result {
         case .success(_?):
@@ -86,6 +104,16 @@ import UIKit
     view.mpReplaySensitive = value
   }
 
+  /// Declares the text recorded for `view` in the wireframe.
+  ///
+  /// Orthogonal to `setMPReplaySensitive` — the declared text is sent even when the view
+  /// is masked, because it is authored by the developer rather than scraped from the
+  /// screen. Pass `nil` (or a blank string) to clear it.
+  @objc public static func setMPWireframeText(value: String?, view: UIView) {
+    let trimmed = value?.trimmingCharacters(in: .whitespacesAndNewlines)
+    view.mpWireframeText = (trimmed?.isEmpty == false) ? trimmed : nil
+  }
+
   private static func createError(_ message: String, code: Int = -1) -> NSError {
     return NSError(
       domain: "MixpanelSessionReplay",
@@ -111,4 +139,18 @@ import UIKit
       sessionReplay?.addSensitiveClass(legacyTextViewClass)
     }
   }
+}
+
+/// The one key JS sends inside `debugOptions` that the SDK does not model.
+///
+/// `emitWireframes` is a bridge-level debug switch rather than SDK configuration: the SDK's
+/// `DebugOptions.wireframeEmitter` is a closure and cannot cross the bridge as JSON, so JS sends
+/// a boolean and the bridge supplies the callback. Keeping the flag here rather than in the SDK's
+/// public `DebugOptions` leaves no inert knob on the native API surface.
+private struct BridgeDebugFlags: Decodable {
+  struct DebugSection: Decodable {
+    var emitWireframes: Bool?
+  }
+
+  var debugOptions: DebugSection?
 }
