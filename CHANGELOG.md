@@ -2,6 +2,9 @@
 
 ## [v1.4.1](https://github.com/mixpanel/mixpanel-react-native-session-replay/tree/v1.4.1) (2026-10-08)
 
+### Fixes
+- Bumped Mixpanel iOS Session Replay SDK to 1.6.1 ([#84](https://github.com/mixpanel/mixpanel-react-native-session-replay/pull/84))
+
 [Full Changelog](https://github.com/mixpanel/mixpanel-react-native-session-replay/compare/v1.4.0...v1.4.1)
 
 ## [v1.4.0](https://github.com/mixpanel/mixpanel-react-native-session-replay/tree/v1.4.0) (2026-09-17)
