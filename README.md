@@ -1,6 +1,6 @@
 # Mixpanel React Native Session Replay
 
-##### _September 17, 2026_ - [v1.4.0](https://github.com/mixpanel/mixpanel-react-native-session-replay/releases/tag/v1.4.0)
+##### _October 08, 2026_ - [v1.4.1](https://github.com/mixpanel/mixpanel-react-native-session-replay/releases/tag/v1.4.1)
 
 Official React Native turbo module for Mixpanel Session Replay. Capture and analyze user interactions in your mobile app by bridging Mixpanel's native iOS and Android session replay SDKs to React Native.
 
