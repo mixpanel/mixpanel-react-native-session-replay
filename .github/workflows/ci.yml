@@ -108,9 +108,25 @@ jobs:
           yarn turbo run build:android --cache-dir="${{ env.TURBO_CACHE_DIR }}"
 
   build-ios:
-    runs-on: macos-latest
+    name: build-ios (Xcode ${{ matrix.xcode }})
+    runs-on: ${{ matrix.runner }}
+    # xcode-27 is a GitHub preview image (queueing/instability possible), so it reports but doesn't block.
+    continue-on-error: ${{ matrix.experimental }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - xcode: '26'
+            xcode-version: '^26.0.0'
+            runner: macos-26
+            experimental: false
+          - xcode: '27'
+            xcode-version: '^27.0.0'
+            runner: xcode-27
+            experimental: true
     env:
-      TURBO_CACHE_DIR: .turbo/ios
+      # Per-Xcode cache: turbo's hash ignores the toolchain, so a shared cache would let one entry skip the other's build.
+      TURBO_CACHE_DIR: .turbo/ios-xcode${{ matrix.xcode }}
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -122,9 +138,9 @@ jobs:
         uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
           path: ${{ env.TURBO_CACHE_DIR }}
-          key: ${{ runner.os }}-turborepo-ios-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-turborepo-ios-xcode${{ matrix.xcode }}-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-turborepo-ios-
+            ${{ runner.os }}-turborepo-ios-xcode${{ matrix.xcode }}-
 
       - name: Check turborepo cache for iOS
         run: |
@@ -138,7 +154,7 @@ jobs:
         if: env.turbo_cache_hit != 1
         uses: maxim-lobanov/setup-xcode@60606e260d2fc5762a71e64e74b2174e8ea3c8bd # v1.6.0
         with:
-          xcode-version: latest-stable
+          xcode-version: ${{ matrix.xcode-version }}
 
       - name: Debug iOS build environment
         if: env.turbo_cache_hit != 1

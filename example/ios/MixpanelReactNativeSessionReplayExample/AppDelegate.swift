@@ -7,7 +7,8 @@ import ReactAppDependencyProvider
 class AppDelegate: UIResponder, UIApplicationDelegate {
   var reactNativeDelegate: ReactNativeDelegate?
   var reactNativeFactory: RCTReactNativeFactory?
-
+  var window: UIWindow?
+  
   func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
