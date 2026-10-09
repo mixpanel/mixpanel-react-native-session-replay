@@ -720,7 +720,6 @@ export class MPSessionReplayConfig {
       // kotlinx.serialization expects `serverUrl`, iOS's Codable expects `serverURL`.
       ...Platform.select({
         ios: {
-          enableSessionReplayOniOS26AndLater: true,
           serverURL: this.serverURL,
         },
         android: { serverUrl: this.serverURL },
