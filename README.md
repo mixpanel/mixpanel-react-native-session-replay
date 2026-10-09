@@ -221,8 +221,8 @@ yarn example android
 
 ## Requirements
 
-- React Native 0.70 or higher
-- iOS 13.0 or higher
+- React Native 0.76 or higher
+- iOS 15.0 or higher
 - Android API Level 21 or higher
 
 ## Architecture Support
