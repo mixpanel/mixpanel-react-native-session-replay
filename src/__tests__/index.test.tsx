@@ -320,38 +320,22 @@ describe('MPSessionReplayConfig', () => {
       expect(parsed.remoteSettingsMode).toBe('fallback');
     });
 
-    it('should include enableSessionReplayOniOS26AndLater for iOS', () => {
-      jest.doMock('react-native', () => ({
-        Platform: {
-          OS: 'ios',
-          select: (obj: any) => obj.ios ?? obj.default,
-        },
-        requireNativeComponent: jest.fn(() => 'MockedNativeComponent'),
-      }));
+    it('should NOT include the removed enableSessionReplayOniOS26AndLater key', () => {
+      for (const OS of ['ios', 'android'] as const) {
+        jest.resetModules();
+        jest.doMock('react-native', () => ({
+          Platform: {
+            OS,
+            select: (obj: any) => obj[OS] ?? obj.default,
+          },
+          requireNativeComponent: jest.fn(() => 'MockedNativeComponent'),
+        }));
 
-      const { MPSessionReplayConfig: IOSConfig } = require('../index');
-      const config = new IOSConfig();
-      const json = config.toJSON();
-      const parsed = JSON.parse(json);
+        const { MPSessionReplayConfig: Config } = require('../index');
+        const parsed = JSON.parse(new Config().toJSON());
 
-      expect(parsed).toHaveProperty('enableSessionReplayOniOS26AndLater', true);
-    });
-
-    it('should NOT include enableSessionReplayOniOS26AndLater for Android', () => {
-      jest.doMock('react-native', () => ({
-        Platform: {
-          OS: 'android',
-          select: (obj: any) => obj.android ?? obj.default,
-        },
-        requireNativeComponent: jest.fn(() => 'MockedNativeComponent'),
-      }));
-
-      const { MPSessionReplayConfig: AndroidConfig } = require('../index');
-      const config = new AndroidConfig();
-      const json = config.toJSON();
-      const parsed = JSON.parse(json);
-
-      expect(parsed).not.toHaveProperty('enableSessionReplayOniOS26AndLater');
+        expect(parsed).not.toHaveProperty('enableSessionReplayOniOS26AndLater');
+      }
     });
 
     it('should serialize serverURL as `serverUrl` for Android', () => {
