@@ -110,8 +110,6 @@ jobs:
   build-ios:
     name: build-ios (Xcode ${{ matrix.xcode }})
     runs-on: ${{ matrix.runner }}
-    # xcode-27 is a GitHub preview image (queueing/instability possible), so it reports but doesn't block.
-    continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
       matrix:
@@ -119,11 +117,9 @@ jobs:
           - xcode: '26'
             xcode-version: '^26.0.0'
             runner: macos-26
-            experimental: false
           - xcode: '27'
             xcode-version: '^27.0.0'
             runner: xcode-27
-            experimental: true
     env:
       # Per-Xcode cache: turbo's hash ignores the toolchain, so a shared cache would let one entry skip the other's build.
       TURBO_CACHE_DIR: .turbo/ios-xcode${{ matrix.xcode }}
