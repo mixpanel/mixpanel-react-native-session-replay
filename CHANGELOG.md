@@ -2,8 +2,10 @@
 
 ## [v2.0.0](https://github.com/mixpanel/mixpanel-react-native-session-replay/tree/v2.0.0) (2026-10-13)
 
-### Features
-- support Xcode 27 — iOS Session Replay SDK 2.0.0 ([#87](https://github.com/mixpanel/mixpanel-react-native-session-replay/pull/87))
+### Breaking Changes ([#87](https://github.com/mixpanel/mixpanel-react-native-session-replay/pull/87))
+- **iOS 15.0 minimum.** The iOS Session Replay SDK is now 2.0.0, which requires iOS 15.0 to meet Xcode 27's minimum deployment target. Need iOS 13–14? Stay on 1.x and build with Xcode 26.
+- **React Native 0.76 minimum.** Earlier React Native versions set an iOS floor below 15.0 (0.71–0.75) or don't provide the `min_ios_version_supported` helper this podspec uses (0.70).
+- **`MixpanelSwiftCommon` 2.0.** SDK 2.0.0 depends on `MixpanelSwiftCommon ~> 2.0`. Apps that also use `mixpanel-react-native` must upgrade it to a release built on `Mixpanel-swift` 7.0.0; earlier releases pin `MixpanelSwiftCommon` 1.x and `pod install` will fail to resolve.
 
 [Full Changelog](https://github.com/mixpanel/mixpanel-react-native-session-replay/compare/v1.4.1...v2.0.0)
 

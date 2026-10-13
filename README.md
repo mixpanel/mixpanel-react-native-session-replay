@@ -28,7 +28,7 @@ yarn add @mixpanel/react-native-session-replay
 ### Platform Setup
 
 #### iOS
-The SDK dependencies are automatically added via CocoaPods. Your project must target iOS 13 or later.
+The SDK dependencies are automatically added via CocoaPods. Your project must target iOS 15 or later.
 
 ```sh
 cd ios && pod install
@@ -224,6 +224,12 @@ yarn example android
 - React Native 0.76 or higher
 - iOS 15.0 or higher
 - Android API Level 21 or higher
+
+### iOS support policy
+
+We add support for each new Xcode's minimum deployment target promptly after its release, and drop the previous minimum only when Apple's App Store SDK requirement forces it.
+
+Version 2.x requires iOS 15.0+ and React Native 0.76+, and builds with Xcode 26 or Xcode 27. If you need to support older iOS versions, stay on 1.x and build with Xcode 26. 1.x receives security and critical fixes until Apple requires the iOS 27 SDK for App Store submissions (April 2027).
 
 ## Architecture Support
 
