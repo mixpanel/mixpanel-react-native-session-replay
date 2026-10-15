@@ -108,6 +108,23 @@ jobs:
           jq --indent 2 --arg v "$VERSION" '.version = $v' "$PACKAGE_JSON" > "$PACKAGE_JSON.tmp"
           mv "$PACKAGE_JSON.tmp" "$PACKAGE_JSON"
 
+      # The native bridges report $lib_version from compile-time constants that nothing
+      # derives from package.json, so the bump above has to write them too. The write is
+      # followed by a re-read: a replacement that matched nothing must fail the release
+      # rather than pass quietly.
+      - name: Sync native lib version
+        id: native_version
+        run: |
+          node scripts/native-version.js
+          node scripts/native-version.js --check
+          # The paths come from the script so the commit below can't fall behind a file
+          # the script learns about later.
+          {
+            echo "files<<EOF"
+            node -p "require('./scripts/native-version').NATIVE_VERSION_FILES.map(f => f.file).join('\n')"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
       - name: Update README version header
         env:
           REPO_URL: ${{ github.server_url }}/${{ github.repository }}
@@ -151,10 +168,14 @@ jobs:
           PACKAGE_JSON: ${{ steps.config.outputs.package_json }}
           CHANGELOG_FILE: ${{ steps.config.outputs.changelog }}
           README: ${{ steps.config.outputs.readme }}
+          NATIVE_FILES: ${{ steps.native_version.outputs.files }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add "$PACKAGE_JSON" "$CHANGELOG_FILE" "$README"
+          # Unquoted on purpose: one path per line, none containing whitespace.
+          # shellcheck disable=SC2086
+          git add $NATIVE_FILES
           git commit -m "release: prepare ${MODULE} ${VERSION}"
           git push origin "$BRANCH"
 
@@ -178,6 +199,7 @@ jobs:
 
           ### Changes
           - Bumps \`version\` to \`${VERSION}\` in \`${PACKAGE_JSON}\`
+          - Writes \`${VERSION}\` into the native \`\$lib_version\` constants (iOS Swift, Android Kotlin)
           - Updates \`${CHANGELOG_FILE}\` with a new section since the last \`${TAG%${VERSION}}*\` tag
           - Updates \`${README}\` version header
 

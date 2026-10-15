@@ -95,6 +95,13 @@ jobs:
           fi
           echo "Version confirmed: $PKG_VERSION"
 
+      # Runs before the toolchain setup because it needs nothing but node: a tag pushed by
+      # hand, bypassing prepare-release, would otherwise publish a package whose native
+      # bridges report a stale $lib_version. `yarn test` below covers the same ground;
+      # this fails in seconds instead of minutes.
+      - name: Validate native lib version matches package.json
+        run: node scripts/native-version.js --check
+
       - name: Setup Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020  # v4.4.0
         with:
