@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.0.1-test](https://github.com/mixpanel/mixpanel-react-native-session-replay/tree/v2.0.1-test) (2026-10-15)
+
+### Fixes
+- report the package version as $lib_version
+
+[Full Changelog](https://github.com/mixpanel/mixpanel-react-native-session-replay/compare/v2.0.0...v2.0.1-test)
+
 ## [v2.0.0](https://github.com/mixpanel/mixpanel-react-native-session-replay/tree/v2.0.0) (2026-10-13)
 
 ### Breaking Changes ([#87](https://github.com/mixpanel/mixpanel-react-native-session-replay/pull/87))
