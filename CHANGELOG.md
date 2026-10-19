@@ -1,5 +1,15 @@
 # Changelog
 
+## [v2.0.1](https://github.com/mixpanel/mixpanel-react-native-session-replay/tree/v2.0.1) (2026-10-19)
+
+### Fixes
+- report the package version as $lib_version ([#89](https://github.com/mixpanel/mixpanel-react-native-session-replay/pull/89))
+
+### Chores
+- bump Android Session Replay SDK to 1.6.0 ([#92](https://github.com/mixpanel/mixpanel-react-native-session-replay/pull/92))
+
+[Full Changelog](https://github.com/mixpanel/mixpanel-react-native-session-replay/compare/v2.0.0...v2.0.1)
+
 ## [v2.0.0](https://github.com/mixpanel/mixpanel-react-native-session-replay/tree/v2.0.0) (2026-10-13)
 
 ### Breaking Changes ([#87](https://github.com/mixpanel/mixpanel-react-native-session-replay/pull/87))
