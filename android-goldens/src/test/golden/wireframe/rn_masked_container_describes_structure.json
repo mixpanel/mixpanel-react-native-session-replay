@@ -13,7 +13,7 @@
         120,
         20
       ],
-      "maskDecision": "GEOMETRIC"
+      "maskDecision": "EXPLICIT"
     },
     {
       "role": "image",
@@ -24,7 +24,7 @@
         40,
         40
       ],
-      "maskDecision": "NONE"
+      "maskDecision": "EXPLICIT"
     },
     {
       "role": "text",
@@ -35,7 +35,7 @@
         200,
         20
       ],
-      "maskDecision": "GEOMETRIC"
+      "maskDecision": "EXPLICIT"
     }
   ]
 }
