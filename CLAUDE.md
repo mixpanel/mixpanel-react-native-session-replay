@@ -80,6 +80,23 @@ The `codegenConfig` in package.json generates:
 - Follows conventional commit format (feat, fix, docs, etc.)
 - Automated via `yarn release` command
 
+### Library version
+
+The `$lib_version` each platform reports is a literal in native source — `libVersion` in
+`ios/MixpanelSwiftSessionReplay.swift` and `LIB_VERSION` in
+`android/.../MixpanelReactNativeSessionReplayModule.kt` — read at `initialize` and passed to
+`APIConstants.setLibVersion(...)`. Neither is derived from `package.json` by the build, so
+`package.json` is kept the single source of truth by tooling instead:
+
+- `scripts/native-version.js` writes `package.json`'s version into both literals.
+  `--check` reports instead of writing and exits non-zero on a mismatch (`yarn verify:version`).
+- `prepare-release.yml` runs it right after bumping `package.json` and commits both files.
+- `src/__tests__/version.test.ts` asserts both literals equal `package.json`, so CI and the
+  pre-publish `yarn test` fail on drift.
+
+**Do not edit either literal by hand.** If you rename a constant, update its pattern in the
+script — a pattern matching anything other than exactly once is an error, not a pass.
+
 ## Wireframes
 
 Wireframe capture (`MPSessionReplayConfig.wireframesOptions`, and the `wireframeText` prop
