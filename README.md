@@ -34,6 +34,14 @@ The SDK dependencies are automatically added via CocoaPods. Your project must ta
 cd ios && pod install
 ```
 
+**Swift Package Manager** (React Native 0.88+, experimental). The package ships a `Package.swift` that React Native's SwiftPM autolinking picks up, so no extra configuration is needed. Opt your app into SwiftPM from its ios folder:
+
+```sh
+npx react-native spm --deintegrate
+```
+
+`--deintegrate` removes CocoaPods from the project, and `npx react-native spm deinit` reverses the change. After a fresh clone, and in CI, run `npx react-native spm` once before building, as you would `pod install`. React Native's SwiftPM support is still experimental; see the [React Native 0.88 release notes](https://reactnative.dev/blog/2026/10/19/react-native-0.88#experimental-swift-package-manager-support) for its current limitations.
+
 #### Android
 Dependencies are automatically added through Gradle. Requirements:
 - Minimum Android SDK 21+

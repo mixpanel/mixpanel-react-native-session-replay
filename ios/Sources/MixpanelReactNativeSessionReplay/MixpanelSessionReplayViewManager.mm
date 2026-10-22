@@ -4,8 +4,11 @@
 
 #if __has_include("MixpanelReactNativeSessionReplay-Swift.h")
   #import <MixpanelReactNativeSessionReplay-Swift.h>
-#else
+#elif __has_include(<MixpanelReactNativeSessionReplay/MixpanelReactNativeSessionReplay-Swift.h>)
   #import <MixpanelReactNativeSessionReplay/MixpanelReactNativeSessionReplay-Swift.h>
+#else
+  // Swift Package Manager exposes the Swift target only as a Clang module.
+  @import MixpanelReactNativeSessionReplaySwift;
 #endif
 
 @interface MixpanelSessionReplayViewManager : RCTViewManager
