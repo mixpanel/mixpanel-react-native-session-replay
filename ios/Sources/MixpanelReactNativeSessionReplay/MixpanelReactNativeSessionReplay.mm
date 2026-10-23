@@ -1,14 +1,5 @@
 #import "MixpanelReactNativeSessionReplay.h"
-#if __has_include("MixpanelReactNativeSessionReplay-Swift.h")
-  #import <MixpanelReactNativeSessionReplay-Swift.h>
-#elif __has_include(<MixpanelReactNativeSessionReplay/MixpanelReactNativeSessionReplay-Swift.h>)
-  #import <MixpanelReactNativeSessionReplay/MixpanelReactNativeSessionReplay-Swift.h>
-#else
-  // Swift Package Manager: the Swift target's generated header is only reachable as a
-  // Clang module, which would pull React's headers into modules too, so the Swift class's
-  // Objective-C interface is declared by hand instead.
-  #import "MixpanelSwiftSessionReplay.h"
-#endif
+#import "MixpanelSwiftSessionReplay.h"
 
 // The codegen'd spec headers are Objective-C++ only, so the spec is imported and adopted
 // here rather than in the public header, which plain Objective-C must be able to read.

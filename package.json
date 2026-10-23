@@ -21,6 +21,7 @@
     "react-native.config.js",
     "MixpanelReactNativeSessionReplay.podspec",
     "!ios/build",
+    "!ios/Package.resolved",
     "!android/build",
     "!android/gradle",
     "!android/gradlew",

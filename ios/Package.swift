@@ -55,10 +55,7 @@ let package = Package(
                 // React Native 0.88 is New Architecture only; CocoaPods sets this through
                 // install_modules_dependencies, which SwiftPM has no equivalent of.
                 .define("RCT_NEW_ARCH_ENABLED", to: "1"),
-                .define("DEBUG", .when(configuration: .debug)),
-                .define("NDEBUG", .when(configuration: .release)),
-            ],
-            linkerSettings: [.linkedFramework("UIKit"), .linkedFramework("Foundation")]
+            ]
         ),
     ],
     cxxLanguageStandard: .cxx20
