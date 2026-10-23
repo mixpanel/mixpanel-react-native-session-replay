@@ -1,18 +1,10 @@
+#import <React/RCTBridgeModule.h>
 #import <React/RCTEventEmitter.h>
 
-#ifdef RCT_NEW_ARCH_ENABLED
-#import <MixpanelReactNativeSessionReplaySpec/MixpanelReactNativeSessionReplaySpec.h>
-#else
-#import <React/RCTBridgeModule.h>
-#endif
-
 // Subclasses `RCTEventEmitter` for the wireframe debug channel. That also supplies the
-// `addListener:`/`removeListeners:` the TurboModule spec now declares, so the protocol
-// conformance below is satisfied without implementing them here.
-#ifdef RCT_NEW_ARCH_ENABLED
-@interface MixpanelReactNativeSessionReplay : RCTEventEmitter <NativeMixpanelReactNativeSessionReplaySpec>
-#else
+// `addListener:`/`removeListeners:` the TurboModule spec now declares, so the spec
+// conformance (declared in the .mm, since the codegen'd spec headers are Objective-C++
+// only) is satisfied without implementing them here.
 @interface MixpanelReactNativeSessionReplay : RCTEventEmitter <RCTBridgeModule>
-#endif
 
 @end

@@ -10,7 +10,8 @@
 //
 // SwiftPM cannot compile Swift and Objective-C++ in one target, so the native module
 // is split in two: the Swift wrapper around the Session Replay iOS SDK, and the
-// Objective-C++ TurboModule and view manager that call into it.
+// Objective-C++ TurboModule and view manager that call into it through
+// MixpanelSwiftSessionReplay.h.
 
 import PackageDescription
 
@@ -54,13 +55,8 @@ let package = Package(
                 // React Native 0.88 is New Architecture only; CocoaPods sets this through
                 // install_modules_dependencies, which SwiftPM has no equivalent of.
                 .define("RCT_NEW_ARCH_ENABLED", to: "1"),
-                // Match the prebuilt React.framework's config-gated C++ ABI, as React
-                // Native's own SwiftPM scaffolder does.
                 .define("DEBUG", .when(configuration: .debug)),
                 .define("NDEBUG", .when(configuration: .release)),
-                // Objective-C++ needs C++ modules to `@import` the Swift target, whose
-                // generated header Xcode only exposes as a Clang module.
-                .unsafeFlags(["-fmodules", "-fcxx-modules"]),
             ],
             linkerSettings: [.linkedFramework("UIKit"), .linkedFramework("Foundation")]
         ),

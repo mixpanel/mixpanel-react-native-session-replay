@@ -4,8 +4,19 @@
 #elif __has_include(<MixpanelReactNativeSessionReplay/MixpanelReactNativeSessionReplay-Swift.h>)
   #import <MixpanelReactNativeSessionReplay/MixpanelReactNativeSessionReplay-Swift.h>
 #else
-  // Swift Package Manager exposes the Swift target only as a Clang module.
-  @import MixpanelReactNativeSessionReplaySwift;
+  // Swift Package Manager: the Swift target's generated header is only reachable as a
+  // Clang module, which would pull React's headers into modules too, so the Swift class's
+  // Objective-C interface is declared by hand instead.
+  #import "MixpanelSwiftSessionReplay.h"
+#endif
+
+// The codegen'd spec headers are Objective-C++ only, so the spec is imported and adopted
+// here rather than in the public header, which plain Objective-C must be able to read.
+#ifdef RCT_NEW_ARCH_ENABLED
+#import <MixpanelReactNativeSessionReplaySpec/MixpanelReactNativeSessionReplaySpec.h>
+
+@interface MixpanelReactNativeSessionReplay () <NativeMixpanelReactNativeSessionReplaySpec>
+@end
 #endif
 
 /// Must match `WIREFRAME_EVENT` in `src/index.tsx` and `WIREFRAME_EVENT` on Android.

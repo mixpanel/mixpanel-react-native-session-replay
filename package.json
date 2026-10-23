@@ -33,6 +33,7 @@
   ],
   "scripts": {
     "example": "yarn workspace mixpanel-react-native-session-replay-example",
+    "example:spm": "yarn workspace mixpanel-react-native-session-replay-example-spm",
     "test": "jest",
     "typecheck": "tsc",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
@@ -94,13 +95,15 @@
     "react-native": "*"
   },
   "workspaces": [
-    "example"
+    "example",
+    "example-spm"
   ],
   "packageManager": "yarn@3.6.1",
   "jest": {
     "preset": "react-native",
     "modulePathIgnorePatterns": [
       "<rootDir>/example/node_modules",
+      "<rootDir>/example-spm/node_modules",
       "<rootDir>/lib/"
     ]
   },

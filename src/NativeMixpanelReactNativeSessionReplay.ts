@@ -37,9 +37,8 @@ let MixpanelReactNativeSessionReplay: Spec | null = null;
 if (isTurboModuleEnabled) {
   // New architecture with TurboModule
   try {
-    MixpanelReactNativeSessionReplay = TurboModuleRegistry.get<Spec>(
-      'MixpanelReactNativeSessionReplay'
-    );
+    MixpanelReactNativeSessionReplay =
+      TurboModuleRegistry.get<Spec>('MixpanelReactNativeSessionReplay') ?? null;
   } catch (e) {
     // TurboModule not available, will fall back to NativeModules
     console.warn(

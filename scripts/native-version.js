@@ -29,7 +29,7 @@ const ROOT = path.join(__dirname, '..');
 const NATIVE_VERSION_FILES = [
   {
     platform: 'ios',
-    file: 'ios/MixpanelSwiftSessionReplay.swift',
+    file: 'ios/Sources/MixpanelReactNativeSessionReplaySwift/MixpanelSwiftSessionReplay.swift',
     constant: 'libVersion',
     pattern: /(?<=static let libVersion = ")[^"]*(?=")/g,
   },

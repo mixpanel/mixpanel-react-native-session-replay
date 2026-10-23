@@ -2,7 +2,9 @@ import Foundation
 import MixpanelSessionReplay
 import UIKit
 
-@objc public class MixpanelSwiftSessionReplay: NSObject {
+// The explicit Objective-C name keeps the class symbol identical under CocoaPods and Swift
+// Package Manager, whose module names differ; MixpanelSwiftSessionReplay.h depends on it.
+@objc(MixpanelSwiftSessionReplay) public class MixpanelSwiftSessionReplay: NSObject {
   static let libVersion = "2.0.1"
   static let mpLib = "react-native-sr"
 
