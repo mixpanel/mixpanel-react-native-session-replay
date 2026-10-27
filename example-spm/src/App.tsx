@@ -39,7 +39,7 @@ export default function App() {
   useEffect(() => {
     const config = new MPSessionReplayConfig({
       enableLogging: true,
-      remoteSettingsMode: MPSessionReplayRemoteSettingsMode.Fallback,
+      remoteSettingsMode: MPSessionReplayRemoteSettingsMode.disabled,
     });
     MPSessionReplay.initialize(TOKEN, DISTINCT_ID, config)
       .then(() => {
