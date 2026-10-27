@@ -44,6 +44,8 @@ export default function App() {
     MPSessionReplay.initialize(TOKEN, DISTINCT_ID, config)
       .then(() => {
         setInitState('initialized');
+        // CI looks for this line in the device log to confirm the native SDK initialized.
+        console.log('SessionReplayExampleSpm: initialized');
         return checkRecordingStatus();
       })
       .catch((error) => {

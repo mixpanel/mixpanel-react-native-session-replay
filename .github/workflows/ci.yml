@@ -169,6 +169,34 @@ jobs:
         run: |
           yarn turbo run build:android --filter=mixpanel-react-native-session-replay-example-spm --cache-dir="${{ env.TURBO_CACHE_DIR }}"
 
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      # Release, so the JavaScript bundle is built into the APK: a Debug build without
+      # Metro would launch without running the example. The example logs the line checked
+      # for once MPSessionReplay.initialize() resolves. The runner executes each line in
+      # its own shell, so the check stays on one line.
+      - name: Launch example on an emulator and verify Session Replay initialized
+        uses: reactivecircus/android-emulator-runner@e89f39f1abbbd05b1113a29cf4db69e7540cae5a # v2
+        env:
+          JAVA_OPTS: "-XX:MaxHeapSize=6g"
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          emulator-boot-timeout: 900
+          working-directory: example-spm
+          script: |
+            adb logcat -c
+            yarn android --no-packager --mode release --active-arch-only
+            sleep 20
+            adb logcat -d -s ReactNativeJS:V | grep -q "SessionReplayExampleSpm: initialized" || { echo "Session Replay did not initialize. JavaScript log:"; adb logcat -d -s ReactNativeJS:V | tail -50; exit 1; }
+
   build-ios:
     name: build-ios (Xcode ${{ matrix.xcode }})
     runs-on: ${{ matrix.runner }}
@@ -288,8 +316,8 @@ jobs:
             echo "turbo_cache_hit=1" >> $GITHUB_ENV
           fi
 
+      # Runs even on a turbo cache hit: the launch below always builds.
       - name: Use appropriate Xcode version
-        if: env.turbo_cache_hit != 1
         uses: maxim-lobanov/setup-xcode@60606e260d2fc5762a71e64e74b2174e8ea3c8bd # v1.6.0
         with:
           xcode-version: ${{ matrix.xcode-version }}
@@ -316,10 +344,40 @@ jobs:
           echo "=== Available iOS Devices ==="
           xcrun simctl list devices available --json | jq -r '.devices | to_entries[] | select(.key | contains("iOS")) | .value[] | select(.isAvailable == true) | "\(.name) (\(.udid))"'
 
+      # Runs even on a turbo cache hit: the launch below always builds.
       - name: Set up Swift Package Manager
-        if: env.turbo_cache_hit != 1
         run: yarn example:spm spm
 
       - name: Build example for iOS
         run: |
           yarn turbo run build:ios --filter=mixpanel-react-native-session-replay-example-spm --cache-dir="${{ env.TURBO_CACHE_DIR }}"
+
+      - name: Select an iPhone simulator
+        run: |
+          UDID=$(xcrun simctl list devices available -j | jq -r '[.devices | to_entries[] | select(.key | contains("SimRuntime.iOS")) | .key as $runtime | .value[] | select(.name | startswith("iPhone")) | {runtime: $runtime, udid}] | sort_by(.runtime) | last | .udid // empty')
+          if [ -z "$UDID" ]; then
+            echo "No iPhone simulator available"; xcrun simctl list devices available; exit 1
+          fi
+          echo "SIM_UDID=$UDID" >> "$GITHUB_ENV"
+
+      # Release, so the JavaScript bundle is built into the app: the Debug build above
+      # skips bundling for the simulator and would launch without running the example.
+      - name: Launch example for iOS
+        run: yarn example:spm ios --udid "$SIM_UDID" --mode Release --no-packager
+
+      - name: Verify app is still running
+        run: |
+          BUNDLE_ID=org.reactjs.native.example.MixpanelReactNativeSessionReplayExampleSpm
+          sleep 15
+          if ! xcrun simctl spawn "$SIM_UDID" launchctl list | grep -Eq "^[0-9]+[[:space:]]+[-0-9]+[[:space:]]+UIKitApplication:$BUNDLE_ID"; then
+            echo "$BUNDLE_ID is not running after launch"; exit 1
+          fi
+
+      # The example logs this line once MPSessionReplay.initialize() resolves.
+      - name: Verify Session Replay initialized
+        run: |
+          LOGS=$(xcrun simctl spawn "$SIM_UDID" log show --last 5m --info --debug \
+            --predicate 'subsystem == "com.facebook.react.log" AND category == "javascript"')
+          if ! grep -q "SessionReplayExampleSpm: initialized" <<< "$LOGS"; then
+            echo "Session Replay did not initialize. JavaScript log:"; echo "$LOGS" | tail -50; exit 1
+          fi
