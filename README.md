@@ -42,6 +42,8 @@ npx react-native spm --deintegrate
 
 `--deintegrate` removes CocoaPods from the project, and `npx react-native spm deinit` reverses the change. After a fresh clone, and in CI, run `npx react-native spm` once before building, as you would `pod install`. React Native's SwiftPM support is still experimental; see the [React Native 0.88 release notes](https://reactnative.dev/blog/2026/10/19/react-native-0.88#experimental-swift-package-manager-support) for its current limitations.
 
+The package pins the [Session Replay iOS SDK](https://github.com/mixpanel/mixpanel-ios-session-replay-package) to the exact version each release is tested with. If your app also depends on `mixpanel-ios-session-replay-package` directly, use the version in [`ios/Package.swift`](ios/Package.swift), or Swift Package Manager won't be able to resolve your packages.
+
 #### Android
 Dependencies are automatically added through Gradle. Requirements:
 - Minimum Android SDK 21+
