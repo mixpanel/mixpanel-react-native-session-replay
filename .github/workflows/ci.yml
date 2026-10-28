@@ -322,8 +322,8 @@ jobs:
         with:
           xcode-version: ${{ matrix.xcode-version }}
 
+      # Runs even on a turbo cache hit: the launch below always builds.
       - name: Debug iOS build environment
-        if: env.turbo_cache_hit != 1
         run: |
           echo "=== System Info ==="
           sw_vers
