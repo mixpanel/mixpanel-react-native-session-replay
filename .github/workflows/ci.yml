@@ -155,7 +155,8 @@ jobs:
       # Release, so the JavaScript bundle is built into the APK: a Debug build without
       # Metro would launch without running the example. The example logs the line checked
       # for once MPSessionReplay.initialize() resolves. The runner executes each line in
-      # its own shell, so the check stays on one line.
+      # its own shell, so the wait and the check each stay on one line. The wait polls
+      # for up to two minutes rather than sleeping a fixed time.
       - name: Launch example on an emulator and verify Session Replay initialized
         uses: reactivecircus/android-emulator-runner@e89f39f1abbbd05b1113a29cf4db69e7540cae5a # v2
         env:
@@ -171,7 +172,7 @@ jobs:
           script: |
             adb logcat -c
             yarn android --no-packager --mode release --active-arch-only
-            sleep 20
+            for i in $(seq 60); do adb logcat -d -s ReactNativeJS:V | grep -q "SessionReplayExampleSpm: initialized" && break; sleep 2; done
             adb logcat -d -s ReactNativeJS:V | grep -q "SessionReplayExampleSpm: initialized" || { echo "Session Replay did not initialize. JavaScript log:"; adb logcat -d -s ReactNativeJS:V | tail -50; exit 1; }
 
   build-ios:
