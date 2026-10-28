@@ -924,7 +924,10 @@ function attachWireframeEmitter(
     (payload: unknown) => {
       let snapshot: MPWireframeSnapshot;
       try {
-        snapshot = normalizeSnapshot(JSON.parse(payload as string));
+        if (typeof payload !== 'string') {
+          throw new TypeError(`expected a JSON string, got ${typeof payload}`);
+        }
+        snapshot = normalizeSnapshot(JSON.parse(payload));
       } catch (error) {
         // The payload is whichever SDK's `toJson()` produced it. Report and drop the
         // frame rather than throwing out of the emitter callback, which would take the
