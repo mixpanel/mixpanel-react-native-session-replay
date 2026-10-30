@@ -15,6 +15,7 @@
 #elif __has_include(<MixpanelReactNativeSessionReplay/MixpanelReactNativeSessionReplay-Swift.h>)
   #import <MixpanelReactNativeSessionReplay/MixpanelReactNativeSessionReplay-Swift.h>
 #else
+// Expected only under SwiftPM; under CocoaPods, reaching here means the generated header wasn't found.
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
