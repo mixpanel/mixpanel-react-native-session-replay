@@ -8,7 +8,7 @@ PODS:
   - hermes-engine (0.79.2):
     - hermes-engine/Pre-built (= 0.79.2)
   - hermes-engine/Pre-built (0.79.2)
-  - MixpanelReactNativeSessionReplay (1.4.1):
+  - MixpanelReactNativeSessionReplay (2.0.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2105,7 +2105,7 @@ SPEC CHECKSUMS:
   fmt: a40bb5bd0294ea969aaaba240a927bd33d878cdd
   glog: 5683914934d5b6e4240e497e0f4a3b42d1854183
   hermes-engine: 314be5250afa5692b57b4dd1705959e1973a8ebe
-  MixpanelReactNativeSessionReplay: da7055738d8b40a52772cdfeb0e323f70f1ef9ac
+  MixpanelReactNativeSessionReplay: 600cd0110fe3457b63a7ce77f8c5cd1d8f9ce040
   MixpanelSessionReplay: dfc6857062d68fc15505c6ec58d462debf0a09e7
   MixpanelSwiftCommon: ccfed9a4daa971d9cb0c32a39ee68d92dad1d838
   RCT-Folly: e78785aa9ba2ed998ea4151e314036f6c49e6d82

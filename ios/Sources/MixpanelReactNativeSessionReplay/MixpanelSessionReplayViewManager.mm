@@ -2,11 +2,7 @@
 #import <React/RCTViewManager.h>
 #import <React/RCTView.h>
 
-#if __has_include("MixpanelReactNativeSessionReplay-Swift.h")
-  #import <MixpanelReactNativeSessionReplay-Swift.h>
-#else
-  #import <MixpanelReactNativeSessionReplay/MixpanelReactNativeSessionReplay-Swift.h>
-#endif
+#import "MixpanelSwiftSessionReplay.h"
 
 @interface MixpanelSessionReplayViewManager : RCTViewManager
 @end

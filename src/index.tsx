@@ -4,9 +4,14 @@ import {
   processColor,
   type ColorValue,
   type EmitterSubscription,
-  type NativeModule,
 } from 'react-native';
 import MixpanelReactNativeSessionReplay from './NativeMixpanelReactNativeSessionReplay';
+
+// React Native 0.88 stopped exporting its `NativeModule` type; derive it from the
+// constructor so this compiles against older and newer React Native types alike.
+type NativeModule = NonNullable<
+  ConstructorParameters<typeof NativeEventEmitter>[0]
+>;
 
 export enum MPSessionReplayMask {
   Text = 'text',
@@ -916,9 +921,12 @@ function attachWireframeEmitter(
 
   wireframeSubscription = getWireframeEventEmitter().addListener(
     WIREFRAME_EVENT,
-    (payload: string) => {
+    (payload: unknown) => {
       let snapshot: MPWireframeSnapshot;
       try {
+        if (typeof payload !== 'string') {
+          throw new TypeError(`expected a JSON string, got ${typeof payload}`);
+        }
         snapshot = normalizeSnapshot(JSON.parse(payload));
       } catch (error) {
         // The payload is whichever SDK's `toJson()` produced it. Report and drop the
