@@ -1,8 +1,13 @@
 #import "MixpanelReactNativeSessionReplay.h"
-#if __has_include("MixpanelReactNativeSessionReplay-Swift.h")
-  #import <MixpanelReactNativeSessionReplay-Swift.h>
-#else
-  #import <MixpanelReactNativeSessionReplay/MixpanelReactNativeSessionReplay-Swift.h>
+#import "MixpanelSwiftSessionReplay.h"
+
+// The codegen'd spec headers are Objective-C++ only, so the spec is imported and adopted
+// here rather than in the public header, which plain Objective-C must be able to read.
+#ifdef RCT_NEW_ARCH_ENABLED
+#import <MixpanelReactNativeSessionReplaySpec/MixpanelReactNativeSessionReplaySpec.h>
+
+@interface MixpanelReactNativeSessionReplay () <NativeMixpanelReactNativeSessionReplaySpec>
+@end
 #endif
 
 /// Must match `WIREFRAME_EVENT` in `src/index.tsx` and `WIREFRAME_EVENT` on Android.

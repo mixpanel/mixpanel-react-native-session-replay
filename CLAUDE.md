@@ -83,7 +83,7 @@ The `codegenConfig` in package.json generates:
 ### Library version
 
 The `$lib_version` each platform reports is a literal in native source — `libVersion` in
-`ios/MixpanelSwiftSessionReplay.swift` and `LIB_VERSION` in
+`ios/Sources/MixpanelReactNativeSessionReplaySwift/MixpanelSwiftSessionReplay.swift` and `LIB_VERSION` in
 `android/.../MixpanelReactNativeSessionReplayModule.kt` — read at `initialize` and passed to
 `APIConstants.setLibVersion(...)`. Neither is derived from `package.json` by the build, so
 `package.json` is kept the single source of truth by tooling instead:

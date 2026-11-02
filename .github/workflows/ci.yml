@@ -10,6 +10,9 @@ on:
     types:
       - checks_requested
 
+permissions:
+  contents: read
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -71,7 +74,7 @@ jobs:
 
       - name: Check turborepo cache for Android
         run: |
-          TURBO_CACHE_STATUS=$(node -p "($(yarn turbo run build:android --cache-dir="${{ env.TURBO_CACHE_DIR }}" --dry=json)).tasks.find(t => t.task === 'build:android').cache.status")
+          TURBO_CACHE_STATUS=$(node -p "($(yarn turbo run build:android --filter=mixpanel-react-native-session-replay-example --cache-dir="${{ env.TURBO_CACHE_DIR }}" --dry=json)).tasks.find(t => t.task === 'build:android').cache.status")
 
           if [[ $TURBO_CACHE_STATUS == "HIT" ]]; then
             echo "turbo_cache_hit=1" >> $GITHUB_ENV
@@ -105,7 +108,72 @@ jobs:
         env:
           JAVA_OPTS: "-XX:MaxHeapSize=6g"
         run: |
-          yarn turbo run build:android --cache-dir="${{ env.TURBO_CACHE_DIR }}"
+          yarn turbo run build:android --filter=mixpanel-react-native-session-replay-example --cache-dir="${{ env.TURBO_CACHE_DIR }}"
+
+  # Same as build-android, for the Swift Package Manager example (React Native 0.88+),
+  # so the library is also compiled and unit-tested against 0.88. The launch below
+  # builds the example in Release, so there's no separate build step or turbo cache.
+  build-android-spm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Install JDK
+        uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4.7.1
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Finalize Android SDK
+        run: |
+          /bin/bash -c "yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses > /dev/null"
+
+      - name: Cache Gradle
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: |
+            ~/.gradle/wrapper
+            ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('example-spm/android/gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Run Android unit tests
+        working-directory: example-spm/android
+        run: ./gradlew :mixpanel_react-native-session-replay:testDebugUnitTest
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      # Release, so the JavaScript bundle is built into the APK: a Debug build without
+      # Metro would launch without running the example. The example logs the line checked
+      # for once MPSessionReplay.initialize() resolves. The runner executes each line in
+      # its own shell, so the wait and the check each stay on one line. The wait polls
+      # for up to two minutes rather than sleeping a fixed time.
+      - name: Launch example on an emulator and verify Session Replay initialized
+        uses: reactivecircus/android-emulator-runner@e89f39f1abbbd05b1113a29cf4db69e7540cae5a # v2
+        env:
+          JAVA_OPTS: "-XX:MaxHeapSize=6g"
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          emulator-boot-timeout: 900
+          working-directory: example-spm
+          script: |
+            adb logcat -c
+            yarn android --no-packager --mode release --active-arch-only
+            for i in $(seq 60); do adb logcat -d -s ReactNativeJS:V | grep -q "SessionReplayExampleSpm: initialized" && break; sleep 2; done
+            adb logcat -d -s ReactNativeJS:V | grep -q "SessionReplayExampleSpm: initialized" || { echo "Session Replay did not initialize. JavaScript log:"; adb logcat -d -s ReactNativeJS:V | tail -50; exit 1; }
 
   build-ios:
     name: build-ios (Xcode ${{ matrix.xcode }})
@@ -140,7 +208,7 @@ jobs:
 
       - name: Check turborepo cache for iOS
         run: |
-          TURBO_CACHE_STATUS=$(node -p "($(yarn turbo run build:ios --cache-dir="${{ env.TURBO_CACHE_DIR }}" --dry=json)).tasks.find(t => t.task === 'build:ios').cache.status")
+          TURBO_CACHE_STATUS=$(node -p "($(yarn turbo run build:ios --filter=mixpanel-react-native-session-replay-example --cache-dir="${{ env.TURBO_CACHE_DIR }}" --dry=json)).tasks.find(t => t.task === 'build:ios').cache.status")
 
           if [[ $TURBO_CACHE_STATUS == "HIT" ]]; then
             echo "turbo_cache_hit=1" >> $GITHUB_ENV
@@ -183,4 +251,86 @@ jobs:
 
       - name: Build example for iOS
         run: |
-          yarn turbo run build:ios --cache-dir="${{ env.TURBO_CACHE_DIR }}"
+          yarn turbo run build:ios --filter=mixpanel-react-native-session-replay-example --cache-dir="${{ env.TURBO_CACHE_DIR }}"
+
+  # Same as build-ios, for the Swift Package Manager example (React Native 0.88+):
+  # `npx react-native spm` takes the place of `pod install`. The launch below builds the
+  # example in Release, so there's no separate build step or turbo cache.
+  build-ios-spm:
+    name: build-ios-spm (Xcode ${{ matrix.xcode }})
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - xcode: '26'
+            xcode-version: '^26.0.0'
+            runner: macos-26
+          - xcode: '27'
+            xcode-version: '^27.0.0'
+            runner: xcode-27
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Use appropriate Xcode version
+        uses: maxim-lobanov/setup-xcode@60606e260d2fc5762a71e64e74b2174e8ea3c8bd # v1.6.0
+        with:
+          xcode-version: ${{ matrix.xcode-version }}
+
+      - name: Debug iOS build environment
+        run: |
+          echo "=== System Info ==="
+          sw_vers
+          echo ""
+          echo "=== macOS Version ==="
+          system_profiler SPSoftwareDataType | grep "System Version"
+          echo ""
+          echo "=== Xcode Info ==="
+          xcodebuild -version
+          xcode-select -p
+          echo ""
+          echo "=== Available SDKs ==="
+          xcodebuild -showsdks | grep -E "(iOS|iPhone)"
+          echo ""
+          echo "=== Default iOS Runtime ==="
+          xcrun simctl list devices available --json | jq -r '.devices | keys[] | select(. | contains("iOS"))'
+          echo ""
+          echo "=== Available iOS Devices ==="
+          xcrun simctl list devices available --json | jq -r '.devices | to_entries[] | select(.key | contains("iOS")) | .value[] | select(.isAvailable == true) | "\(.name) (\(.udid))"'
+
+      - name: Set up Swift Package Manager
+        run: yarn example:spm spm
+
+      - name: Select an iPhone simulator
+        run: |
+          UDID=$(xcrun simctl list devices available -j | jq -r '[.devices | to_entries[] | select(.key | contains("SimRuntime.iOS")) | .key as $runtime | .value[] | select(.name | startswith("iPhone")) | {runtime: $runtime, udid}] | sort_by(.runtime) | last | .udid // empty')
+          if [ -z "$UDID" ]; then
+            echo "No iPhone simulator available"; xcrun simctl list devices available; exit 1
+          fi
+          echo "SIM_UDID=$UDID" >> "$GITHUB_ENV"
+
+      # Release, so the JavaScript bundle is built into the app: a Debug build skips
+      # bundling for the simulator and would launch without running the example.
+      - name: Launch example for iOS
+        run: yarn example:spm ios --udid "$SIM_UDID" --mode Release --no-packager
+
+      - name: Verify app is still running
+        run: |
+          BUNDLE_ID=org.reactjs.native.example.MixpanelReactNativeSessionReplayExampleSpm
+          sleep 15
+          if ! xcrun simctl spawn "$SIM_UDID" launchctl list | grep -Eq "^[0-9]+[[:space:]]+[-0-9]+[[:space:]]+UIKitApplication:$BUNDLE_ID"; then
+            echo "$BUNDLE_ID is not running after launch"; exit 1
+          fi
+
+      # The example logs this line once MPSessionReplay.initialize() resolves.
+      - name: Verify Session Replay initialized
+        run: |
+          LOGS=$(xcrun simctl spawn "$SIM_UDID" log show --last 5m --info --debug \
+            --predicate 'subsystem == "com.facebook.react.log" AND category == "javascript"')
+          if ! grep -q "SessionReplayExampleSpm: initialized" <<< "$LOGS"; then
+            echo "Session Replay did not initialize. JavaScript log:"; echo "$LOGS" | tail -50; exit 1
+          fi
