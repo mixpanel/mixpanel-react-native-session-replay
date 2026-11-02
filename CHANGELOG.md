@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.1.0](https://github.com/mixpanel/mixpanel-react-native-session-replay/tree/v2.1.0) (2026-11-02)
+
+### Features
+- support Swift Package Manager on React Native 0.88+ ([#95](https://github.com/mixpanel/mixpanel-react-native-session-replay/pull/95))
+
+[Full Changelog](https://github.com/mixpanel/mixpanel-react-native-session-replay/compare/v2.0.1...v2.1.0)
+
 ## [v2.0.1](https://github.com/mixpanel/mixpanel-react-native-session-replay/tree/v2.0.1) (2026-10-19)
 
 ### Fixes
