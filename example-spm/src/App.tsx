@@ -24,6 +24,9 @@ type InitState = 'initializing' | 'initialized' | 'failed';
 export default function App() {
   const [initState, setInitState] = useState<InitState>('initializing');
   const [recording, setRecording] = useState(false);
+  const [distinctId, setDistinctId] = useState(DISTINCT_ID);
+  const [identifyInput, setIdentifyInput] = useState('');
+  const [replayId, setReplayId] = useState<string | null>(null);
   const [note, setNote] = useState('Sample text input');
   const [switchValue, setSwitchValue] = useState(false);
 
@@ -35,24 +38,32 @@ export default function App() {
     }
   }, []);
 
+  const initialize = useCallback(
+    (id: string) => {
+      setInitState('initializing');
+      const config = new MPSessionReplayConfig({
+        enableLogging: true,
+        remoteSettingsMode: MPSessionReplayRemoteSettingsMode.Disabled,
+      });
+      return MPSessionReplay.initialize(TOKEN, id, config)
+        .then(() => {
+          setInitState('initialized');
+          // CI looks for this line in the device log to confirm the native SDK initialized.
+          console.log('SessionReplayExampleSpm: initialized');
+          return checkRecordingStatus();
+        })
+        .catch((error) => {
+          setInitState('failed');
+          console.error('Initialization error:', error);
+        });
+    },
+    [checkRecordingStatus]
+  );
+
   // Initialize as soon as the app launches.
   useEffect(() => {
-    const config = new MPSessionReplayConfig({
-      enableLogging: true,
-      remoteSettingsMode: MPSessionReplayRemoteSettingsMode.Disabled,
-    });
-    MPSessionReplay.initialize(TOKEN, DISTINCT_ID, config)
-      .then(() => {
-        setInitState('initialized');
-        // CI looks for this line in the device log to confirm the native SDK initialized.
-        console.log('SessionReplayExampleSpm: initialized');
-        return checkRecordingStatus();
-      })
-      .catch((error) => {
-        setInitState('failed');
-        console.error('Initialization error:', error);
-      });
-  }, [checkRecordingStatus]);
+    initialize(DISTINCT_ID);
+  }, [initialize]);
 
   useEffect(() => {
     if (initState !== 'initialized') {
@@ -74,6 +85,25 @@ export default function App() {
 
   const ready = initState === 'initialized';
 
+  const showIsRecording = async () => {
+    const value = await MPSessionReplay.isRecording();
+    setRecording(value);
+    Alert.alert('isRecording', String(value));
+  };
+
+  const identify = async () => {
+    const id = identifyInput.trim();
+    await MPSessionReplay.identify(id);
+    setDistinctId(id);
+    setIdentifyInput('');
+  };
+
+  const showReplayId = async () => {
+    const id = await MPSessionReplay.getReplayId();
+    setReplayId(id);
+    Alert.alert('Replay ID', id ?? 'null (no active replay)');
+  };
+
   return (
     <ScrollView
       style={styles.container}
@@ -88,8 +118,20 @@ export default function App() {
           {initState === 'failed' && 'Initialization failed'}
           {ready && (recording ? '🔴 Recording' : '⭕ Not Recording')}
         </Text>
-        <Text style={styles.userText}>User: {DISTINCT_ID}</Text>
+        <Text style={styles.userText}>User: {distinctId}</Text>
+        <Text style={styles.userText}>Replay ID: {replayId ?? '—'}</Text>
       </View>
+
+      <TouchableOpacity
+        style={[
+          styles.button,
+          initState === 'initializing' && styles.disabledButton,
+        ]}
+        onPress={() => initialize(distinctId)}
+        disabled={initState === 'initializing'}
+      >
+        <Text style={styles.buttonText}>Initialize</Text>
+      </TouchableOpacity>
 
       <TouchableOpacity
         style={[styles.button, (!ready || recording) && styles.disabledButton]}
@@ -97,6 +139,16 @@ export default function App() {
         disabled={!ready || recording}
       >
         <Text style={styles.buttonText}>Start Recording</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[styles.button, (!ready || recording) && styles.disabledButton]}
+        onPress={() =>
+          run('Start recording (50%)', () => MPSessionReplay.startRecording(50))
+        }
+        disabled={!ready || recording}
+      >
+        <Text style={styles.buttonText}>Start Recording (50% sampling)</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -114,6 +166,43 @@ export default function App() {
       >
         <Text style={styles.buttonText}>Flush Events</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[styles.button, !ready && styles.disabledButton]}
+        onPress={() => run('isRecording', showIsRecording)}
+        disabled={!ready}
+      >
+        <Text style={styles.buttonText}>Is Recording?</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[styles.button, !ready && styles.disabledButton]}
+        onPress={() => run('Get replay ID', showReplayId)}
+        disabled={!ready}
+      >
+        <Text style={styles.buttonText}>Get Replay ID</Text>
+      </TouchableOpacity>
+
+      <View style={styles.identifyRow}>
+        <TextInput
+          style={[styles.input, styles.identifyInput]}
+          value={identifyInput}
+          onChangeText={setIdentifyInput}
+          placeholder="New distinct ID"
+          autoCapitalize="none"
+          autoCorrect={false}
+        />
+        <TouchableOpacity
+          style={[
+            styles.identifyButton,
+            (!ready || !identifyInput.trim()) && styles.disabledButton,
+          ]}
+          onPress={() => run('Identify', identify)}
+          disabled={!ready || !identifyInput.trim()}
+        >
+          <Text style={styles.buttonText}>Identify</Text>
+        </TouchableOpacity>
+      </View>
 
       <Text style={styles.sectionTitle}>Text</Text>
       <Text style={styles.paragraph}>
@@ -208,6 +297,23 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 8,
     marginVertical: 6,
+    alignItems: 'center',
+    ...shadow,
+  },
+  identifyRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 6,
+  },
+  identifyInput: {
+    flex: 1,
+    marginRight: 8,
+  },
+  identifyButton: {
+    backgroundColor: '#34C759',
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    borderRadius: 8,
     alignItems: 'center',
     ...shadow,
   },

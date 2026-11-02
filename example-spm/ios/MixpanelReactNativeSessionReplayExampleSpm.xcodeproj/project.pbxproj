@@ -3,20 +3,20 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		17CA21E30A8FFCB9D0FC1E35 /* ReactNativeHeaders in Frameworks */ = {isa = PBXBuildFile; productRef = 920F69A9DF98D37C8308D020 /* ReactNativeHeaders */; };
+		3F1E298E4A2D7CA403A328B5 /* ReactCodegen in Frameworks */ = {isa = PBXBuildFile; productRef = 947DD5EF3BE079FB7F5AFF87 /* ReactCodegen */; };
+		50A8621D202A6CFB97E2C1B5 /* ReactAppDependencyProvider in Frameworks */ = {isa = PBXBuildFile; productRef = F3857EDDA38AFC0011322D6D /* ReactAppDependencyProvider */; };
+		69A7AB74931112BD2779B631 /* ReactNativeDependenciesHeaders in Frameworks */ = {isa = PBXBuildFile; productRef = 8332BE36B9C49BD2E49347C1 /* ReactNativeDependenciesHeaders */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		761780EF2CA45674006654EF /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EE2CA45674006654EF /* SceneDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		94F7C9B714A718310DA6BE9C /* ReactHeaders in Frameworks */ = {isa = PBXBuildFile; productRef = 512EBECF5434FD7A6AF7C967 /* ReactHeaders */;};
-		17CA21E30A8FFCB9D0FC1E35 /* ReactNativeHeaders in Frameworks */ = {isa = PBXBuildFile; productRef = 920F69A9DF98D37C8308D020 /* ReactNativeHeaders */;};
-		69A7AB74931112BD2779B631 /* ReactNativeDependenciesHeaders in Frameworks */ = {isa = PBXBuildFile; productRef = 8332BE36B9C49BD2E49347C1 /* ReactNativeDependenciesHeaders */;};
-		D6BD17EA9023C9F39246B71F /* Autolinked in Frameworks */ = {isa = PBXBuildFile; productRef = 3AFDEFB917B01458307FDE0A /* Autolinked */;};
-		3F1E298E4A2D7CA403A328B5 /* ReactCodegen in Frameworks */ = {isa = PBXBuildFile; productRef = 947DD5EF3BE079FB7F5AFF87 /* ReactCodegen */;};
-		50A8621D202A6CFB97E2C1B5 /* ReactAppDependencyProvider in Frameworks */ = {isa = PBXBuildFile; productRef = F3857EDDA38AFC0011322D6D /* ReactAppDependencyProvider */;};
+		94F7C9B714A718310DA6BE9C /* ReactHeaders in Frameworks */ = {isa = PBXBuildFile; productRef = 512EBECF5434FD7A6AF7C967 /* ReactHeaders */; };
+		D6BD17EA9023C9F39246B71F /* Autolinked in Frameworks */ = {isa = PBXBuildFile; productRef = 3AFDEFB917B01458307FDE0A /* Autolinked */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -98,14 +98,6 @@
 
 /* Begin PBXNativeTarget section */
 		13B07F861A680F5B00A75B9A /* MixpanelReactNativeSessionReplayExampleSpm */ = {
-			packageProductDependencies = (
-				512EBECF5434FD7A6AF7C967 /* ReactHeaders */,
-				920F69A9DF98D37C8308D020 /* ReactNativeHeaders */,
-				8332BE36B9C49BD2E49347C1 /* ReactNativeDependenciesHeaders */,
-				3AFDEFB917B01458307FDE0A /* Autolinked */,
-				947DD5EF3BE079FB7F5AFF87 /* ReactCodegen */,
-				F3857EDDA38AFC0011322D6D /* ReactAppDependencyProvider */,
-			);
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "MixpanelReactNativeSessionReplayExampleSpm" */;
 			buildPhases = (
@@ -121,6 +113,14 @@
 			dependencies = (
 			);
 			name = MixpanelReactNativeSessionReplayExampleSpm;
+			packageProductDependencies = (
+				512EBECF5434FD7A6AF7C967 /* ReactHeaders */,
+				920F69A9DF98D37C8308D020 /* ReactNativeHeaders */,
+				8332BE36B9C49BD2E49347C1 /* ReactNativeDependenciesHeaders */,
+				3AFDEFB917B01458307FDE0A /* Autolinked */,
+				947DD5EF3BE079FB7F5AFF87 /* ReactCodegen */,
+				F3857EDDA38AFC0011322D6D /* ReactAppDependencyProvider */,
+			);
 			productName = MixpanelReactNativeSessionReplayExampleSpm;
 			productReference = 13B07F961A680F5B00A75B9A /* MixpanelReactNativeSessionReplayExampleSpm.app */;
 			productType = "com.apple.product-type.application";
@@ -129,11 +129,6 @@
 
 /* Begin PBXProject section */
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
-			packageReferences = (
-				27BDE9D743CB351F53154525 /* XCLocalSwiftPackageReference "build/xcframeworks" */,
-				C2FECF1430FDAAE3BF355839 /* XCLocalSwiftPackageReference "build/generated/autolinking" */,
-				A700952B9A737913514EB28F /* XCLocalSwiftPackageReference "build/generated/ios" */,
-			);
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 1210;
@@ -152,6 +147,11 @@
 				Base,
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
+			packageReferences = (
+				27BDE9D743CB351F53154525 /* XCLocalSwiftPackageReference "build/xcframeworks" */,
+				C2FECF1430FDAAE3BF355839 /* XCLocalSwiftPackageReference "build/generated/autolinking" */,
+				A700952B9A737913514EB28F /* XCLocalSwiftPackageReference "build/generated/ios" */,
+			);
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -251,78 +251,21 @@
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"RN_SPM_HERMES_SEARCH_PATH[sdk=xrsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/xros-arm64_x86_64-simulator";
-				"RN_SPM_HERMES_BINARY[sdk=xrsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/xros-arm64_x86_64-simulator/hermesvm.framework/hermesvm";
-				"RN_SPM_HERMES_FRAMEWORK[sdk=xrsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/xros-arm64_x86_64-simulator/hermesvm.framework";
-				"RN_SPM_HERMES_SEARCH_PATH[sdk=xros*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/xros-arm64";
-				"RN_SPM_HERMES_BINARY[sdk=xros*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/xros-arm64/hermesvm.framework/hermesvm";
-				"RN_SPM_HERMES_FRAMEWORK[sdk=xros*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/xros-arm64/hermesvm.framework";
-				"RN_SPM_HERMES_SEARCH_PATH[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64_x86_64-maccatalyst";
-				"RN_SPM_HERMES_BINARY[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64_x86_64-maccatalyst/hermesvm.framework/Versions/1/hermesvm";
-				"RN_SPM_HERMES_FRAMEWORK[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64_x86_64-maccatalyst/hermesvm.framework";
-				"RN_SPM_HERMES_SEARCH_PATH[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64_x86_64-simulator";
-				"RN_SPM_HERMES_BINARY[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64_x86_64-simulator/hermesvm.framework/hermesvm";
-				"RN_SPM_HERMES_FRAMEWORK[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64_x86_64-simulator/hermesvm.framework";
-				"RN_SPM_HERMES_SEARCH_PATH[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64";
-				"RN_SPM_HERMES_BINARY[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64/hermesvm.framework/hermesvm";
-				"RN_SPM_HERMES_FRAMEWORK[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64/hermesvm.framework";
-				"RN_SPM_HERMES_SEARCH_PATH[sdk=appletvsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/tvos-arm64_x86_64-simulator";
-				"RN_SPM_HERMES_BINARY[sdk=appletvsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/tvos-arm64_x86_64-simulator/hermesvm.framework/hermesvm";
-				"RN_SPM_HERMES_FRAMEWORK[sdk=appletvsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/tvos-arm64_x86_64-simulator/hermesvm.framework";
-				"RN_SPM_HERMES_SEARCH_PATH[sdk=appletvos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/tvos-arm64";
-				"RN_SPM_HERMES_BINARY[sdk=appletvos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/tvos-arm64/hermesvm.framework/hermesvm";
-				"RN_SPM_HERMES_FRAMEWORK[sdk=appletvos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/tvos-arm64/hermesvm.framework";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_SEARCH_PATH[sdk=xrsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/xros-arm64_x86_64-simulator";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_BINARY[sdk=xrsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/xros-arm64_x86_64-simulator/ReactNativeDependencies.framework/ReactNativeDependencies";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_FRAMEWORK[sdk=xrsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/xros-arm64_x86_64-simulator/ReactNativeDependencies.framework";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_SEARCH_PATH[sdk=xros*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/xros-arm64";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_BINARY[sdk=xros*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/xros-arm64/ReactNativeDependencies.framework/ReactNativeDependencies";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_FRAMEWORK[sdk=xros*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/xros-arm64/ReactNativeDependencies.framework";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_SEARCH_PATH[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64_x86_64-maccatalyst";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_BINARY[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64_x86_64-maccatalyst/ReactNativeDependencies.framework/ReactNativeDependencies";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_FRAMEWORK[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64_x86_64-maccatalyst/ReactNativeDependencies.framework";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_SEARCH_PATH[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64_x86_64-simulator";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_BINARY[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64_x86_64-simulator/ReactNativeDependencies.framework/ReactNativeDependencies";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_FRAMEWORK[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64_x86_64-simulator/ReactNativeDependencies.framework";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_SEARCH_PATH[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_BINARY[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64/ReactNativeDependencies.framework/ReactNativeDependencies";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_FRAMEWORK[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64/ReactNativeDependencies.framework";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_SEARCH_PATH[sdk=appletvsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/tvos-arm64_x86_64-simulator";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_BINARY[sdk=appletvsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/tvos-arm64_x86_64-simulator/ReactNativeDependencies.framework/ReactNativeDependencies";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_FRAMEWORK[sdk=appletvsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/tvos-arm64_x86_64-simulator/ReactNativeDependencies.framework";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_SEARCH_PATH[sdk=appletvos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/tvos-arm64";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_BINARY[sdk=appletvos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/tvos-arm64/ReactNativeDependencies.framework/ReactNativeDependencies";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_FRAMEWORK[sdk=appletvos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/tvos-arm64/ReactNativeDependencies.framework";
-				"RN_SPM_REACT_SEARCH_PATH[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64_x86_64-maccatalyst";
-				"RN_SPM_REACT_BINARY[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64_x86_64-maccatalyst/React.framework/React";
-				"RN_SPM_REACT_FRAMEWORK[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64_x86_64-maccatalyst/React.framework";
-				"RN_SPM_REACT_SEARCH_PATH[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64_x86_64-simulator";
-				"RN_SPM_REACT_BINARY[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64_x86_64-simulator/React.framework/React";
-				"RN_SPM_REACT_FRAMEWORK[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64_x86_64-simulator/React.framework";
-				"RN_SPM_REACT_SEARCH_PATH[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64";
-				"RN_SPM_REACT_BINARY[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64/React.framework/React";
-				"RN_SPM_REACT_FRAMEWORK[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64/React.framework";
-				RN_SPM_FLAVOR = debug;
-				REACT_NATIVE_PATH = "../node_modules/react-native";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
+				CLANG_ENABLE_MODULES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(RN_SPM_REACT_SEARCH_PATH)",
 					"$(RN_SPM_REACT_NATIVE_DEPENDENCIES_SEARCH_PATH)",
 					"$(RN_SPM_HERMES_SEARCH_PATH)",
 				);
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
-					"$(inherited)",
-					DEBUG,
-				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/build/generated/autolinking/headers",
 				);
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = MixpanelReactNativeSessionReplayExampleSpm/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -340,7 +283,61 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = MixpanelReactNativeSessionReplayExampleSpm;
+				REACT_NATIVE_PATH = "../node_modules/react-native";
+				RN_SPM_FLAVOR = debug;
+				"RN_SPM_HERMES_BINARY[sdk=appletvos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/tvos-arm64/hermesvm.framework/hermesvm";
+				"RN_SPM_HERMES_BINARY[sdk=appletvsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/tvos-arm64_x86_64-simulator/hermesvm.framework/hermesvm";
+				"RN_SPM_HERMES_BINARY[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64/hermesvm.framework/hermesvm";
+				"RN_SPM_HERMES_BINARY[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64_x86_64-simulator/hermesvm.framework/hermesvm";
+				"RN_SPM_HERMES_BINARY[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64_x86_64-maccatalyst/hermesvm.framework/Versions/1/hermesvm";
+				"RN_SPM_HERMES_BINARY[sdk=xros*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/xros-arm64/hermesvm.framework/hermesvm";
+				"RN_SPM_HERMES_BINARY[sdk=xrsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/xros-arm64_x86_64-simulator/hermesvm.framework/hermesvm";
+				"RN_SPM_HERMES_FRAMEWORK[sdk=appletvos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/tvos-arm64/hermesvm.framework";
+				"RN_SPM_HERMES_FRAMEWORK[sdk=appletvsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/tvos-arm64_x86_64-simulator/hermesvm.framework";
+				"RN_SPM_HERMES_FRAMEWORK[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64/hermesvm.framework";
+				"RN_SPM_HERMES_FRAMEWORK[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64_x86_64-simulator/hermesvm.framework";
+				"RN_SPM_HERMES_FRAMEWORK[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64_x86_64-maccatalyst/hermesvm.framework";
+				"RN_SPM_HERMES_FRAMEWORK[sdk=xros*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/xros-arm64/hermesvm.framework";
+				"RN_SPM_HERMES_FRAMEWORK[sdk=xrsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/xros-arm64_x86_64-simulator/hermesvm.framework";
+				"RN_SPM_HERMES_SEARCH_PATH[sdk=appletvos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/tvos-arm64";
+				"RN_SPM_HERMES_SEARCH_PATH[sdk=appletvsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/tvos-arm64_x86_64-simulator";
+				"RN_SPM_HERMES_SEARCH_PATH[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64";
+				"RN_SPM_HERMES_SEARCH_PATH[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64_x86_64-simulator";
+				"RN_SPM_HERMES_SEARCH_PATH[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64_x86_64-maccatalyst";
+				"RN_SPM_HERMES_SEARCH_PATH[sdk=xros*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/xros-arm64";
+				"RN_SPM_HERMES_SEARCH_PATH[sdk=xrsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/xros-arm64_x86_64-simulator";
+				"RN_SPM_REACT_BINARY[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64/React.framework/React";
+				"RN_SPM_REACT_BINARY[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64_x86_64-simulator/React.framework/React";
+				"RN_SPM_REACT_BINARY[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64_x86_64-maccatalyst/React.framework/React";
+				"RN_SPM_REACT_FRAMEWORK[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64/React.framework";
+				"RN_SPM_REACT_FRAMEWORK[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64_x86_64-simulator/React.framework";
+				"RN_SPM_REACT_FRAMEWORK[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64_x86_64-maccatalyst/React.framework";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_BINARY[sdk=appletvos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/tvos-arm64/ReactNativeDependencies.framework/ReactNativeDependencies";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_BINARY[sdk=appletvsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/tvos-arm64_x86_64-simulator/ReactNativeDependencies.framework/ReactNativeDependencies";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_BINARY[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64/ReactNativeDependencies.framework/ReactNativeDependencies";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_BINARY[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64_x86_64-simulator/ReactNativeDependencies.framework/ReactNativeDependencies";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_BINARY[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64_x86_64-maccatalyst/ReactNativeDependencies.framework/ReactNativeDependencies";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_BINARY[sdk=xros*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/xros-arm64/ReactNativeDependencies.framework/ReactNativeDependencies";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_BINARY[sdk=xrsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/xros-arm64_x86_64-simulator/ReactNativeDependencies.framework/ReactNativeDependencies";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_FRAMEWORK[sdk=appletvos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/tvos-arm64/ReactNativeDependencies.framework";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_FRAMEWORK[sdk=appletvsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/tvos-arm64_x86_64-simulator/ReactNativeDependencies.framework";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_FRAMEWORK[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64/ReactNativeDependencies.framework";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_FRAMEWORK[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64_x86_64-simulator/ReactNativeDependencies.framework";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_FRAMEWORK[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64_x86_64-maccatalyst/ReactNativeDependencies.framework";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_FRAMEWORK[sdk=xros*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/xros-arm64/ReactNativeDependencies.framework";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_FRAMEWORK[sdk=xrsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/xros-arm64_x86_64-simulator/ReactNativeDependencies.framework";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_SEARCH_PATH[sdk=appletvos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/tvos-arm64";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_SEARCH_PATH[sdk=appletvsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/tvos-arm64_x86_64-simulator";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_SEARCH_PATH[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_SEARCH_PATH[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64_x86_64-simulator";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_SEARCH_PATH[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64_x86_64-maccatalyst";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_SEARCH_PATH[sdk=xros*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/xros-arm64";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_SEARCH_PATH[sdk=xrsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/xros-arm64_x86_64-simulator";
+				"RN_SPM_REACT_SEARCH_PATH[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64";
+				"RN_SPM_REACT_SEARCH_PATH[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64_x86_64-simulator";
+				"RN_SPM_REACT_SEARCH_PATH[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64_x86_64-maccatalyst";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -351,60 +348,10 @@
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"RN_SPM_HERMES_SEARCH_PATH[sdk=xrsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/xros-arm64_x86_64-simulator";
-				"RN_SPM_HERMES_BINARY[sdk=xrsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/xros-arm64_x86_64-simulator/hermesvm.framework/hermesvm";
-				"RN_SPM_HERMES_FRAMEWORK[sdk=xrsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/xros-arm64_x86_64-simulator/hermesvm.framework";
-				"RN_SPM_HERMES_SEARCH_PATH[sdk=xros*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/xros-arm64";
-				"RN_SPM_HERMES_BINARY[sdk=xros*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/xros-arm64/hermesvm.framework/hermesvm";
-				"RN_SPM_HERMES_FRAMEWORK[sdk=xros*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/xros-arm64/hermesvm.framework";
-				"RN_SPM_HERMES_SEARCH_PATH[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64_x86_64-maccatalyst";
-				"RN_SPM_HERMES_BINARY[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64_x86_64-maccatalyst/hermesvm.framework/Versions/1/hermesvm";
-				"RN_SPM_HERMES_FRAMEWORK[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64_x86_64-maccatalyst/hermesvm.framework";
-				"RN_SPM_HERMES_SEARCH_PATH[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64_x86_64-simulator";
-				"RN_SPM_HERMES_BINARY[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64_x86_64-simulator/hermesvm.framework/hermesvm";
-				"RN_SPM_HERMES_FRAMEWORK[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64_x86_64-simulator/hermesvm.framework";
-				"RN_SPM_HERMES_SEARCH_PATH[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64";
-				"RN_SPM_HERMES_BINARY[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64/hermesvm.framework/hermesvm";
-				"RN_SPM_HERMES_FRAMEWORK[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64/hermesvm.framework";
-				"RN_SPM_HERMES_SEARCH_PATH[sdk=appletvsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/tvos-arm64_x86_64-simulator";
-				"RN_SPM_HERMES_BINARY[sdk=appletvsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/tvos-arm64_x86_64-simulator/hermesvm.framework/hermesvm";
-				"RN_SPM_HERMES_FRAMEWORK[sdk=appletvsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/tvos-arm64_x86_64-simulator/hermesvm.framework";
-				"RN_SPM_HERMES_SEARCH_PATH[sdk=appletvos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/tvos-arm64";
-				"RN_SPM_HERMES_BINARY[sdk=appletvos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/tvos-arm64/hermesvm.framework/hermesvm";
-				"RN_SPM_HERMES_FRAMEWORK[sdk=appletvos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/tvos-arm64/hermesvm.framework";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_SEARCH_PATH[sdk=xrsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/xros-arm64_x86_64-simulator";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_BINARY[sdk=xrsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/xros-arm64_x86_64-simulator/ReactNativeDependencies.framework/ReactNativeDependencies";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_FRAMEWORK[sdk=xrsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/xros-arm64_x86_64-simulator/ReactNativeDependencies.framework";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_SEARCH_PATH[sdk=xros*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/xros-arm64";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_BINARY[sdk=xros*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/xros-arm64/ReactNativeDependencies.framework/ReactNativeDependencies";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_FRAMEWORK[sdk=xros*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/xros-arm64/ReactNativeDependencies.framework";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_SEARCH_PATH[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64_x86_64-maccatalyst";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_BINARY[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64_x86_64-maccatalyst/ReactNativeDependencies.framework/ReactNativeDependencies";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_FRAMEWORK[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64_x86_64-maccatalyst/ReactNativeDependencies.framework";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_SEARCH_PATH[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64_x86_64-simulator";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_BINARY[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64_x86_64-simulator/ReactNativeDependencies.framework/ReactNativeDependencies";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_FRAMEWORK[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64_x86_64-simulator/ReactNativeDependencies.framework";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_SEARCH_PATH[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_BINARY[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64/ReactNativeDependencies.framework/ReactNativeDependencies";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_FRAMEWORK[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64/ReactNativeDependencies.framework";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_SEARCH_PATH[sdk=appletvsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/tvos-arm64_x86_64-simulator";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_BINARY[sdk=appletvsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/tvos-arm64_x86_64-simulator/ReactNativeDependencies.framework/ReactNativeDependencies";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_FRAMEWORK[sdk=appletvsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/tvos-arm64_x86_64-simulator/ReactNativeDependencies.framework";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_SEARCH_PATH[sdk=appletvos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/tvos-arm64";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_BINARY[sdk=appletvos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/tvos-arm64/ReactNativeDependencies.framework/ReactNativeDependencies";
-				"RN_SPM_REACT_NATIVE_DEPENDENCIES_FRAMEWORK[sdk=appletvos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/tvos-arm64/ReactNativeDependencies.framework";
-				"RN_SPM_REACT_SEARCH_PATH[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64_x86_64-maccatalyst";
-				"RN_SPM_REACT_BINARY[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64_x86_64-maccatalyst/React.framework/React";
-				"RN_SPM_REACT_FRAMEWORK[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64_x86_64-maccatalyst/React.framework";
-				"RN_SPM_REACT_SEARCH_PATH[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64_x86_64-simulator";
-				"RN_SPM_REACT_BINARY[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64_x86_64-simulator/React.framework/React";
-				"RN_SPM_REACT_FRAMEWORK[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64_x86_64-simulator/React.framework";
-				"RN_SPM_REACT_SEARCH_PATH[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64";
-				"RN_SPM_REACT_BINARY[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64/React.framework/React";
-				"RN_SPM_REACT_FRAMEWORK[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64/React.framework";
-				RN_SPM_FLAVOR = release;
-				REACT_NATIVE_PATH = "../node_modules/react-native";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
+				CLANG_ENABLE_MODULES = YES;
+				CURRENT_PROJECT_VERSION = 1;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(RN_SPM_REACT_SEARCH_PATH)",
@@ -415,9 +362,6 @@
 					"$(inherited)",
 					"$(SRCROOT)/build/generated/autolinking/headers",
 				);
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_FILE = MixpanelReactNativeSessionReplayExampleSpm/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -435,6 +379,59 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = MixpanelReactNativeSessionReplayExampleSpm;
+				REACT_NATIVE_PATH = "../node_modules/react-native";
+				RN_SPM_FLAVOR = release;
+				"RN_SPM_HERMES_BINARY[sdk=appletvos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/tvos-arm64/hermesvm.framework/hermesvm";
+				"RN_SPM_HERMES_BINARY[sdk=appletvsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/tvos-arm64_x86_64-simulator/hermesvm.framework/hermesvm";
+				"RN_SPM_HERMES_BINARY[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64/hermesvm.framework/hermesvm";
+				"RN_SPM_HERMES_BINARY[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64_x86_64-simulator/hermesvm.framework/hermesvm";
+				"RN_SPM_HERMES_BINARY[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64_x86_64-maccatalyst/hermesvm.framework/Versions/1/hermesvm";
+				"RN_SPM_HERMES_BINARY[sdk=xros*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/xros-arm64/hermesvm.framework/hermesvm";
+				"RN_SPM_HERMES_BINARY[sdk=xrsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/xros-arm64_x86_64-simulator/hermesvm.framework/hermesvm";
+				"RN_SPM_HERMES_FRAMEWORK[sdk=appletvos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/tvos-arm64/hermesvm.framework";
+				"RN_SPM_HERMES_FRAMEWORK[sdk=appletvsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/tvos-arm64_x86_64-simulator/hermesvm.framework";
+				"RN_SPM_HERMES_FRAMEWORK[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64/hermesvm.framework";
+				"RN_SPM_HERMES_FRAMEWORK[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64_x86_64-simulator/hermesvm.framework";
+				"RN_SPM_HERMES_FRAMEWORK[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64_x86_64-maccatalyst/hermesvm.framework";
+				"RN_SPM_HERMES_FRAMEWORK[sdk=xros*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/xros-arm64/hermesvm.framework";
+				"RN_SPM_HERMES_FRAMEWORK[sdk=xrsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/xros-arm64_x86_64-simulator/hermesvm.framework";
+				"RN_SPM_HERMES_SEARCH_PATH[sdk=appletvos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/tvos-arm64";
+				"RN_SPM_HERMES_SEARCH_PATH[sdk=appletvsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/tvos-arm64_x86_64-simulator";
+				"RN_SPM_HERMES_SEARCH_PATH[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64";
+				"RN_SPM_HERMES_SEARCH_PATH[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64_x86_64-simulator";
+				"RN_SPM_HERMES_SEARCH_PATH[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/ios-arm64_x86_64-maccatalyst";
+				"RN_SPM_HERMES_SEARCH_PATH[sdk=xros*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/xros-arm64";
+				"RN_SPM_HERMES_SEARCH_PATH[sdk=xrsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/hermes-engine.xcframework/xros-arm64_x86_64-simulator";
+				"RN_SPM_REACT_BINARY[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64/React.framework/React";
+				"RN_SPM_REACT_BINARY[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64_x86_64-simulator/React.framework/React";
+				"RN_SPM_REACT_BINARY[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64_x86_64-maccatalyst/React.framework/React";
+				"RN_SPM_REACT_FRAMEWORK[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64/React.framework";
+				"RN_SPM_REACT_FRAMEWORK[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64_x86_64-simulator/React.framework";
+				"RN_SPM_REACT_FRAMEWORK[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64_x86_64-maccatalyst/React.framework";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_BINARY[sdk=appletvos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/tvos-arm64/ReactNativeDependencies.framework/ReactNativeDependencies";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_BINARY[sdk=appletvsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/tvos-arm64_x86_64-simulator/ReactNativeDependencies.framework/ReactNativeDependencies";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_BINARY[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64/ReactNativeDependencies.framework/ReactNativeDependencies";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_BINARY[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64_x86_64-simulator/ReactNativeDependencies.framework/ReactNativeDependencies";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_BINARY[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64_x86_64-maccatalyst/ReactNativeDependencies.framework/ReactNativeDependencies";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_BINARY[sdk=xros*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/xros-arm64/ReactNativeDependencies.framework/ReactNativeDependencies";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_BINARY[sdk=xrsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/xros-arm64_x86_64-simulator/ReactNativeDependencies.framework/ReactNativeDependencies";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_FRAMEWORK[sdk=appletvos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/tvos-arm64/ReactNativeDependencies.framework";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_FRAMEWORK[sdk=appletvsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/tvos-arm64_x86_64-simulator/ReactNativeDependencies.framework";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_FRAMEWORK[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64/ReactNativeDependencies.framework";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_FRAMEWORK[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64_x86_64-simulator/ReactNativeDependencies.framework";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_FRAMEWORK[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64_x86_64-maccatalyst/ReactNativeDependencies.framework";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_FRAMEWORK[sdk=xros*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/xros-arm64/ReactNativeDependencies.framework";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_FRAMEWORK[sdk=xrsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/xros-arm64_x86_64-simulator/ReactNativeDependencies.framework";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_SEARCH_PATH[sdk=appletvos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/tvos-arm64";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_SEARCH_PATH[sdk=appletvsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/tvos-arm64_x86_64-simulator";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_SEARCH_PATH[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_SEARCH_PATH[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64_x86_64-simulator";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_SEARCH_PATH[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/ios-arm64_x86_64-maccatalyst";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_SEARCH_PATH[sdk=xros*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/xros-arm64";
+				"RN_SPM_REACT_NATIVE_DEPENDENCIES_SEARCH_PATH[sdk=xrsimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/ReactNativeDependencies.xcframework/xros-arm64_x86_64-simulator";
+				"RN_SPM_REACT_SEARCH_PATH[sdk=iphoneos*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64";
+				"RN_SPM_REACT_SEARCH_PATH[sdk=iphonesimulator*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64_x86_64-simulator";
+				"RN_SPM_REACT_SEARCH_PATH[sdk=macosx*]" = "$(SRCROOT)/build/xcframeworks/$(RN_SPM_FLAVOR)/React.xcframework/ios-arm64_x86_64-maccatalyst";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -603,21 +600,54 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
 /* Begin XCLocalSwiftPackageReference section */
-		27BDE9D743CB351F53154525 /* XCLocalSwiftPackageReference "build/xcframeworks" */ = {isa = XCLocalSwiftPackageReference; relativePath = build/xcframeworks;};
-		C2FECF1430FDAAE3BF355839 /* XCLocalSwiftPackageReference "build/generated/autolinking" */ = {isa = XCLocalSwiftPackageReference; relativePath = build/generated/autolinking;};
-		A700952B9A737913514EB28F /* XCLocalSwiftPackageReference "build/generated/ios" */ = {isa = XCLocalSwiftPackageReference; relativePath = build/generated/ios;};
+		27BDE9D743CB351F53154525 /* XCLocalSwiftPackageReference "build/xcframeworks" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = build/xcframeworks;
+		};
+		A700952B9A737913514EB28F /* XCLocalSwiftPackageReference "build/generated/ios" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = build/generated/ios;
+		};
+		C2FECF1430FDAAE3BF355839 /* XCLocalSwiftPackageReference "build/generated/autolinking" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = build/generated/autolinking;
+		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		512EBECF5434FD7A6AF7C967 /* ReactHeaders */ = {isa = XCSwiftPackageProductDependency; package = 27BDE9D743CB351F53154525 /* XCLocalSwiftPackageReference "build/xcframeworks" */; productName = ReactHeaders;};
-		920F69A9DF98D37C8308D020 /* ReactNativeHeaders */ = {isa = XCSwiftPackageProductDependency; package = 27BDE9D743CB351F53154525 /* XCLocalSwiftPackageReference "build/xcframeworks" */; productName = ReactNativeHeaders;};
-		8332BE36B9C49BD2E49347C1 /* ReactNativeDependenciesHeaders */ = {isa = XCSwiftPackageProductDependency; package = 27BDE9D743CB351F53154525 /* XCLocalSwiftPackageReference "build/xcframeworks" */; productName = ReactNativeDependenciesHeaders;};
-		3AFDEFB917B01458307FDE0A /* Autolinked */ = {isa = XCSwiftPackageProductDependency; package = C2FECF1430FDAAE3BF355839 /* XCLocalSwiftPackageReference "build/generated/autolinking" */; productName = Autolinked;};
-		947DD5EF3BE079FB7F5AFF87 /* ReactCodegen */ = {isa = XCSwiftPackageProductDependency; package = A700952B9A737913514EB28F /* XCLocalSwiftPackageReference "build/generated/ios" */; productName = ReactCodegen;};
-		F3857EDDA38AFC0011322D6D /* ReactAppDependencyProvider */ = {isa = XCSwiftPackageProductDependency; package = A700952B9A737913514EB28F /* XCLocalSwiftPackageReference "build/generated/ios" */; productName = ReactAppDependencyProvider;};
+		3AFDEFB917B01458307FDE0A /* Autolinked */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C2FECF1430FDAAE3BF355839 /* XCLocalSwiftPackageReference "build/generated/autolinking" */;
+			productName = Autolinked;
+		};
+		512EBECF5434FD7A6AF7C967 /* ReactHeaders */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 27BDE9D743CB351F53154525 /* XCLocalSwiftPackageReference "build/xcframeworks" */;
+			productName = ReactHeaders;
+		};
+		8332BE36B9C49BD2E49347C1 /* ReactNativeDependenciesHeaders */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 27BDE9D743CB351F53154525 /* XCLocalSwiftPackageReference "build/xcframeworks" */;
+			productName = ReactNativeDependenciesHeaders;
+		};
+		920F69A9DF98D37C8308D020 /* ReactNativeHeaders */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 27BDE9D743CB351F53154525 /* XCLocalSwiftPackageReference "build/xcframeworks" */;
+			productName = ReactNativeHeaders;
+		};
+		947DD5EF3BE079FB7F5AFF87 /* ReactCodegen */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A700952B9A737913514EB28F /* XCLocalSwiftPackageReference "build/generated/ios" */;
+			productName = ReactCodegen;
+		};
+		F3857EDDA38AFC0011322D6D /* ReactAppDependencyProvider */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A700952B9A737913514EB28F /* XCLocalSwiftPackageReference "build/generated/ios" */;
+			productName = ReactAppDependencyProvider;
+		};
 /* End XCSwiftPackageProductDependency section */
-
 	};
 	rootObject = 83CBB9F71A601CBA00E9B192 /* Project object */;
 }
