@@ -31,8 +31,14 @@ NS_ASSUME_NONNULL_BEGIN
           configJSON:(NSString *)configJSON
     wireframeHandler:(void (^_Nullable)(NSString *))wireframeHandler
           completion:(void (^)(BOOL, NSError *_Nullable))completion;
++ (void)initialize:(NSString *)token
+        identityJSON:(NSString *)identityJSON
+          configJSON:(NSString *)configJSON
+    wireframeHandler:(void (^_Nullable)(NSString *))wireframeHandler
+          completion:(void (^)(BOOL, NSError *_Nullable))completion;
 + (BOOL)isRecording;
 + (void)identify:(NSString *)distinctId;
++ (BOOL)identifyWithIdentityJSON:(NSString *)identityJSON;
 + (nullable NSString *)getReplayId;
 + (void)flushWithCompletionHandler:(void (^)(void))completionHandler;
 + (void)setMPReplaySensitiveWithValue:(BOOL)value view:(UIView *)view;

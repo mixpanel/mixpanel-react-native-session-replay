@@ -19,6 +19,13 @@ end
 target 'MixpanelReactNativeSessionReplayExample' do
   config = use_native_modules!
 
+  # TEMPORARY (hierarchical-groups): use the unreleased Session Replay and MixpanelSwiftCommon
+  # `hierarchical-groups` checkouts, which add MixpanelIdentity. Both podspecs keep the published
+  # versions (2.0.0), so MixpanelReactNativeSessionReplay.podspec's pin is untouched. Delete these
+  # two lines and run `pod install` once a release with MixpanelIdentity is published.
+  pod 'MixpanelSessionReplay', :path => '../../../mixpanel-ios-session-replay-package'
+  pod 'MixpanelSwiftCommon', :path => '../../../mixpanel-swift-common'
+
   use_react_native!(
     :path => config[:reactNativePath],
     # An absolute path to your application root.
