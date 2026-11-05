@@ -46,7 +46,7 @@
         240,
         20
       ],
-      "maskDecision": "GEOMETRIC"
+      "maskDecision": "EXPLICIT"
     },
     {
       "role": "text",

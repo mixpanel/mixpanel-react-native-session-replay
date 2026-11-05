@@ -13,7 +13,7 @@
         60,
         24
       ],
-      "maskDecision": "GEOMETRIC"
+      "maskDecision": "EXPLICIT"
     }
   ]
 }
