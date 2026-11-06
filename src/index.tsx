@@ -744,8 +744,8 @@ export class MPSessionReplayConfig {
 /**
  * Names who replays belong to, so recordings resolve to the same user as the app's events.
  *
- * The same shape as `MixpanelIdentity` in `mixpanel-react-native`, so the identity analytics
- * reports can be passed straight in:
+ * The same shape as the identity `getIdentity()` reports in `mixpanel-react-native`, so it can be
+ * passed straight in:
  *
  * ```ts
  * await MPSessionReplay.identify(await mixpanel.getIdentity());
