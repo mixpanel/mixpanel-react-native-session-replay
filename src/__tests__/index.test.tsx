@@ -243,7 +243,7 @@ describe('MPSessionReplay', () => {
       const message = 'distinctId is required and must be a string';
       const config = new MPSessionReplayConfig();
 
-      for (const value of [null, undefined, 123]) {
+      for (const value of [null, undefined, 123, [], ['user-123']]) {
         await expect(
           MPSessionReplay.initialize(token, value as any, config)
         ).rejects.toThrow(message);

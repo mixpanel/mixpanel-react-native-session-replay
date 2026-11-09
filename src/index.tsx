@@ -782,7 +782,11 @@ function serializeIdentityArgument(
     }
     return null;
   }
-  if (!distinctIdOrIdentity || typeof distinctIdOrIdentity !== 'object') {
+  if (
+    !distinctIdOrIdentity ||
+    typeof distinctIdOrIdentity !== 'object' ||
+    Array.isArray(distinctIdOrIdentity)
+  ) {
     throw new Error('distinctId is required and must be a string');
   }
   const userId = identityField(distinctIdOrIdentity.userId);
