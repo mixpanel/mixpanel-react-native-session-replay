@@ -22,7 +22,7 @@ apply plugin: "com.facebook.react.rootproject"
 
 // TEMPORARY (hierarchical-groups): resolve Session Replay from the unreleased
 // mixpanel-android `hierarchical-groups` checkout, published to mavenLocal as 1.6.0-hg-local
-// (it brings mixpanel-android-common 1.6.0-hg-local, which has MixpanelIdentity). The
+// (it brings the published mixpanel-android-common 1.2.0, which has MixpanelIdentity). The
 // library's own pin in android/build.gradle is untouched. Delete this block once a Session
 // Replay release with MixpanelIdentity is published and the pin is bumped to it.
 allprojects {
