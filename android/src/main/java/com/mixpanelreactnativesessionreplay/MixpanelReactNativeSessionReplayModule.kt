@@ -1,5 +1,6 @@
 package com.mixpanelreactnativesessionreplay
 
+import android.annotation.SuppressLint
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactMethod
@@ -247,7 +248,10 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
   /**
    * Reads `{"userId", "companyId", "deviceId"}` sent by JS, mapping missing, null and empty
    * values to null. Returns null when the JSON is malformed or names neither a user nor a device.
+   * The constructor that takes a device id is restricted to Mixpanel's own libraries, which this
+   * module is.
    */
+  @SuppressLint("RestrictedApi")
   private fun parseIdentity(identityJSON: String): MixpanelIdentity? {
     val json = try {
       JSONObject(identityJSON)
