@@ -748,8 +748,11 @@ export class MPSessionReplayConfig {
  * passed straight in:
  *
  * ```ts
+ * await mixpanel.identify({ userId: 'user_123', companyId: 'acme' });
  * await MPSessionReplay.identify(await mixpanel.getIdentity());
  * ```
+ *
+ * Await the analytics `identify()` first, so `getIdentity()` reports the new identity.
  *
  * On a project that uses hierarchical groups, Mixpanel builds the user's distinct id from
  * `$company_id` and `$user_id`, so pass the `companyId` too. An identity needs a non-empty
@@ -911,6 +914,7 @@ async function isRecording(): Promise<boolean> {
  *
  * On a project that uses hierarchical groups, pass the {@link MixpanelIdentity} analytics reports
  * instead, `await mixpanel.getIdentity()`, so replays carry `$user_id` and `$company_id`.
+ * Await the analytics `identify()` first, so `getIdentity()` reports the new identity.
  *
  * @param distinctIdOrIdentity - The distinct ID of the user, or a {@link MixpanelIdentity}.
  * @throws An error if the distinctId is missing or invalid, or if the identity has neither a
