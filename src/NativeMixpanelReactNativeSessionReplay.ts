@@ -12,6 +12,14 @@ export interface Spec extends TurboModule {
   // Functionality not available in Android SDK ATM. It returns true always.
   isRecording(): Promise<boolean>;
   identify(distinctId: string): Promise<void>;
+  // Hierarchical groups. The identity crosses as JSON, like the config, so codegen sees only
+  // strings: `{"userId": string | null, "companyId": string | null, "deviceId": string | null}`.
+  initializeWithIdentity(
+    token: string,
+    identityJSON: string,
+    configJSON: string
+  ): Promise<void>;
+  identifyWithIdentity(identityJSON: string): Promise<void>;
   getReplayId(): Promise<string | null>;
   flush(): Promise<void>;
 

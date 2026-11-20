@@ -12,7 +12,7 @@ import {
   MPSessionReplayRemoteSettingsMode,
   MPWireframesOptions,
 } from '../index';
-import type { MPWireframeSnapshot } from '../index';
+import type { MixpanelIdentity, MPWireframeSnapshot } from '../index';
 
 // Mock the native module
 jest.mock('../NativeMixpanelReactNativeSessionReplay', () => ({
@@ -23,6 +23,8 @@ jest.mock('../NativeMixpanelReactNativeSessionReplay', () => ({
     stopRecording: jest.fn().mockResolvedValue(undefined),
     isRecording: jest.fn().mockResolvedValue(false),
     identify: jest.fn().mockResolvedValue(undefined),
+    initializeWithIdentity: jest.fn().mockResolvedValue(undefined),
+    identifyWithIdentity: jest.fn().mockResolvedValue(undefined),
     getReplayId: jest.fn().mockResolvedValue(null),
     flush: jest.fn().mockResolvedValue(undefined),
     addListener: jest.fn(),
@@ -120,6 +122,149 @@ describe('MPSessionReplay', () => {
       await expect(MPSessionReplay.identify(123 as any)).rejects.toThrow(
         'distinctId is required and must be a string'
       );
+    });
+  });
+
+  describe('hierarchical groups identity', () => {
+    const token = 'test-token';
+
+    it('initialize routes a distinctId string to native initialize only', async () => {
+      await MPSessionReplay.initialize(
+        token,
+        'user-123',
+        new MPSessionReplayConfig()
+      );
+
+      expect(MockedNativeModule.initialize).toHaveBeenCalledTimes(1);
+      expect(MockedNativeModule.initializeWithIdentity).not.toHaveBeenCalled();
+    });
+
+    it('initialize routes an identity to native initializeWithIdentity', async () => {
+      const config = new MPSessionReplayConfig();
+      const identity: MixpanelIdentity = {
+        userId: 'user-123',
+        companyId: 'acme',
+        deviceId: 'device-1',
+      };
+
+      await MPSessionReplay.initialize(token, identity, config);
+
+      expect(MockedNativeModule.initialize).not.toHaveBeenCalled();
+      expect(MockedNativeModule.initializeWithIdentity).toHaveBeenCalledTimes(
+        1
+      );
+      const [sentToken, identityJSON, configJSON] =
+        MockedNativeModule.initializeWithIdentity.mock.calls[0];
+      expect(sentToken).toBe(token);
+      expect(JSON.parse(identityJSON)).toEqual({
+        userId: 'user-123',
+        companyId: 'acme',
+        deviceId: 'device-1',
+      });
+      expect(configJSON).toBe(config.toJSON());
+    });
+
+    it('identify routes a distinctId string to native identify only', async () => {
+      await MPSessionReplay.identify('user-123');
+
+      expect(MockedNativeModule.identify).toHaveBeenCalledWith('user-123');
+      expect(MockedNativeModule.identifyWithIdentity).not.toHaveBeenCalled();
+    });
+
+    it('identify routes an identity to native identifyWithIdentity', async () => {
+      await MPSessionReplay.identify({ userId: 'user-123', companyId: 'acme' });
+
+      expect(MockedNativeModule.identify).not.toHaveBeenCalled();
+      expect(MockedNativeModule.identifyWithIdentity).toHaveBeenCalledTimes(1);
+      expect(
+        JSON.parse(MockedNativeModule.identifyWithIdentity.mock.calls[0][0])
+      ).toEqual({ userId: 'user-123', companyId: 'acme', deviceId: null });
+    });
+
+    it('sends every key, mapping missing and empty fields to null', async () => {
+      await MPSessionReplay.identify({
+        userId: '',
+        companyId: '',
+        deviceId: 'd',
+      });
+      await MPSessionReplay.identify({ userId: 'u', companyId: null });
+
+      const sent = MockedNativeModule.identifyWithIdentity.mock.calls.map(
+        ([json]: [string]) => json
+      );
+      expect(sent).toEqual([
+        '{"userId":null,"companyId":null,"deviceId":"d"}',
+        '{"userId":"u","companyId":null,"deviceId":null}',
+      ]);
+    });
+
+    it('accepts a device-only identity, as getIdentity() reports before identify', async () => {
+      await MPSessionReplay.initialize(
+        token,
+        { userId: null, deviceId: 'device-1' },
+        new MPSessionReplayConfig()
+      );
+
+      expect(
+        JSON.parse(MockedNativeModule.initializeWithIdentity.mock.calls[0][1])
+      ).toEqual({ userId: null, companyId: null, deviceId: 'device-1' });
+    });
+
+    it.each([
+      [{ userId: null }],
+      [{ userId: '' }],
+      [{ userId: null, companyId: 'acme' }],
+      [{ userId: '', companyId: 'acme', deviceId: '' }],
+      [{} as MixpanelIdentity],
+    ])(
+      'rejects an identity with neither userId nor deviceId: %j',
+      async (identity) => {
+        const message = 'identity requires a non-empty userId or deviceId';
+
+        await expect(
+          MPSessionReplay.initialize(
+            token,
+            identity,
+            new MPSessionReplayConfig()
+          )
+        ).rejects.toThrow(message);
+        await expect(MPSessionReplay.identify(identity)).rejects.toThrow(
+          message
+        );
+
+        expect(
+          MockedNativeModule.initializeWithIdentity
+        ).not.toHaveBeenCalled();
+        expect(MockedNativeModule.identifyWithIdentity).not.toHaveBeenCalled();
+      }
+    );
+
+    it('keeps the distinctId error for values that are neither', async () => {
+      const message = 'distinctId is required and must be a string';
+      const config = new MPSessionReplayConfig();
+
+      for (const value of [null, undefined, 123, [], ['user-123']]) {
+        await expect(
+          MPSessionReplay.initialize(token, value as any, config)
+        ).rejects.toThrow(message);
+        await expect(MPSessionReplay.identify(value as any)).rejects.toThrow(
+          message
+        );
+      }
+      expect(MockedNativeModule.initialize).not.toHaveBeenCalled();
+      expect(MockedNativeModule.initializeWithIdentity).not.toHaveBeenCalled();
+      expect(MockedNativeModule.identify).not.toHaveBeenCalled();
+      expect(MockedNativeModule.identifyWithIdentity).not.toHaveBeenCalled();
+    });
+
+    it('validates the token before the identity', async () => {
+      await expect(
+        MPSessionReplay.initialize(
+          '',
+          { userId: null },
+          new MPSessionReplayConfig()
+        )
+      ).rejects.toThrow('Mixpanel token is required and must be a string');
     });
   });
 

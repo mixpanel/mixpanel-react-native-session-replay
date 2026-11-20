@@ -1,5 +1,6 @@
 import Foundation
 import MixpanelSessionReplay
+import MixpanelSwiftCommon
 import UIKit
 
 // The explicit Objective-C name keeps the class symbol identical under CocoaPods and Swift
@@ -29,6 +30,43 @@ import UIKit
     wireframeHandler: ((String) -> Void)? = nil,
     completion: @escaping (Bool, NSError?) -> Void
   ) {
+    initializeSessionReplay(
+      configJSON: configJSON, wireframeHandler: wireframeHandler, completion: completion
+    ) { config, onResult in
+      MPSessionReplay.initialize(
+        token: token, distinctId: distinctId, config: config, completion: onResult)
+    }
+  }
+
+  /// Hierarchical groups: initializes for a `MixpanelIdentity` sent as JSON, typically the one
+  /// `mixpanel.getIdentity()` reports, so replays carry `$user_id`, `$company_id` and `$device_id`.
+  @objc public static func initialize(
+    _ token: String, identityJSON: String, configJSON: String,
+    wireframeHandler: ((String) -> Void)? = nil,
+    completion: @escaping (Bool, NSError?) -> Void
+  ) {
+    guard let identity = parseIdentity(identityJSON) else {
+      completion(false, createError("identity requires a non-empty userId or deviceId"))
+      return
+    }
+    initializeSessionReplay(
+      configJSON: configJSON, wireframeHandler: wireframeHandler, completion: completion
+    ) { config, onResult in
+      MPSessionReplay.initialize(
+        token: token, identity: identity, config: config, completion: onResult)
+    }
+  }
+
+  /// Parses the config, then hands it to `start`, which calls whichever `MPSessionReplay.initialize`
+  /// overload matches how the user is named, and reports its result through `completion`.
+  private static func initializeSessionReplay(
+    configJSON: String,
+    wireframeHandler: ((String) -> Void)?,
+    completion: @escaping (Bool, NSError?) -> Void,
+    start: (
+      MPSessionReplayConfig, @escaping (Result<MPSessionReplayInstance?, Error>) -> Void
+    ) -> Void
+  ) {
     guard let data = configJSON.data(using: .utf8) else {
       let error = createError("Invalid config JSON string", code: 3840)
       completion(false, error)
@@ -52,7 +90,7 @@ import UIKit
         }
       }
 
-      MPSessionReplay.initialize(token: token, distinctId: distinctId, config: config) { result in
+      start(config) { result in
         switch result {
         case .success(_?):
           setSensitiveClasses(config: config)
@@ -88,6 +126,33 @@ import UIKit
 
   @objc public static func identify(_ distinctId: String) {
     MPSessionReplay.getInstance()?.identify(distinctId: distinctId)
+  }
+
+  /// Returns `false`, without identifying, when the identity names neither a user nor a device.
+  @objc public static func identify(identityJSON: String) -> Bool {
+    guard let identity = parseIdentity(identityJSON) else {
+      return false
+    }
+    MPSessionReplay.getInstance()?.identify(identity: identity)
+    return true
+  }
+
+  /// Reads `{"userId", "companyId", "deviceId"}` sent by JS, mapping missing, null and empty
+  /// values to nil. Returns nil when the JSON is malformed or names neither a user nor a device.
+  private static func parseIdentity(_ identityJSON: String) -> MixpanelIdentity? {
+    guard let data = identityJSON.data(using: .utf8),
+      let fields = try? JSONDecoder().decode(BridgeIdentity.self, from: data)
+    else {
+      return nil
+    }
+    func nonEmpty(_ value: String?) -> String? {
+      return value?.isEmpty == false ? value : nil
+    }
+    let identity = MixpanelIdentity(
+      userId: nonEmpty(fields.userId),
+      companyId: nonEmpty(fields.companyId),
+      deviceId: nonEmpty(fields.deviceId))
+    return identity.userId == nil && identity.deviceId == nil ? nil : identity
   }
 
   @objc public static func getReplayId() -> String? {
@@ -155,4 +220,11 @@ private struct BridgeDebugFlags: Decodable {
   }
 
   var debugOptions: DebugSection?
+}
+
+/// The identity JS sends to `initializeWithIdentity` and `identifyWithIdentity`.
+private struct BridgeIdentity: Decodable {
+  var userId: String?
+  var companyId: String?
+  var deviceId: String?
 }
