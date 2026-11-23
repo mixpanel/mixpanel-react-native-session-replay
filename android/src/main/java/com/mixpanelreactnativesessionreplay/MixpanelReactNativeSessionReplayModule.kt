@@ -87,6 +87,7 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
                 // Android clears its native declaration registry during reinitialization. React
                 // does not resend unchanged props, so restore declarations cached by mounted views.
                 WireframeTextDeclarationRegistry.reapplyAll()
+                SensitivityDeclarationRegistry.reapplyAll()
                 println("Mixpanel - Session Replay initialized successfully with enhanced view masking")
                 promise.resolve(null)
               } catch (e: Exception) {
