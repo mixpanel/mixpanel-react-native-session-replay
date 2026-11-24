@@ -756,7 +756,13 @@ export class MPSessionReplayConfig {
  *
  * On a project that uses hierarchical groups, Mixpanel builds the user's distinct id from
  * `$company_id` and `$user_id`, so pass the `companyId` too. An identity needs a non-empty
- * `userId` or `deviceId`. Empty values are treated as absent.
+ * `userId` or `deviceId`. Empty values are treated as absent; ids must be strings, and a
+ * `userId` or `companyId` can't contain `|`.
+ *
+ * After `mixpanel.reset()`, re-identify replay with the new anonymous identity:
+ * `await MPSessionReplay.identify(await mixpanel.getIdentity())`.
+ *
+ * Projects that don't use hierarchical groups keep passing the distinct id string.
  */
 export interface MixpanelIdentity {
   /** The user's id. On a hierarchical groups project it only needs to be unique within the company. */
@@ -924,6 +930,8 @@ async function isRecording(): Promise<boolean> {
  * On a project that uses hierarchical groups, pass the {@link MixpanelIdentity} analytics reports
  * instead, `await mixpanel.getIdentity()`, so replays carry `$user_id` and `$company_id`.
  * Await the analytics `identify()` first, so `getIdentity()` reports the new identity.
+ * After `mixpanel.reset()`, call `identify(await mixpanel.getIdentity())` again so replays
+ * follow the new anonymous identity. Other projects keep passing the distinct id string.
  *
  * @param distinctIdOrIdentity - The distinct ID of the user, or a {@link MixpanelIdentity}.
  * @throws An error if the distinctId is missing or invalid, or if the identity has a non-string

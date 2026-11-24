@@ -58,28 +58,24 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
     configJSON: String,
     promise: Promise
   ) {
-    try {
-      if (token.isEmpty()) {
-        promise.reject("INVALID_CONFIG", "Token is required")
-        return
-      }
-      val identity = parseIdentity(identityJSON)
-      if (identity == null) {
-        promise.reject("INVALID_IDENTITY", "identity requires a non-empty userId or deviceId")
-        return
-      }
+    if (token.isEmpty()) {
+      promise.reject("INVALID_CONFIG", "Token is required")
+      return
+    }
+    val identity = parseIdentity(identityJSON)
+    if (identity == null) {
+      promise.reject("INVALID_IDENTITY", "identity requires a non-empty userId or deviceId")
+      return
+    }
 
-      initializeSessionReplay(configJSON, promise) { replayConfig, completion ->
-        MPSessionReplay.initialize(
-          reactApplicationContext,
-          token,
-          identity,
-          replayConfig,
-          completion
-        )
-      }
-    } catch (e: Exception) {
-      promise.reject("INITIALIZATION_ERROR", e.message, e)
+    initializeSessionReplay(configJSON, promise) { replayConfig, completion ->
+      MPSessionReplay.initialize(
+        reactApplicationContext,
+        token,
+        identity,
+        replayConfig,
+        completion
+      )
     }
   }
 
@@ -243,28 +239,6 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
     } catch (e: Exception) {
       promise.reject("IDENTIFY_ERROR", e.message, e)
     }
-  }
-
-  /**
-   * Reads `{"userId", "companyId", "deviceId"}` sent by JS, mapping missing, null and empty
-   * values to null. Returns null when the JSON is malformed or names neither a user nor a device.
-   * The constructor that takes a device id is restricted to Mixpanel's own libraries, which this
-   * module is.
-   */
-  @SuppressLint("RestrictedApi")
-  private fun parseIdentity(identityJSON: String): MixpanelIdentity? {
-    val json = try {
-      JSONObject(identityJSON)
-    } catch (e: Exception) {
-      println("Mixpanel - Failed to parse identity JSON: ${e.message}")
-      return null
-    }
-    // `optString` reports a JSON null as the string "null", so check for it first.
-    fun field(name: String): String? =
-      if (json.isNull(name)) null else json.optString(name).takeIf { it.isNotEmpty() }
-
-    val identity = MixpanelIdentity(field("userId"), field("companyId"), field("deviceId"))
-    return if (identity.userId == null && identity.deviceId == null) null else identity
   }
 
   @ReactMethod
@@ -458,5 +432,27 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
 
     /** Must match `WIREFRAME_EVENT` in `src/index.tsx` and `supportedEvents` on iOS. */
     const val WIREFRAME_EVENT = "MixpanelSessionReplayWireframe"
+
+    /**
+     * Reads `{"userId", "companyId", "deviceId"}` sent by JS, mapping missing, null and empty
+     * values to null. Returns null when the JSON is malformed or names neither a user nor a device.
+     * The constructor that takes a device id is restricted to Mixpanel's own libraries, which this
+     * module is.
+     */
+    @SuppressLint("RestrictedApi")
+    internal fun parseIdentity(identityJSON: String): MixpanelIdentity? {
+      val json = try {
+        JSONObject(identityJSON)
+      } catch (e: Exception) {
+        println("Mixpanel - Failed to parse identity JSON: ${e.message}")
+        return null
+      }
+      // `optString` reports a JSON null as the string "null", so check for it first.
+      fun field(name: String): String? =
+        if (json.isNull(name)) null else json.optString(name).takeIf { it.isNotEmpty() }
+
+      val identity = MixpanelIdentity(field("userId"), field("companyId"), field("deviceId"))
+      return if (identity.userId == null && identity.deviceId == null) null else identity
+    }
   }
 }
