@@ -239,6 +239,39 @@ describe('MPSessionReplay', () => {
       }
     );
 
+    it.each([
+      ['userId', { userId: 123, companyId: 'acme' }],
+      ['companyId', { userId: 'user-123', companyId: 42 }],
+      ['deviceId', { userId: null, deviceId: {} }],
+      ['userId', { userId: true, deviceId: 'device-1' }],
+    ])('rejects a non-string %s: %j', async (name, identity) => {
+      const message = `identity ${name} must be a string`;
+
+      await expect(
+        MPSessionReplay.initialize(
+          token,
+          identity as any,
+          new MPSessionReplayConfig()
+        )
+      ).rejects.toThrow(message);
+      await expect(MPSessionReplay.identify(identity as any)).rejects.toThrow(
+        message
+      );
+
+      expect(MockedNativeModule.initializeWithIdentity).not.toHaveBeenCalled();
+      expect(MockedNativeModule.identifyWithIdentity).not.toHaveBeenCalled();
+    });
+
+    it('passes | through to the native SDK', async () => {
+      await MPSessionReplay.identify('user|123');
+      await MPSessionReplay.identify({ userId: 'user|1', companyId: 'ac|me' });
+
+      expect(MockedNativeModule.identify).toHaveBeenCalledWith('user|123');
+      expect(
+        JSON.parse(MockedNativeModule.identifyWithIdentity.mock.calls[0][0])
+      ).toEqual({ userId: 'user|1', companyId: 'ac|me', deviceId: null });
+    });
+
     it('keeps the distinctId error for values that are neither', async () => {
       const message = 'distinctId is required and must be a string';
       const config = new MPSessionReplayConfig();

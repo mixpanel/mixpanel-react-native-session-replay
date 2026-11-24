@@ -767,9 +767,18 @@ export interface MixpanelIdentity {
   deviceId?: string | null;
 }
 
-/** A non-empty string, or `null` for anything else, so native sees one spelling of "absent". */
-function identityField(value: unknown): string | null {
-  return typeof value === 'string' && value !== '' ? value : null;
+/**
+ * A non-empty string, or `null` when missing or empty, so native sees one spelling of "absent".
+ * Throws on any other type.
+ */
+function identityField(value: unknown, name: string): string | null {
+  if (value == null || value === '') {
+    return null;
+  }
+  if (typeof value !== 'string') {
+    throw new Error(`identity ${name} must be a string`);
+  }
+  return value;
 }
 
 /**
@@ -792,9 +801,9 @@ function serializeIdentityArgument(
   ) {
     throw new Error('distinctId is required and must be a string');
   }
-  const userId = identityField(distinctIdOrIdentity.userId);
-  const companyId = identityField(distinctIdOrIdentity.companyId);
-  const deviceId = identityField(distinctIdOrIdentity.deviceId);
+  const userId = identityField(distinctIdOrIdentity.userId, 'userId');
+  const companyId = identityField(distinctIdOrIdentity.companyId, 'companyId');
+  const deviceId = identityField(distinctIdOrIdentity.deviceId, 'deviceId');
   if (!userId && !deviceId) {
     throw new Error('identity requires a non-empty userId or deviceId');
   }
@@ -812,8 +821,8 @@ function serializeIdentityArgument(
  *   such as the one `mixpanel.getIdentity()` reports, for a project that uses hierarchical groups.
  * @param config - The configuration object used to customize session replay behavior.
  * @throws An error if the token is missing or invalid, if the distinctId is missing or invalid, if the
- *   identity has neither a userId nor a deviceId, or if the configuration is invalid,
- *   or if the initialization fails.
+ *   identity has a non-string id or neither a userId nor a deviceId, or if the configuration is
+ *   invalid, or if the initialization fails.
  */
 async function initialize(
   token: string,
@@ -917,8 +926,8 @@ async function isRecording(): Promise<boolean> {
  * Await the analytics `identify()` first, so `getIdentity()` reports the new identity.
  *
  * @param distinctIdOrIdentity - The distinct ID of the user, or a {@link MixpanelIdentity}.
- * @throws An error if the distinctId is missing or invalid, or if the identity has neither a
- *   userId nor a deviceId.
+ * @throws An error if the distinctId is missing or invalid, or if the identity has a non-string
+ *   id or neither a userId nor a deviceId.
  */
 async function identify(
   distinctIdOrIdentity: string | MixpanelIdentity
