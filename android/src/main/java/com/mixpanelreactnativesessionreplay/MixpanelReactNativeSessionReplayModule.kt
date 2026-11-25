@@ -434,8 +434,8 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
     const val WIREFRAME_EVENT = "MixpanelSessionReplayWireframe"
 
     /**
-     * Reads `{"userId", "companyId", "deviceId"}` sent by JS, mapping missing, null and empty
-     * values to null. Returns null when the JSON is malformed or names neither a user nor a device.
+     * Reads `{"userId", "companyId", "deviceId"}` sent by JS, mapping missing, null, empty and
+     * non-string values to null. Returns null when the JSON is malformed or names neither a user nor a device.
      * The constructor that takes a device id is restricted to Mixpanel's own libraries, which this
      * module is.
      */
@@ -447,9 +447,10 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
         println("Mixpanel - Failed to parse identity JSON: ${e.message}")
         return null
       }
-      // `optString` reports a JSON null as the string "null", so check for it first.
+      // Only non-empty strings count, like JS. JSON null (`JSONObject.NULL`) and non-string values
+      // are treated as absent, which avoids `optString` turning null into "null" on Android.
       fun field(name: String): String? =
-        if (json.isNull(name)) null else json.optString(name).takeIf { it.isNotEmpty() }
+        (json.opt(name) as? String)?.takeIf { it.isNotEmpty() }
 
       val identity = MixpanelIdentity(field("userId"), field("companyId"), field("deviceId"))
       return if (identity.userId == null && identity.deviceId == null) null else identity

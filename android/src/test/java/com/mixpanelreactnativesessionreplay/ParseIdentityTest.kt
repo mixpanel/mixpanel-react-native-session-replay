@@ -25,6 +25,17 @@ class ParseIdentityTest {
     }
 
     @Test
+    fun `treats non-string ids as absent`() {
+        val identity = parseIdentity("""{"userId":123,"companyId":45,"deviceId":"d"}""")!!
+
+        assertNull(identity.userId)
+        assertNull(identity.companyId)
+        assertEquals("d", identity.deviceId)
+
+        assertNull(parseIdentity("""{"userId":123,"deviceId":true}"""))
+    }
+
+    @Test
     fun `accepts a device-only identity`() {
         val identity = parseIdentity("""{"deviceId":"d"}""")!!
 
