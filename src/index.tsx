@@ -756,8 +756,9 @@ export class MPSessionReplayConfig {
  *
  * On a project that uses hierarchical groups, Mixpanel builds the user's distinct id from
  * `$company_id` and `$user_id`, so pass the `companyId` too. An identity needs a non-empty
- * `userId` or `deviceId`. Empty values are treated as absent; ids must be strings, and a
- * `userId` or `companyId` can't contain `|`.
+ * `userId` or `deviceId`. Empty values are treated as absent and ids must be strings. On a
+ * hierarchical groups project, a `userId` or `companyId` can't contain `|`; the analytics SDK
+ * refuses one at identify, so `getIdentity()` never reports it.
  *
  * After `mixpanel.reset()`, re-identify replay with the new anonymous identity:
  * `await MPSessionReplay.identify(await mixpanel.getIdentity())`.
