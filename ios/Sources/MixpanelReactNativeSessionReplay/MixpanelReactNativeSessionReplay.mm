@@ -37,6 +37,34 @@ RCT_EXPORT_MODULE()
   _hasWireframeListeners = NO;
 }
 
+/// Delivers each captured wireframe to JS while something is listening. Shared by both
+/// initialize methods.
+- (void (^)(NSString *))wireframeHandler
+{
+  // Weak, because the SDK holds this block for the process lifetime — the module must not
+  // be kept alive by it, and after a reload there may be no module to deliver to.
+  __weak MixpanelReactNativeSessionReplay *weakSelf = self;
+  return ^(NSString *snapshotJSON) {
+    MixpanelReactNativeSessionReplay *strongSelf = weakSelf;
+    if (strongSelf == nil || !strongSelf->_hasWireframeListeners) {
+      return;
+    }
+    [strongSelf sendEventWithName:kMixpanelWireframeEvent body:snapshotJSON];
+  };
+}
+
+/// Settles an initialize promise from the SDK's completion. Shared by both initialize methods.
+- (void (^)(BOOL, NSError * _Nullable))initializeCompletionWithResolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject
+{
+  return ^(BOOL success, NSError * _Nullable error) {
+    if (success) {
+      resolve(nil);
+    } else {
+      reject(@"INITIALIZATION_FAILED", error.debugDescription, error);
+    }
+  };
+}
+
 RCT_EXPORT_METHOD(initialize:(nonnull NSString *)token distinctId:(nonnull NSString *)distinctId configJSON:(nonnull NSString *)configJSON resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject)
 {
     @try {
@@ -44,22 +72,21 @@ RCT_EXPORT_METHOD(initialize:(nonnull NSString *)token distinctId:(nonnull NSStr
             reject(@"INVALID_CONFIG", @"Token and distinctId are required", nil);
             return;
         }
-      // Weak, because the SDK holds this block for the process lifetime — the module must not
-      // be kept alive by it, and after a reload there may be no module to deliver to.
-      __weak MixpanelReactNativeSessionReplay *weakSelf = self;
-      [MixpanelSwiftSessionReplay initialize:token distinctId:distinctId configJSON:configJSON wireframeHandler:^(NSString *snapshotJSON) {
-        MixpanelReactNativeSessionReplay *strongSelf = weakSelf;
-        if (strongSelf == nil || !strongSelf->_hasWireframeListeners) {
-          return;
+      [MixpanelSwiftSessionReplay initialize:token distinctId:distinctId configJSON:configJSON wireframeHandler:[self wireframeHandler] completion:[self initializeCompletionWithResolve:resolve reject:reject]];
+    }
+    @catch (NSException *exception) {
+        reject(@"INITIALIZATION_ERROR", exception.reason, nil);
+    }
+}
+
+RCT_EXPORT_METHOD(initializeWithIdentity:(nonnull NSString *)token identityJSON:(nonnull NSString *)identityJSON configJSON:(nonnull NSString *)configJSON resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject)
+{
+    @try {
+        if (!token || !identityJSON) {
+            reject(@"INVALID_CONFIG", @"Token and identity are required", nil);
+            return;
         }
-        [strongSelf sendEventWithName:kMixpanelWireframeEvent body:snapshotJSON];
-      } completion:^(BOOL success, NSError * _Nullable error) {
-        if (success) {
-          resolve(nil);
-        } else {
-          reject(@"INITIALIZATION_FAILED", error.debugDescription, error);
-        }
-      }];
+      [MixpanelSwiftSessionReplay initialize:token identityJSON:identityJSON configJSON:configJSON wireframeHandler:[self wireframeHandler] completion:[self initializeCompletionWithResolve:resolve reject:reject]];
     }
     @catch (NSException *exception) {
         reject(@"INITIALIZATION_ERROR", exception.reason, nil);
@@ -114,6 +141,22 @@ RCT_EXPORT_METHOD(identify:(NSString *)distinctId
         }
 
         [MixpanelSwiftSessionReplay identify:distinctId];
+        resolve(nil);
+    }
+    @catch (NSException *exception) {
+        reject(@"IDENTIFY_ERROR", exception.reason, nil);
+    }
+}
+
+RCT_EXPORT_METHOD(identifyWithIdentity:(NSString *)identityJSON
+         resolve:(RCTPromiseResolveBlock)resolve
+          reject:(RCTPromiseRejectBlock)reject)
+{
+    @try {
+        if (!identityJSON || ![MixpanelSwiftSessionReplay identifyWithIdentityJSON:identityJSON]) {
+            reject(@"INVALID_IDENTITY", @"identity requires a non-empty userId or deviceId", nil);
+            return;
+        }
         resolve(nil);
     }
     @catch (NSException *exception) {

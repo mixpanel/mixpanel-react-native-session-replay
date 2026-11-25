@@ -87,6 +87,8 @@ dependencies {
   implementation "com.mixpanel.android:mixpanel-android-session-replay:1.6.0"
 
   testImplementation "junit:junit:4.13.2"
+  // The android.jar org.json is a stub in JVM tests
+  testImplementation "org.json:json:20231013"
 }
 
 react {

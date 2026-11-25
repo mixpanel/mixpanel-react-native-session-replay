@@ -742,28 +742,104 @@ export class MPSessionReplayConfig {
 }
 
 /**
+ * Names who replays belong to, so recordings resolve to the same user as the app's events.
+ *
+ * The same shape as the identity `getIdentity()` reports in `mixpanel-react-native`, so it can be
+ * passed straight in:
+ *
+ * ```ts
+ * await mixpanel.identify({ userId: 'user_123', companyId: 'acme' });
+ * await MPSessionReplay.identify(await mixpanel.getIdentity());
+ * ```
+ *
+ * Await the analytics `identify()` first, so `getIdentity()` reports the new identity.
+ *
+ * On a project that uses hierarchical groups, Mixpanel builds the user's distinct id from
+ * `$company_id` and `$user_id`, so pass the `companyId` too. An identity needs a non-empty
+ * `userId` or `deviceId`. Empty values are treated as absent and ids must be strings. On a
+ * hierarchical groups project, a `userId` or `companyId` can't contain `|`; the analytics SDK
+ * refuses one at identify, so `getIdentity()` never reports it.
+ *
+ * After `mixpanel.reset()`, re-identify replay with the new anonymous identity:
+ * `await MPSessionReplay.identify(await mixpanel.getIdentity())`.
+ *
+ * Projects that don't use hierarchical groups keep passing the distinct id string.
+ */
+export interface MixpanelIdentity {
+  /** The user's id. On a hierarchical groups project it only needs to be unique within the company. */
+  userId: string | null;
+  /** The id of the user's top-level company, on a hierarchical groups project. */
+  companyId?: string | null;
+  /** The device id analytics assigned. */
+  deviceId?: string | null;
+}
+
+/**
+ * A non-empty string, or `null` when missing or empty, so native sees one spelling of "absent".
+ * Throws on any other type.
+ */
+function identityField(value: unknown, name: string): string | null {
+  if (value == null || value === '') {
+    return null;
+  }
+  if (typeof value !== 'string') {
+    throw new Error(`identity ${name} must be a string`);
+  }
+  return value;
+}
+
+/**
+ * Validates `distinctIdOrIdentity` and returns the identity JSON for the native identity
+ * methods, or `null` when it is a distinct id string, which keeps the original native path.
+ */
+function serializeIdentityArgument(
+  distinctIdOrIdentity: string | MixpanelIdentity
+): string | null {
+  if (typeof distinctIdOrIdentity === 'string') {
+    if (!distinctIdOrIdentity) {
+      throw new Error('distinctId is required and must be a string');
+    }
+    return null;
+  }
+  if (
+    !distinctIdOrIdentity ||
+    typeof distinctIdOrIdentity !== 'object' ||
+    Array.isArray(distinctIdOrIdentity)
+  ) {
+    throw new Error('distinctId is required and must be a string');
+  }
+  const userId = identityField(distinctIdOrIdentity.userId, 'userId');
+  const companyId = identityField(distinctIdOrIdentity.companyId, 'companyId');
+  const deviceId = identityField(distinctIdOrIdentity.deviceId, 'deviceId');
+  if (!userId && !deviceId) {
+    throw new Error('identity requires a non-empty userId or deviceId');
+  }
+  return JSON.stringify({ userId, companyId, deviceId });
+}
+
+/**
  * Initializes the Mixpanel Session Replay system with the provided configuration.
  *
  * It checks remote configuration to determine if session recording is enabled, and only then initializes the SDK.
  * If the SDK is initialized previously, then it will be deinitialized first.
  *
  * @param token - The Mixpanel project token used to identify the project.
- * @param distinctId - A unique identifier for the current user.
+ * @param distinctIdOrIdentity - A unique identifier for the current user, or a {@link MixpanelIdentity},
+ *   such as the one `mixpanel.getIdentity()` reports, for a project that uses hierarchical groups.
  * @param config - The configuration object used to customize session replay behavior.
- * @throws An error if the token or distinctId is missing or invalid, or if the configuration is invalid,
- *   or if the initialization fails.
+ * @throws An error if the token is missing or invalid, if the distinctId is missing or invalid, if the
+ *   identity has a non-string id or neither a userId nor a deviceId, or if the configuration is
+ *   invalid, or if the initialization fails.
  */
 async function initialize(
   token: string,
-  distinctId: string,
+  distinctIdOrIdentity: string | MixpanelIdentity,
   config: MPSessionReplayConfig
 ): Promise<void> {
   if (!token || typeof token !== 'string') {
     throw new Error('Mixpanel token is required and must be a string');
   }
-  if (!distinctId || typeof distinctId !== 'string') {
-    throw new Error('distinctId is required and must be a string');
-  }
+  const identityJSON = serializeIdentityArgument(distinctIdOrIdentity);
   if (
     config.recordingSessionsPercent !== undefined &&
     (config.recordingSessionsPercent < 0 ||
@@ -785,11 +861,18 @@ async function initialize(
     config.debugOptions?.wireframeEmitter
   );
   try {
-    const result = await MixpanelReactNativeSessionReplay.initialize(
-      token,
-      distinctId,
-      json
-    );
+    const result =
+      identityJSON === null
+        ? await MixpanelReactNativeSessionReplay.initialize(
+            token,
+            distinctIdOrIdentity as string,
+            json
+          )
+        : await MixpanelReactNativeSessionReplay.initializeWithIdentity(
+            token,
+            identityJSON,
+            json
+          );
     if (generation !== wireframeGeneration) {
       // Another initialize attached after this one started. This call is the one that
       // succeeded, so its configuration is the one that should be delivering.
@@ -845,15 +928,27 @@ async function isRecording(): Promise<boolean> {
  * It is recommended to call Identify from the Mixpanel main SDK first and then call identify from the Session Replay SDK.
  * This ensures that users are properly merged.
  *
- * @param distinctId - The distinct ID of the user.
- * @throws An error if the distinctId is missing or invalid.
+ * On a project that uses hierarchical groups, pass the {@link MixpanelIdentity} analytics reports
+ * instead, `await mixpanel.getIdentity()`, so replays carry `$user_id` and `$company_id`.
+ * Await the analytics `identify()` first, so `getIdentity()` reports the new identity.
+ * After `mixpanel.reset()`, call `identify(await mixpanel.getIdentity())` again so replays
+ * follow the new anonymous identity. Other projects keep passing the distinct id string.
+ *
+ * @param distinctIdOrIdentity - The distinct ID of the user, or a {@link MixpanelIdentity}.
+ * @throws An error if the distinctId is missing or invalid, or if the identity has a non-string
+ *   id or neither a userId nor a deviceId.
  */
-async function identify(distinctId: string): Promise<void> {
-  if (!distinctId || typeof distinctId !== 'string') {
-    throw new Error('distinctId is required and must be a string');
+async function identify(
+  distinctIdOrIdentity: string | MixpanelIdentity
+): Promise<void> {
+  const identityJSON = serializeIdentityArgument(distinctIdOrIdentity);
+  if (identityJSON !== null) {
+    return MixpanelReactNativeSessionReplay.identifyWithIdentity(identityJSON);
   }
 
-  return MixpanelReactNativeSessionReplay.identify(distinctId);
+  return MixpanelReactNativeSessionReplay.identify(
+    distinctIdOrIdentity as string
+  );
 }
 
 /**

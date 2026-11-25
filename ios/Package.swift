@@ -35,6 +35,7 @@ let package = Package(
     dependencies: [
         // Keep in step with the MixpanelSessionReplay version in MixpanelReactNativeSessionReplay.podspec.
         .package(url: "https://github.com/mixpanel/mixpanel-ios-session-replay-package.git", exact: "2.0.0"),
+        .package(url: "https://github.com/mixpanel/mixpanel-swift-common.git", from: "2.1.0"),
         .package(name: "ReactNative", path: "../../../../xcframeworks"),
         .package(name: "React-GeneratedCode", path: "../../../ios"),
     ],
@@ -43,6 +44,7 @@ let package = Package(
             name: "MixpanelReactNativeSessionReplaySwift",
             dependencies: [
                 .product(name: "MixpanelSessionReplay", package: "mixpanel-ios-session-replay-package"),
+                .product(name: "MixpanelSwiftCommon", package: "mixpanel-swift-common"),
             ],
             path: "Sources/MixpanelReactNativeSessionReplaySwift"
         ),

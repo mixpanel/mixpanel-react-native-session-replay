@@ -1,9 +1,11 @@
 package com.mixpanelreactnativesessionreplay
 
+import android.annotation.SuppressLint
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.module.annotations.ReactModule
+import com.mixpanel.android.identity.MixpanelIdentity
 import com.mixpanel.android.sessionreplay.MPSessionReplay
 import com.mixpanel.android.sessionreplay.MPSessionReplayInstance
 import com.mixpanel.android.sessionreplay.MPSessionReplayError
@@ -31,6 +33,62 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
         return
       }
 
+      initializeSessionReplay(configJSON, promise) { replayConfig, completion ->
+        MPSessionReplay.initialize(
+          reactApplicationContext,
+          token,
+          distinctId,
+          replayConfig,
+          completion
+        )
+      }
+    } catch (e: Exception) {
+      promise.reject("INITIALIZATION_ERROR", e.message, e)
+    }
+  }
+
+  /**
+   * Hierarchical groups: initializes for a [MixpanelIdentity] sent as JSON, typically the one
+   * `mixpanel.getIdentity()` reports, so replays carry `$user_id`, `$company_id` and `$device_id`.
+   */
+  @ReactMethod
+  override fun initializeWithIdentity(
+    token: String,
+    identityJSON: String,
+    configJSON: String,
+    promise: Promise
+  ) {
+    if (token.isEmpty()) {
+      promise.reject("INVALID_CONFIG", "Token is required")
+      return
+    }
+    val identity = parseIdentity(identityJSON)
+    if (identity == null) {
+      promise.reject("INVALID_IDENTITY", "identity requires a non-empty userId or deviceId")
+      return
+    }
+
+    initializeSessionReplay(configJSON, promise) { replayConfig, completion ->
+      MPSessionReplay.initialize(
+        reactApplicationContext,
+        token,
+        identity,
+        replayConfig,
+        completion
+      )
+    }
+  }
+
+  /**
+   * Parses the config, then hands it to [start], which calls whichever `MPSessionReplay.initialize`
+   * overload matches how the user is named, and settles [promise] from its result.
+   */
+  private fun initializeSessionReplay(
+    configJSON: String,
+    promise: Promise,
+    start: (MPSessionReplayConfig, (Result<MPSessionReplayInstance?>) -> Unit) -> Unit
+  ) {
+    try {
       // Parse JSON configuration
       val config = if (configJSON.isNotEmpty()) {
         try {
@@ -71,12 +129,7 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
       APIConstants.setMpLib(MP_LIB)
 
       // Initialize Mixpanel Session Replay
-      MPSessionReplay.initialize(
-        reactApplicationContext,
-        token,
-        distinctId,
-        replayConfig
-      ) { result ->
+      start(replayConfig) { result ->
         result.fold(
           onSuccess = { sessionReplayInstance ->
             // Successfully initialized
@@ -166,6 +219,22 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
       }
 
       MPSessionReplay.getInstance()?.identify(distinctId)
+      promise.resolve(null)
+    } catch (e: Exception) {
+      promise.reject("IDENTIFY_ERROR", e.message, e)
+    }
+  }
+
+  @ReactMethod
+  override fun identifyWithIdentity(identityJSON: String, promise: Promise) {
+    try {
+      val identity = parseIdentity(identityJSON)
+      if (identity == null) {
+        promise.reject("INVALID_IDENTITY", "identity requires a non-empty userId or deviceId")
+        return
+      }
+
+      MPSessionReplay.getInstance()?.identify(identity)
       promise.resolve(null)
     } catch (e: Exception) {
       promise.reject("IDENTIFY_ERROR", e.message, e)
@@ -363,5 +432,28 @@ class MixpanelReactNativeSessionReplayModule(reactContext: ReactApplicationConte
 
     /** Must match `WIREFRAME_EVENT` in `src/index.tsx` and `supportedEvents` on iOS. */
     const val WIREFRAME_EVENT = "MixpanelSessionReplayWireframe"
+
+    /**
+     * Reads `{"userId", "companyId", "deviceId"}` sent by JS, mapping missing, null, empty and
+     * non-string values to null. Returns null when the JSON is malformed or names neither a user nor a device.
+     * The constructor that takes a device id is restricted to Mixpanel's own libraries, which this
+     * module is.
+     */
+    @SuppressLint("RestrictedApi")
+    internal fun parseIdentity(identityJSON: String): MixpanelIdentity? {
+      val json = try {
+        JSONObject(identityJSON)
+      } catch (e: Exception) {
+        println("Mixpanel - Failed to parse identity JSON: ${e.message}")
+        return null
+      }
+      // Only non-empty strings count, like JS. JSON null (`JSONObject.NULL`) and non-string values
+      // are treated as absent, which avoids `optString` turning null into "null" on Android.
+      fun field(name: String): String? =
+        (json.opt(name) as? String)?.takeIf { it.isNotEmpty() }
+
+      val identity = MixpanelIdentity(field("userId"), field("companyId"), field("deviceId"))
+      return if (identity.userId == null && identity.deviceId == null) null else identity
+    }
   }
 }
